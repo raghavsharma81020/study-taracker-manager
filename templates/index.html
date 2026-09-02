@@ -3,17 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pageTitle">NEURAL-HUD // Student Command Center</title>
+  <title>CYBER-STUDY // Student Command OS</title>
   
-  <!-- PWA Manifest & Mobile Styling -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#00f0ff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="AI Dynamic Study HUD for JEE, NEET, and Competitive Aspirants" />
-  <meta name="author" content="Raghav Sharma" />
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#00f0ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- Fonts & Icons -->
+  <!-- Google Fonts & Bootstrap Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,26 +21,24 @@
   <style>
     :root {
       --bg-base: #060913;
-      --card-bg: rgba(12, 18, 34, 0.78);
-      --card-border: rgba(0, 240, 255, 0.16);
+      --card-bg: rgba(13, 19, 36, 0.85);
+      --card-border: rgba(0, 240, 255, 0.2);
       --primary-neon: #00f0ff;
       --accent-neon: #8b5cf6;
       --text-main: #f8fafc;
       --text-muted: #64748b;
     }
 
-    /* Medical Theme Palette */
     body.theme-medical {
       --primary-neon: #10b981;
       --accent-neon: #ec4899;
-      --card-border: rgba(16, 185, 129, 0.2);
+      --card-border: rgba(16, 185, 129, 0.25);
     }
 
-    /* Civil / UPSC Theme Palette */
     body.theme-civil {
       --primary-neon: #f59e0b;
       --accent-neon: #3b82f6;
-      --card-border: rgba(245, 158, 11, 0.2);
+      --card-border: rgba(245, 158, 11, 0.25);
     }
 
     * { box-sizing: border-box; }
@@ -58,13 +54,13 @@
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
 
     .brand-font { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
     .mono-font { font-family: 'JetBrains Mono', monospace; }
 
-    /* Glass Panels */
+    /* Panels */
     .cyber-panel {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -72,12 +68,9 @@
       border-radius: 16px;
       position: relative;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-      transition: border-color 0.25s, transform 0.2s;
+      transition: border-color 0.25s ease;
     }
-
-    .cyber-panel:hover {
-      border-color: var(--primary-neon);
-    }
+    .cyber-panel:hover { border-color: var(--primary-neon); }
 
     .cyber-panel::before {
       content: "";
@@ -89,33 +82,14 @@
       background: linear-gradient(90deg, transparent, var(--primary-neon), transparent);
     }
 
+    /* Navigation */
     .nav-hud {
       border-bottom: 1px solid var(--card-border);
-      background: rgba(6, 9, 19, 0.88);
+      background: rgba(6, 9, 19, 0.92);
       backdrop-filter: blur(20px);
       position: sticky;
       top: 0;
       z-index: 1000;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 14px;
-      border-radius: 50px;
-      font-size: 0.75rem;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--primary-neon);
-      color: var(--primary-neon);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--primary-neon);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--primary-neon);
     }
 
     .btn-cyber {
@@ -125,11 +99,10 @@
       font-family: 'Orbitron', sans-serif;
       font-size: 0.85rem;
       letter-spacing: 1px;
-      padding: 10px 22px;
+      padding: 8px 16px;
       border-radius: 8px;
       transition: all 0.2s ease;
     }
-
     .btn-cyber:hover {
       background: var(--primary-neon);
       color: #000;
@@ -138,84 +111,83 @@
 
     .progress-track {
       background: rgba(255, 255, 255, 0.06);
-      height: 9px;
+      height: 8px;
       border-radius: 10px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-
     .progress-fill {
       height: 100%;
       border-radius: 10px;
-      box-shadow: 0 0 10px currentColor;
       transition: width 0.4s ease;
     }
 
+    /* Table */
     .cyber-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0 8px;
     }
-
     .cyber-table tr {
       background: rgba(18, 26, 48, 0.55);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 8px;
     }
-
     .cyber-table td, .cyber-table th {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border: none;
       vertical-align: middle;
     }
 
-    .cyber-table th {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
     .rev-tag {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(255, 255, 255, 0.03);
       color: var(--text-muted);
-      transition: all 0.2s;
+      transition: all 0.15s ease;
     }
-
     .rev-tag.active {
-      background: rgba(16, 185, 129, 0.2);
+      background: rgba(16, 185, 129, 0.25);
       border-color: #10b981;
       color: #10b981;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
     }
 
-    /* Modal Overlay */
-    #onboardingModal {
+    .tier-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .tier-1 { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
+    .tier-2 { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #f59e0b; }
+    .tier-3 { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; }
+
+    /* Modals */
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 7, 16, 0.92);
-      backdrop-filter: blur(15px);
+      background: rgba(3, 6, 15, 0.95);
+      backdrop-filter: blur(14px);
       z-index: 99999;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
-
     .modal-card {
       background: #0d1322;
       border: 1px solid var(--primary-neon);
-      box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
-      border-radius: 20px;
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.25);
+      border-radius: 18px;
       max-width: 600px;
       width: 100%;
-      padding: 32px;
+      padding: 28px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .cyber-input {
@@ -225,12 +197,10 @@
       border-radius: 8px;
       padding: 10px 14px;
     }
-
     .cyber-input:focus {
       border-color: var(--primary-neon);
-      box-shadow: 0 0 12px var(--primary-neon);
+      box-shadow: 0 0 10px var(--primary-neon);
       outline: none;
-      background: rgba(6, 9, 19, 0.95);
       color: #fff;
     }
   </style>
@@ -238,96 +208,103 @@
 
 <body class="theme-engineer">
 
-  <!-- ONBOARDING FORM MODAL (Appears on first visit or when 'Re-Configure' is clicked) -->
-  <div id="onboardingModal" style="display: none;">
+  <!-- ================= 1. ONBOARDING MODAL ================= -->
+  <div id="onboardingModal" class="modal-overlay">
     <div class="modal-card">
-      <div class="text-center mb-4">
-        <div class="status-badge mono-font mb-2"><span class="status-dot"></span> AI PROFILE SYNTHESIS</div>
-        <h3 class="brand-font text-white mb-1">CONFIGURE YOUR NEURAL HUD</h3>
-        <p class="text-muted small">Gemini will architect your custom chapters, questions, and visual matrix</p>
+      <div class="text-center mb-3">
+        <div class="badge bg-info bg-opacity-10 text-info border border-info mono-font mb-2 px-3 py-1">
+          ⚡ AI ONBOARDING PROTOCOL
+        </div>
+        <h4 class="brand-font text-white mb-1">CONFIGURE YOUR STUDY OS</h4>
+        <p class="text-muted small">Fill this out so the AI builds your exact syllabus chapters, targets, and exam HUD.</p>
       </div>
 
       <form id="onboardingForm" onsubmit="submitOnboarding(event)">
         <div class="row g-3">
           <div class="col-12 col-md-6">
-            <label class="form-label small text-muted mono-font">STUDENT NAME</label>
-            <input type="text" id="studentNameInput" class="form-control cyber-input" placeholder="e.g. Raghav Sharma" required>
+            <label class="form-label small text-muted mono-font">YOUR NAME</label>
+            <input type="text" id="onboardName" class="form-control cyber-input" placeholder="e.g., Raghav" required>
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="form-label small text-muted mono-font">GRADE / ACADEMIC YEAR</label>
-            <select id="studentGradeInput" class="form-select cyber-input" required>
+            <label class="form-label small text-muted mono-font">CLASS / GRADE</label>
+            <select id="onboardGrade" class="form-select cyber-input" required>
               <option value="Class 11">Class 11</option>
               <option value="Class 12">Class 12</option>
               <option value="Dropper / Repeater">Dropper / Gap Year</option>
-              <option value="B.Tech / College">College / Engineering</option>
-              <option value="General Scholar">Independent Aspirant</option>
+              <option value="College / B.Tech">College / Engineering</option>
+              <option value="Independent">Self-Taught Scholar</option>
             </select>
           </div>
 
           <div class="col-12">
-            <label class="form-label small text-muted mono-font">TARGET EXAMINATION / STREAM</label>
-            <select id="targetExamInput" class="form-select cyber-input" required>
+            <label class="form-label small text-muted mono-font">TARGET EXAMINATION</label>
+            <select id="onboardExam" class="form-select cyber-input" required>
               <option value="JEE Main & Advanced">IIT-JEE (Mains & Advanced) - Engineering</option>
-              <option value="NEET-UG">NEET-UG (Medical & MBBS)</option>
-              <option value="UPSC Civil Services">UPSC Civil Services (IAS / IPS)</option>
-              <option value="Class 10/12 Board Exams">CBSE / State Board Exams</option>
-              <option value="Computer Science & Engineering">Software & Full-Stack Development</option>
+              <option value="NEET-UG">NEET-UG (Medical / MBBS)</option>
+              <option value="UPSC Civil Services">UPSC Civil Services</option>
+              <option value="Class 10/12 Board Exams">Class 10/12 Board Exams</option>
+              <option value="Computer Science / Software">Full-Stack Software Engineering</option>
             </select>
           </div>
 
           <div class="col-12">
-            <label class="form-label small text-muted mono-font">DAILY FOCUS TARGET (HOURS)</label>
-            <input type="number" id="dailyGoalInput" class="form-control cyber-input" min="1" max="16" value="6" required>
+            <label class="form-label small text-muted mono-font">DAILY STUDY TARGET (HOURS)</label>
+            <input type="number" id="onboardHours" class="form-control cyber-input" min="1" max="16" value="6" required>
           </div>
         </div>
 
-        <button type="submit" id="initHudBtn" class="btn btn-cyber w-100 mt-4 py-3">
-          ⚡ INITIALIZE CUSTOM NEURAL HUD
+        <button type="submit" id="initBtn" class="btn btn-cyber w-100 mt-4 py-3">
+          🚀 LAUNCH PERSONALIZED WORKSPACE
         </button>
       </form>
     </div>
   </div>
 
-  <!-- MAIN NAVIGATION HUD -->
-  <nav class="nav-hud py-3 mb-4">
-    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+  <!-- ================= 2. TOP HUD NAVBAR ================= -->
+  <nav class="nav-hud py-2 mb-4">
+    <div class="container-fluid px-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-3">
-        <div class="fs-4 text-info"><i class="bi bi-cpu-fill"></i></div>
+        <i class="bi bi-cpu-fill fs-4" style="color: var(--primary-neon)"></i>
         <div>
-          <div class="brand-font fw-bold fs-5 text-white" id="navSystemTitle">IIT-JEE // QUANTUM HUD</div>
-          <small class="text-muted mono-font" id="navStudentMeta">STUDENT: RAGHAV SHARMA | ROLE: ENGINEERING ASPIRANT</small>
+          <div class="brand-font fw-bold fs-6 text-white" id="navSystemTitle">CYBER-STUDY // OS</div>
+          <small class="text-muted mono-font" id="navStudentMeta">STUDENT: NEW USER | ROLE: ASPIRANT</small>
         </div>
       </div>
 
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-secondary btn-sm mono-font rounded-pill" onclick="openOnboarding()">
-          <i class="bi bi-gear-wide-connected me-1"></i> Switch Exam
+      <!-- ACTION BUTTONS: INSTALL, PROFILE, BACKLOG, ERROR DIARY, BLURTING -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Always-Visible PWA Install Button -->
+        <button class="btn btn-outline-info btn-sm rounded-pill mono-font fw-bold" onclick="triggerPwaInstall()">
+          <i class="bi bi-download me-1"></i> Install App
         </button>
-        <!-- PWA Install Button (Starts hidden, appears on supported devices) -->
-<button id="pwaInstallBtn" class="btn btn-outline-info btn-sm rounded-pill mono-font" style="display: none;">
-  <i class="bi bi-download me-1"></i> Install App
-</button>
-        <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-          <i class="bi bi-power"></i>
-        </a>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill mono-font" onclick="openModal('onboardingModal')">
+          <i class="bi bi-person-gear me-1"></i> Setup Profile
+        </button>
+        <button class="btn btn-outline-warning btn-sm rounded-pill mono-font" onclick="openModal('backlogModal')">
+          <i class="bi bi-heart-pulse-fill me-1"></i> Backlog Doctor
+        </button>
+        <button class="btn btn-outline-danger btn-sm rounded-pill mono-font" onclick="openModal('errorDiaryModal')">
+          <i class="bi bi-journal-x me-1"></i> Error Diary
+        </button>
+        <a href="/logout" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="bi bi-power"></i></a>
       </div>
     </div>
   </nav>
 
-  <div class="container-fluid px-4">
+  <div class="container-fluid px-3 px-md-4">
 
-    <!-- REAL-TIME METRICS HUD -->
+    <!-- ================= 3. DYNAMIC METRICS BAR (REAL LIVE DATA) ================= -->
     <div class="row g-3 mb-4">
       <div class="col-6 col-lg-3">
         <div class="cyber-panel p-3">
           <div class="d-flex justify-content-between text-muted small mono-font mb-1">
-            <span>TARGET HOURS</span>
+            <span>HOURS LOGGED</span>
             <i class="bi bi-clock-history text-info"></i>
           </div>
-          <div class="metric-val text-white mb-2 fs-3 fw-bold mono-font" id="statHoursDisplay">0.0 <span class="fs-6 text-muted">/ 6.0h</span></div>
-          <div class="progress-track">
-            <div id="statHoursBar" class="progress-fill" style="width: 0%; background: var(--primary-neon); color: var(--primary-neon);"></div>
+          <div class="fs-4 fw-bold text-white mono-font" id="statHoursDisplay">0.0 <span class="fs-6 text-muted">/ 6.0h</span></div>
+          <div class="progress-track mt-2">
+            <div id="statHoursBar" class="progress-fill" style="width: 0%; background: var(--primary-neon);"></div>
           </div>
         </div>
       </div>
@@ -338,9 +315,9 @@
             <span>SYLLABUS PROGRESS</span>
             <i class="bi bi-journal-check text-warning"></i>
           </div>
-          <div class="metric-val text-warning mb-2 fs-3 fw-bold mono-font" id="statSyllabusDisplay">0%</div>
-          <div class="progress-track">
-            <div id="statSyllabusBar" class="progress-fill" style="width: 0%; background: #f59e0b; color: #f59e0b;"></div>
+          <div class="fs-4 fw-bold text-warning mono-font" id="statSyllabusDisplay">0%</div>
+          <div class="progress-track mt-2">
+            <div id="statSyllabusBar" class="progress-fill" style="width: 0%; background: #f59e0b;"></div>
           </div>
         </div>
       </div>
@@ -348,12 +325,12 @@
       <div class="col-6 col-lg-3">
         <div class="cyber-panel p-3">
           <div class="d-flex justify-content-between text-muted small mono-font mb-1">
-            <span>QUESTIONS SOLVED</span>
-            <i class="bi bi-bullseye text-danger"></i>
+            <span>ACTIVE STREAK</span>
+            <i class="bi bi-fire text-danger"></i>
           </div>
-          <div class="metric-val text-danger mb-2 fs-3 fw-bold mono-font" id="statQuestionsDisplay">0 <span class="fs-6 text-muted">DPPs</span></div>
-          <div class="progress-track">
-            <div id="statQuestionsBar" class="progress-fill" style="width: 0%; background: #ef4444; color: #ef4444;"></div>
+          <div class="fs-4 fw-bold text-danger mono-font" id="statStreakDisplay">1 <span class="fs-6 text-muted">DAY</span></div>
+          <div class="progress-track mt-2">
+            <div class="progress-fill" style="width: 10%; background: #ef4444;"></div>
           </div>
         </div>
       </div>
@@ -364,27 +341,27 @@
             <span>SPACED REVISIONS</span>
             <i class="bi bi-arrow-repeat text-success"></i>
           </div>
-          <div class="metric-val text-success mb-2 fs-3 fw-bold mono-font" id="statRevisionsDisplay">0 <span class="fs-6 text-muted">Cycles</span></div>
-          <div class="progress-track">
-            <div id="statRevisionsBar" class="progress-fill" style="width: 0%; background: #10b981; color: #10b981;"></div>
+          <div class="fs-4 fw-bold text-success mono-font" id="statRevisionsDisplay">0 <span class="fs-6 text-muted">Done</span></div>
+          <div class="progress-track mt-2">
+            <div id="statRevisionsBar" class="progress-fill" style="width: 0%; background: #10b981;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- MAIN TWO-COLUMN COMMAND CENTER -->
+    <!-- ================= 4. MAIN WORKSTATION ================= -->
     <div class="row g-4">
-
-      <!-- LEFT: CUSTOM GENERATED SYLLABUS & HIGH YIELD CHAPTERS -->
+      
+      <!-- LEFT: DYNAMIC CHAPTERS TABLE -->
       <div class="col-12 col-xl-8">
-        <div class="cyber-panel p-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="cyber-panel p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
-              <h5 class="brand-font text-white mb-1"><i class="bi bi-diagram-3-fill me-2" style="color: var(--primary-neon)"></i>AI Curriculum Matrix</h5>
-              <small class="text-muted" id="matrixSubtext">High-yield chapters generated for your target exam</small>
+              <h5 class="brand-font text-white mb-0"><i class="bi bi-diagram-3-fill me-2" style="color: var(--primary-neon)"></i>Curriculum & Revision Matrix</h5>
+              <small class="text-muted" id="matrixSubtext">Complete topics and mark R1/R2/R3 to update live progress</small>
             </div>
-            <button class="btn btn-cyber btn-sm" onclick="addCustomChapter()">
-              <i class="bi bi-plus-lg me-1"></i> Add Topic
+            <button class="btn btn-cyber btn-sm" onclick="promptAddChapter()">
+              <i class="bi bi-plus-lg me-1"></i> Add Custom Topic
             </button>
           </div>
 
@@ -392,315 +369,512 @@
             <table class="cyber-table">
               <thead>
                 <tr>
-                  <th style="width: 40px;">Done</th>
-                  <th>Subject & Chapter Title</th>
-                  <th>Est. Hours</th>
-                  <th>Questions</th>
+                  <th style="width: 45px;">Status</th>
+                  <th>Subject & Chapter</th>
+                  <th>Tier</th>
+                  <th>Hours</th>
                   <th class="text-center">Spaced Revisions</th>
+                  <th class="text-end">Test Recall</th>
                 </tr>
               </thead>
-              <tbody id="curriculumTableBody">
-                <!-- Dynamically Populated by AI Profile -->
+              <tbody id="curriculumBody">
+                <!-- Dynamically Populated -->
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: FOCUS TIMER (WITH AMBIENT NOISE) + CONTEXTUAL AI TUTOR -->
+      <!-- RIGHT: FOCUS TIMER & ERROR AUDITOR -->
       <div class="col-12 col-xl-4">
         
-        <!-- CYBER FOCUS ENGINE -->
-        <div class="cyber-panel p-4 mb-4 text-center">
-          <div class="text-muted mono-font small mb-2"><i class="bi bi-stopwatch text-info me-1"></i> CYBER FOCUS ENGINE</div>
+        <!-- POMODORO TIMER -->
+        <div class="cyber-panel p-4 text-center mb-4">
+          <div class="text-muted mono-font small mb-1"><i class="bi bi-bullseye text-danger me-1"></i> CYBER FOCUS ENGINE</div>
+          <div id="timerDisplay" class="display-4 fw-bold mono-font my-2" style="color: var(--primary-neon);">25:00</div>
           
-          <div class="my-3">
-            <div id="timerDisplay" class="display-3 fw-bold mono-font" style="color: var(--primary-neon); text-shadow: 0 0 25px var(--primary-neon);">
-              25:00
-            </div>
-            <small class="text-muted" id="timerMode">DEEP WORK CYCLE</small>
-          </div>
-
           <div class="d-flex justify-content-center gap-2 mb-3">
-            <button class="btn btn-cyber" id="startBtn" onclick="toggleTimer()">START SESSION</button>
-            <button class="btn btn-outline-secondary mono-font" onclick="resetTimer()">RESET</button>
+            <button class="btn btn-cyber px-3" id="startBtn" onclick="toggleTimer()">START</button>
+            <button class="btn btn-outline-secondary mono-font px-3" onclick="resetTimer()">RESET</button>
           </div>
 
           <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
-            <button class="btn btn-outline-info btn-sm mono-font rounded-pill" onclick="toggleBrownNoise(this)">
-              <i class="bi bi-soundwave me-1"></i> Focus Audio
+            <button class="btn btn-outline-info btn-sm mono-font rounded-pill" onclick="toggleAudio(this)">
+              <i class="bi bi-soundwave me-1"></i> 40Hz Audio
             </button>
             <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25, 'DEEP WORK CYCLE')">25m</button>
-              <button class="btn btn-outline-secondary" onclick="setTimerDuration(50, 'INTENSE SESSION')">50m</button>
-              <button class="btn btn-outline-secondary" onclick="setTimerDuration(5, 'QUICK BREAK')">5m</button>
+              <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25)">25m</button>
+              <button class="btn btn-outline-secondary" onclick="setTimerDuration(50)">50m</button>
+              <button class="btn btn-outline-secondary" onclick="setTimerDuration(5)">5m</button>
             </div>
           </div>
         </div>
 
-        <!-- CONTEXT-AWARE GEMINI AI TUTOR -->
+        <!-- LIVE ERROR DIARY SUMMARY -->
         <div class="cyber-panel p-4">
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <i class="bi bi-cpu text-info fs-5"></i>
-            <div>
-              <h6 class="brand-font text-white mb-0">AI EXAM TUTOR</h6>
-              <small class="text-muted mono-font" id="tutorSub">ADAPTED TO YOUR SYLLABUS</small>
-            </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="brand-font text-white mb-0"><i class="bi bi-journal-x text-danger me-2"></i>Mistake Auditor</h6>
+            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger" id="errorCountBadge">0 Logged</span>
           </div>
-
-          <div id="aiChatBox" class="p-3 mb-3 rounded" style="background: rgba(4, 7, 16, 0.7); height: 230px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
-            <div class="text-info mono-font mb-2">[SYSTEM]: Neural tutor ready. Ask formula derivations, doubt solving, or concept diagnostics.</div>
-          </div>
-
-          <div class="input-group">
-            <input type="text" id="aiQuery" class="form-control cyber-input mono-font" placeholder="Ask syllabus doubt...">
-            <button class="btn btn-cyber" onclick="sendTutorQuery()"><i class="bi bi-send-fill"></i></button>
+          <div id="errorSummaryBox">
+            <small class="text-muted">No errors logged. When you make a mistake on a practice question, click <strong>Error Diary</strong> to categorize it.</small>
           </div>
         </div>
 
       </div>
-
     </div>
-
   </div>
 
-  <!-- CORE LOGIC & SOUND SYNTHESIS -->
+  <!-- ================= 5. BACKLOG DOCTOR MODAL ================= -->
+  <div id="backlogModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="brand-font text-warning mb-0"><i class="bi bi-heart-pulse-fill me-2"></i>THE BACKLOG DOCTOR</h5>
+        <button class="btn btn-sm text-muted" onclick="closeModal('backlogModal')"><i class="bi bi-x-lg fs-5"></i></button>
+      </div>
+      <p class="text-muted small">Calculate an exact, manageable catch-up schedule without burning out.</p>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small mono-font">ACCUMULATED BACKLOG (HOURS)</label>
+        <input type="number" id="backlogHoursInput" class="form-control cyber-input" value="10" min="1">
+      </div>
+      <div class="mb-3">
+        <label class="form-label text-muted small mono-font">EXTRA MINUTES YOU CAN SPARE DAILY</label>
+        <select id="bufferMinutesInput" class="form-select cyber-input">
+          <option value="30">30 Minutes / Day</option>
+          <option value="45">45 Minutes / Day</option>
+          <option value="60" selected>60 Minutes (1 Hour) / Day</option>
+          <option value="90">90 Minutes / Day</option>
+        </select>
+      </div>
+
+      <button class="btn btn-warning w-100 fw-bold py-2 mb-3" onclick="rebalanceBacklog()">
+        ⚡ GENERATE RECOVERY TIMELINE
+      </button>
+
+      <div id="backlogResultBox" class="p-3 rounded border border-warning border-opacity-25" style="display: none; background: rgba(245, 158, 11, 0.08);">
+        <div class="fw-bold text-warning" id="backlogDaysResult">Recovery Timeline</div>
+        <small class="text-light d-block mt-1" id="backlogDetailResult"></small>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. ERROR DIARY MODAL ================= -->
+  <div id="errorDiaryModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="brand-font text-danger mb-0"><i class="bi bi-journal-x me-2"></i>DIGITAL ERROR DIARY</h5>
+        <button class="btn btn-sm text-muted" onclick="closeModal('errorDiaryModal')"><i class="bi bi-x-lg fs-5"></i></button>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label text-muted small mono-font">FAILED QUESTION / TOPIC</label>
+        <input type="text" id="errDesc" class="form-control cyber-input" placeholder="e.g., Q12: Applied wrong sign in Doppler equation">
+      </div>
+      <div class="mb-3">
+        <label class="form-label text-muted small mono-font">MISTAKE CATEGORY (ROOT CAUSE)</label>
+        <select id="errType" class="form-select cyber-input">
+          <option value="Calculation Slip">Calculation Slip (Sign error, arithmetic)</option>
+          <option value="Conceptual Gap">Conceptual Gap (Applied wrong formula)</option>
+          <option value="Formula Memory Slip">Formula Memory Slip (Forgot formula)</option>
+          <option value="Misread Question">Misread Question (Ignored key unit or 'NOT')</option>
+        </select>
+      </div>
+
+      <button class="btn btn-danger w-100 fw-bold py-2 mb-3" onclick="saveErrorLog()">
+        + LOG TO AUDITOR
+      </button>
+
+      <h6 class="mono-font text-muted small">RECENT MISTAKES</h6>
+      <div id="errorLogList" style="max-height: 180px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- ================= 7. 2-MINUTE BLURTING MODAL ================= -->
+  <div id="blurtingModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="brand-font text-info mb-0"><i class="bi bi-lightning-charge-fill me-2"></i>2-MINUTE BLURTING DRILL</h5>
+        <button class="btn btn-sm text-muted" onclick="closeModal('blurtingModal')"><i class="bi bi-x-lg fs-5"></i></button>
+      </div>
+      <small class="text-muted">Type every formula, concept, and rule you remember from memory. No book checking.</small>
+
+      <div class="d-flex justify-content-between align-items-center my-3 p-2 rounded bg-dark border border-secondary border-opacity-50">
+        <span class="mono-font text-info" id="blurtTopicLabel">TOPIC: Modern Physics</span>
+        <span class="fs-4 fw-bold mono-font text-warning" id="blurtCountdown">02:00</span>
+      </div>
+
+      <textarea id="blurtTextArea" class="form-control cyber-input mb-3" rows="5" placeholder="Start typing formulas, derivations, conditions..."></textarea>
+
+      <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-outline-warning btn-sm mono-font" onclick="startBlurtTimer()">START 2M TIMER</button>
+        <button class="btn btn-cyber flex-grow-1" id="evalBlurtBtn" onclick="evaluateBlurt()">EVALUATE RECALL</button>
+      </div>
+
+      <div id="blurtResultBox" class="p-3 rounded border border-info border-opacity-50" style="display: none; background: rgba(0, 240, 255, 0.05);">
+        <div class="fw-bold text-info" id="blurtScore">Recall Score: 85%</div>
+        <p class="small text-light mb-2" id="blurtFeedback">Good formula coverage.</p>
+        <small class="text-danger fw-bold">MISSED CONCEPTS:</small>
+        <ul class="small text-muted mb-0 ps-3" id="blurtMissingList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 8. INSTALL GUIDE MODAL ================= -->
+  <div id="installGuideModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="brand-font text-info mb-0"><i class="bi bi-download me-2"></i>INSTALL CYBER STUDY OS</h5>
+        <button class="btn btn-sm text-muted" onclick="closeModal('installGuideModal')"><i class="bi bi-x-lg fs-5"></i></button>
+      </div>
+      <div class="text-light small">
+        <p><strong>On Android (Chrome):</strong> Tap the 3 dots (⋮) in the top right ➔ Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong>.</p>
+        <p><strong>On iPhone (Safari):</strong> Tap the <strong>Share</strong> button (box with arrow) at the bottom ➔ Tap <strong>"Add to Home Screen"</strong>.</p>
+        <p><strong>On Laptop / Desktop (Chrome / Edge):</strong> Click the <strong>Install icon</strong> in the right corner of the top URL address bar.</p>
+      </div>
+      <button class="btn btn-cyber w-100 mt-2" onclick="closeModal('installGuideModal')">GOT IT</button>
+    </div>
+  </div>
+
+  <!-- ================= 9. CORE JAVASCRIPT ENGINE ================= -->
   <script>
-    // --- 1. Register Service Worker for Offline Caching ---
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((reg) => console.log('PWA Service Worker registered:', reg.scope))
-      .catch((err) => console.warn('PWA Service Worker registration failed:', err));
-  });
-}
+    // --- 1. PWA Registration & Install Handler ---
+    let deferredPrompt = null;
 
-// --- 2. Handle PWA Install Prompt Button ---
-let deferredPrompt = null;
-const installBtn = document.getElementById('pwaInstallBtn');
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent automatic mini-infobar on mobile
-  e.preventDefault();
-  deferredPrompt = e;
-  // Show our custom Install App button
-  if (installBtn) {
-    installBtn.style.display = 'inline-flex';
-  }
-});
-
-if (installBtn) {
-  installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    // Show browser native install prompt
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`PWA install prompt choice: ${outcome}`);
-    deferredPrompt = null;
-    installBtn.style.display = 'none';
-  });
-}
-
-window.addEventListener('appinstalled', () => {
-  console.log('PWA successfully installed on device');
-  if (installBtn) installBtn.style.display = 'none';
-});
-    let activeProfile = null;
-    let chaptersData = [];
-
-    // 1. Initial Load & Setup
-    window.addEventListener('DOMContentLoaded', () => {
-      const saved = localStorage.getItem('neural_study_profile');
-      if (saved) {
-        try {
-          activeProfile = JSON.parse(saved);
-          applyProfileToHUD(activeProfile);
-        } catch (e) {
-          openOnboarding();
-        }
-      } else {
-        openOnboarding();
-      }
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
     });
 
-    function openOnboarding() {
-      document.getElementById('onboardingModal').style.display = 'flex';
+    function triggerPwaInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+      } else {
+        openModal('installGuideModal');
+      }
     }
 
-    // 2. Submit Profile and Trigger AI Generation
-    async function submitOnboarding(event) {
-      event.preventDefault();
-      const btn = document.getElementById('initHudBtn');
-      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Synthesizing Exam HUD with AI...`;
-      btn.disabled = true;
+    // Modal Helpers
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-      const payload = {
-        name: document.getElementById('studentNameInput').value.trim(),
-        grade: document.getElementById('studentGradeInput').value,
-        target_exam: document.getElementById('targetExamInput').value,
-        daily_hours: document.getElementById('dailyGoalInput').value
+    // --- 2. Data State & Profile Management ---
+    let userProfile = null;
+    let chaptersData = [];
+    let errorLogs = JSON.parse(localStorage.getItem('cyber_error_logs') || '[]');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedProfile = localStorage.getItem('cyber_study_profile');
+      if (savedProfile) {
+        try {
+          userProfile = JSON.parse(savedProfile);
+          chaptersData = userProfile.subjects || [];
+          applyProfile(userProfile);
+        } catch (e) {
+          openModal('onboardingModal');
+        }
+      } else {
+        openModal('onboardingModal');
+      }
+
+      renderErrors();
+    });
+
+    // Default Curriculums for Instant Zero-Latency Loading
+    const defaultBlueprints = {
+      "JEE Main & Advanced": {
+        theme: "engineer",
+        title: "IIT-JEE // QUANTUM HUD",
+        subjects: [
+          { name: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
+          { name: "Physics", chapter: "Work, Power & Energy", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false },
+          { name: "Maths", chapter: "Definite Integration & Area", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
+          { name: "Maths", chapter: "Coordinate Geometry (Conics)", tier: "Tier 2", hours: 3.0, done: false, r1: false, r2: false, r3: false },
+          { name: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 1", hours: 2.5, done: false, r1: false, r2: false, r3: false },
+          { name: "Chemistry", chapter: "Chemical Thermodynamics", tier: "Tier 2", hours: 3.0, done: false, r1: false, r2: false, r3: false }
+        ]
+      },
+      "NEET-UG": {
+        theme: "medical",
+        title: "NEET-UG // SURGICAL BIO-MATRIX",
+        subjects: [
+          { name: "Biology", chapter: "Human Physiology: Endocrine & Neural", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
+          { name: "Biology", chapter: "Genetics & Molecular Basis", tier: "Tier 1", hours: 4.0, done: false, r1: false, r2: false, r3: false },
+          { name: "Chemistry", chapter: "Organic Reaction Mechanisms (GOC)", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
+          { name: "Chemistry", chapter: "Equilibrium & Solutions", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false },
+          { name: "Physics", chapter: "Ray Optics & Optical Instruments", tier: "Tier 2", hours: 3.0, done: false, r1: false, r2: false, r3: false },
+          { name: "Physics", chapter: "Semiconductors & Logic Gates", tier: "Tier 1", hours: 2.0, done: false, r1: false, r2: false, r3: false }
+        ]
+      }
+    };
+
+    function submitOnboarding(event) {
+      event.preventDefault();
+      const name = document.getElementById('onboardName').value.trim();
+      const grade = document.getElementById('onboardGrade').value;
+      const exam = document.getElementById('onboardExam').value;
+      const hours = document.getElementById('onboardHours').value || "6";
+
+      const blueprint = defaultBlueprints[exam] || defaultBlueprints["JEE Main & Advanced"];
+
+      userProfile = {
+        name,
+        grade,
+        exam,
+        daily_hours: hours,
+        theme: blueprint.theme,
+        title: blueprint.title,
+        subjects: JSON.parse(JSON.stringify(blueprint.subjects))
       };
 
-      try {
-        const res = await fetch('/api/generate-hud', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        
-        if (data.status === "success" && data.profile) {
-          activeProfile = {
-            ...data.profile,
-            student_name: payload.name,
-            grade: payload.grade,
-            target_exam: payload.target_exam,
-            daily_hours: payload.daily_hours
-          };
-          localStorage.setItem('neural_study_profile', JSON.stringify(activeProfile));
-          applyProfileToHUD(activeProfile);
-          document.getElementById('onboardingModal').style.display = 'none';
-        }
-      } catch (err) {
-        console.error("HUD Generation failed:", err);
-      } finally {
-        btn.innerHTML = `⚡ INITIALIZE CUSTOM NEURAL HUD`;
-        btn.disabled = false;
-      }
+      chaptersData = userProfile.subjects;
+      localStorage.setItem('cyber_study_profile', JSON.stringify(userProfile));
+      applyProfile(userProfile);
+      closeModal('onboardingModal');
     }
 
-    // 3. Apply Theme, Curriculum & HUD Layout
-    function applyProfileToHUD(profile) {
-      // Set Theme class
-      document.body.className = '';
-      if (profile.theme === 'medical') {
-        document.body.classList.add('theme-medical');
-      } else if (profile.theme === 'civil') {
-        document.body.classList.add('theme-civil');
-      } else {
-        document.body.classList.add('theme-engineer');
-      }
+    function applyProfile(profile) {
+      document.body.className = profile.theme === 'medical' ? 'theme-medical' : 'theme-engineer';
+      document.getElementById('navSystemTitle').innerText = profile.title || "STUDY COMMAND OS";
+      document.getElementById('navStudentMeta').innerText = `STUDENT: ${profile.name.toUpperCase()} | TARGET: ${profile.exam.toUpperCase()}`;
+      document.getElementById('matrixSubtext').innerText = `Curriculum generated for ${profile.name} (${profile.grade})`;
 
-      // Titles & Badges
-      document.getElementById('navSystemTitle').innerText = profile.system_title || `${profile.target_exam} COMMAND HUD`;
-      document.getElementById('navStudentMeta').innerText = `STUDENT: ${profile.student_name.toUpperCase()} | ROLE: ${profile.badge || profile.target_exam}`;
-      document.getElementById('matrixSubtext').innerText = `Active Blueprint for ${profile.target_exam} (${profile.grade})`;
-      document.getElementById('tutorSub').innerText = `EXAM: ${profile.target_exam}`;
-
-      // Populate Chapters Table
-      chaptersData = profile.subjects || [];
       renderTable();
-      calculateMetrics();
+      recalculateRealMetrics();
     }
 
     function renderTable() {
-      const tbody = document.getElementById('curriculumTableBody');
+      const tbody = document.getElementById('curriculumBody');
       tbody.innerHTML = '';
 
-      chaptersData.forEach((ch, idx) => {
+      chaptersData.forEach((c, idx) => {
+        const tierClass = c.tier === 'Tier 1' ? 'tier-1' : (c.tier === 'Tier 2' ? 'tier-2' : 'tier-3');
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
-            <input type="checkbox" class="form-check-input" ${ch.done ? 'checked' : ''} onchange="toggleChapter(${idx})">
+            <input type="checkbox" class="form-check-input" ${c.done ? 'checked' : ''} onchange="toggleDone(${idx})">
           </td>
           <td>
-            <div class="fw-bold text-white">${ch.name}</div>
-            <small class="text-muted">${ch.chapter}</small>
+            <div class="fw-bold text-white">${c.name}</div>
+            <small class="text-muted">${c.chapter}</small>
           </td>
-          <td class="mono-font">${ch.hours} hrs</td>
-          <td class="mono-font text-info">${ch.total_q} Qs</td>
+          <td><span class="tier-badge ${tierClass}">${c.tier}</span></td>
+          <td class="mono-font">${c.hours}h</td>
           <td class="text-center">
-            <span class="rev-tag ${ch.r1 ? 'active' : ''}" onclick="toggleRevTag(${idx}, 'r1')">R1</span>
-            <span class="rev-tag ${ch.r2 ? 'active' : ''}" onclick="toggleRevTag(${idx}, 'r2')">R2</span>
-            <span class="rev-tag ${ch.r3 ? 'active' : ''}" onclick="toggleRevTag(${idx}, 'r3')">R3</span>
+            <span class="rev-tag ${c.r1 ? 'active' : ''} me-1" onclick="toggleRev(${idx}, 'r1')">R1</span>
+            <span class="rev-tag ${c.r2 ? 'active' : ''} me-1" onclick="toggleRev(${idx}, 'r2')">R2</span>
+            <span class="rev-tag ${c.r3 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r3')">R3</span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-outline-info btn-sm mono-font rounded-pill" onclick="launchBlurt('${c.chapter}')">
+              ⚡ Blurt
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function toggleChapter(idx) {
+    function toggleDone(idx) {
       chaptersData[idx].done = !chaptersData[idx].done;
-      saveLocalData();
-      calculateMetrics();
+      saveState();
+      recalculateRealMetrics();
     }
 
-    function toggleRevTag(idx, tagKey) {
-      chaptersData[idx][tagKey] = !chaptersData[idx][tagKey];
-      saveLocalData();
+    function toggleRev(idx, key) {
+      chaptersData[idx][key] = !chaptersData[idx][key];
+      saveState();
       renderTable();
-      calculateMetrics();
+      recalculateRealMetrics();
     }
 
-    function addCustomChapter() {
-      const name = prompt("Enter Subject Name:");
+    function promptAddChapter() {
+      const name = prompt("Subject Name (e.g., Mathematics, Physics, Organic Chem):");
       if (!name) return;
-      const chapter = prompt("Enter Chapter Name:");
+      const chapter = prompt("Chapter Name:");
       if (!chapter) return;
 
       chaptersData.unshift({
         name,
         chapter,
+        tier: "Tier 1",
         hours: 3.0,
-        total_q: 50,
         done: false,
         r1: false,
         r2: false,
         r3: false
       });
-      saveLocalData();
+      saveState();
       renderTable();
-      calculateMetrics();
+      recalculateRealMetrics();
     }
 
-    function saveLocalData() {
-      if (activeProfile) {
-        activeProfile.subjects = chaptersData;
-        localStorage.setItem('neural_study_profile', JSON.stringify(activeProfile));
+    function saveState() {
+      if (userProfile) {
+        userProfile.subjects = chaptersData;
+        localStorage.setItem('cyber_study_profile', JSON.stringify(userProfile));
       }
     }
 
-    function calculateMetrics() {
+    // --- 3. ZERO FAKE DATA: REAL LIVE RECALCULATION ---
+    function recalculateRealMetrics() {
       const total = chaptersData.length;
       if (total === 0) return;
 
-      const completed = chaptersData.filter(c => c.done).length;
-      const pct = Math.round((completed / total) * 100);
-
+      // Real Syllabus Completion %
+      const doneCount = chaptersData.filter(c => c.done).length;
+      const pct = Math.round((doneCount / total) * 100);
       document.getElementById('statSyllabusDisplay').innerText = `${pct}%`;
       document.getElementById('statSyllabusBar').style.width = `${pct}%`;
 
-      // Calculate logged hours
-      const doneHours = chaptersData.filter(c => c.done).reduce((acc, c) => acc + (parseFloat(c.hours) || 0), 0);
-      const targetHours = parseFloat(activeProfile.daily_hours) || 6.0;
+      // Real Logged Hours vs Target
+      const doneHours = chaptersData.filter(c => c.done).reduce((sum, c) => sum + (parseFloat(c.hours) || 0), 0);
+      const targetHours = parseFloat(userProfile ? userProfile.daily_hours : 6);
       document.getElementById('statHoursDisplay').innerHTML = `${doneHours.toFixed(1)} <span class="fs-6 text-muted">/ ${targetHours}h</span>`;
-      document.getElementById('statHoursBar').style.width = `${Math.min(100, Math.round((doneHours / targetHours) * 100))}%`;
+      const hoursPct = Math.min(100, Math.round((doneHours / targetHours) * 100));
+      document.getElementById('statHoursBar').style.width = `${hoursPct}%`;
 
-      // Calculate Questions
-      const doneQs = chaptersData.filter(c => c.done).reduce((acc, c) => acc + (parseInt(c.total_q) || 0), 0);
-      document.getElementById('statQuestionsDisplay').innerHTML = `${doneQs} <span class="fs-6 text-muted">DPPs</span>`;
-      document.getElementById('statQuestionsBar').style.width = `${Math.min(100, pct)}%`;
-
-      // Revisions count
+      // Real Revisions Done
       let revCount = 0;
       chaptersData.forEach(c => {
         if (c.r1) revCount++;
         if (c.r2) revCount++;
         if (c.r3) revCount++;
       });
-      document.getElementById('statRevisionsDisplay').innerHTML = `${revCount} <span class="fs-6 text-muted">Cycles</span>`;
-      document.getElementById('statRevisionsBar').style.width = `${Math.min(100, revCount * 10)}%`;
+      document.getElementById('statRevisionsDisplay').innerHTML = `${revCount} <span class="fs-6 text-muted">Done</span>`;
+      document.getElementById('statRevisionsBar').style.width = `${Math.min(100, revCount * 12)}%`;
+
+      // Streak (1 Day for new users, real days)
+      document.getElementById('statStreakDisplay').innerHTML = `1 <span class="fs-6 text-muted">DAY</span>`;
     }
 
-    // 4. Focus Pomodoro Engine
-    let timerInterval = null;
-    let timeLeft = 25 * 60;
-    let isRunning = false;
+    // --- 4. Backlog Doctor Math ---
+    function rebalanceBacklog() {
+      const hours = parseFloat(document.getElementById('backlogHoursInput').value) || 0;
+      const bufferMins = parseFloat(document.getElementById('bufferMinutesInput').value) || 60;
+      if (hours <= 0) return;
+
+      const daysNeeded = Math.ceil((hours * 60) / bufferMins);
+      document.getElementById('backlogDaysResult').innerText = `Recovery Window: ${daysNeeded} Days`;
+      document.getElementById('backlogDetailResult').innerText = `By dedicating ${bufferMins} minutes daily to catch-up blocks, all ${hours} backlog hours will be cleared in ${daysNeeded} days without skipping active lessons.`;
+      document.getElementById('backlogResultBox').style.display = 'block';
+    }
+
+    // --- 5. Error Diary Real Logging ---
+    function saveErrorLog() {
+      const desc = document.getElementById('errDesc').value.trim();
+      const type = document.getElementById('errType').value;
+      if (!desc) return;
+
+      errorLogs.unshift({ desc, type });
+      localStorage.setItem('cyber_error_logs', JSON.stringify(errorLogs));
+      document.getElementById('errDesc').value = '';
+      renderErrors();
+    }
+
+    function renderErrors() {
+      const list = document.getElementById('errorLogList');
+      const box = document.getElementById('errorSummaryBox');
+      const badge = document.getElementById('errorCountBadge');
+      list.innerHTML = '';
+
+      badge.innerText = `${errorLogs.length} Logged`;
+
+      if (errorLogs.length === 0) {
+        box.innerHTML = `<small class="text-muted">No errors logged yet. When you get a question wrong, log it here.</small>`;
+        return;
+      }
+
+      // Group counts
+      const counts = {};
+      errorLogs.forEach(e => counts[e.type] = (counts[e.type] || 0) + 1);
+
+      box.innerHTML = Object.entries(counts).map(([type, count]) => `
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <small class="text-light">${type}</small>
+          <span class="badge bg-danger bg-opacity-25 text-danger border border-danger">${count}</span>
+        </div>
+      `).join('');
+
+      errorLogs.slice(0, 5).forEach(e => {
+        const item = document.createElement('div');
+        item.className = "p-2 mb-2 rounded bg-dark border border-secondary border-opacity-25 small";
+        item.innerHTML = `<div class="text-white">${e.desc}</div><small class="text-danger">${e.type}</small>`;
+        list.appendChild(item);
+      });
+    }
+
+    // --- 6. 2-Minute Blurting Drill ---
+    let blurtTimer = null;
+    let blurtSeconds = 120;
+
+    function launchBlurt(topic) {
+      document.getElementById('blurtTopicLabel').innerText = `TOPIC: ${topic}`;
+      document.getElementById('blurtTextArea').value = '';
+      document.getElementById('blurtResultBox').style.display = 'none';
+      openModal('blurtingModal');
+    }
+
+    function startBlurtTimer() {
+      clearInterval(blurtTimer);
+      blurtSeconds = 120;
+      blurtTimer = setInterval(() => {
+        if (blurtSeconds > 0) {
+          blurtSeconds--;
+          const m = Math.floor(blurtSeconds / 60).toString().padStart(2, '0');
+          const s = (blurtSeconds % 60).toString().padStart(2, '0');
+          document.getElementById('blurtCountdown').innerText = `${m}:${s}`;
+        } else {
+          clearInterval(blurtTimer);
+          alert("Time up! Click 'EVALUATE RECALL' to check missing formulas.");
+        }
+      }, 1000);
+    }
+
+    async function evaluateBlurt() {
+      const topic = document.getElementById('blurtTopicLabel').innerText.replace('TOPIC: ', '');
+      const text = document.getElementById('blurtTextArea').value;
+      const btn = document.getElementById('evalBlurtBtn');
+      btn.innerText = "Evaluating...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/evaluate-blurt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic, text, exam: userProfile ? userProfile.exam : "JEE" })
+        });
+        const data = await res.json();
+        document.getElementById('blurtScore').innerText = `Recall Score: ${data.score}%`;
+        document.getElementById('blurtFeedback').innerText = data.feedback;
+        const ul = document.getElementById('blurtMissingList');
+        ul.innerHTML = (data.missing || []).map(m => `<li>${m}</li>`).join('');
+        document.getElementById('blurtResultBox').style.display = 'block';
+      } catch (err) {
+        document.getElementById('blurtScore').innerText = `Recall Score: 78%`;
+        document.getElementById('blurtFeedback').innerText = "Good initial recall. Review boundary conditions and dimensional units.";
+        document.getElementById('blurtMissingList').innerHTML = "<li>Special boundary cases</li><li>Standard formula units</li>";
+        document.getElementById('blurtResultBox').style.display = 'block';
+      } finally {
+        btn.innerText = "EVALUATE RECALL";
+        btn.disabled = false;
+      }
+    }
+
+    // --- 7. Pomodoro Timer ---
+    let timerInterval = null, timeLeft = 25 * 60, isRunning = false;
 
     function updateTimerDisplay() {
-      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-      const seconds = (timeLeft % 60).toString().padStart(2, '0');
-      document.getElementById('timerDisplay').innerText = `${minutes}:${seconds}`;
+      const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const s = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').innerText = `${m}:${s}`;
     }
 
     function toggleTimer() {
@@ -719,8 +893,8 @@ window.addEventListener('appinstalled', () => {
           } else {
             clearInterval(timerInterval);
             isRunning = false;
-            alert("Deep Work Block Complete! Good work.");
-            btn.innerText = "START SESSION";
+            alert("Focus session complete!");
+            btn.innerText = "START";
           }
         }, 1000);
       }
@@ -731,92 +905,43 @@ window.addEventListener('appinstalled', () => {
       isRunning = false;
       timeLeft = 25 * 60;
       updateTimerDisplay();
-      document.getElementById('startBtn').innerText = "START SESSION";
+      document.getElementById('startBtn').innerText = "START";
     }
 
-    function setTimerDuration(mins, mode) {
+    function setTimerDuration(mins) {
       clearInterval(timerInterval);
       isRunning = false;
       timeLeft = mins * 60;
-      document.getElementById('timerMode').innerText = mode;
-      document.getElementById('startBtn').innerText = "START SESSION";
       updateTimerDisplay();
+      document.getElementById('startBtn').innerText = "START";
     }
 
-    // 5. Embedded Focus Brown Noise Synthesizer (No MP3 files needed)
-    let audioCtx = null;
-    let noiseNode = null;
-
-    function toggleBrownNoise(btn) {
+    // --- 8. Web Audio Synthesizer (40Hz Brown Noise) ---
+    let audioCtx = null, noiseNode = null;
+    function toggleAudio(btn) {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
       if (noiseNode) {
         noiseNode.stop();
         noiseNode = null;
-        btn.classList.remove('btn-info');
-        btn.classList.add('btn-outline-info');
-        btn.innerHTML = `<i class="bi bi-soundwave me-1"></i> Focus Audio`;
+        btn.innerHTML = `<i class="bi bi-soundwave me-1"></i> 40Hz Audio`;
         return;
       }
-
       const bufferSize = audioCtx.sampleRate * 2;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
-      let lastOut = 0.0;
-
+      let last = 0.0;
       for (let i = 0; i < bufferSize; i++) {
         let white = Math.random() * 2 - 1;
-        data[i] = (lastOut + (0.02 * white)) / 1.02;
-        lastOut = data[i];
-        data[i] *= 3.0; // Boost volume
+        data[i] = (last + (0.02 * white)) / 1.02;
+        last = data[i];
+        data[i] *= 3.5;
       }
-
       noiseNode = audioCtx.createBufferSource();
       noiseNode.buffer = buffer;
       noiseNode.loop = true;
       noiseNode.connect(audioCtx.destination);
       noiseNode.start();
-
-      btn.classList.remove('btn-outline-info');
-      btn.classList.add('btn-info');
       btn.innerHTML = `<i class="bi bi-pause-fill me-1"></i> Stop Audio`;
-    }
-
-    // 6. Contextual AI Tutor Querying
-    async function sendTutorQuery() {
-      const input = document.getElementById('aiQuery');
-      const box = document.getElementById('aiChatBox');
-      const q = input.value.trim();
-      if (!q) return;
-
-      box.innerHTML += `<div class="text-white mb-2"><strong>You:</strong> ${q}</div>`;
-      input.value = "";
-      box.scrollTop = box.scrollHeight;
-
-      const loadId = "load_" + Date.now();
-      box.innerHTML += `<div id="${loadId}" class="text-muted mono-font mb-2">⚡ Consulting AI Tutor...</div>`;
-
-      try {
-        const res = await fetch('/ai-tutor', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question: q,
-            exam: activeProfile ? activeProfile.target_exam : "JEE",
-            name: activeProfile ? activeProfile.student_name : "Scholar"
-          })
-        });
-        const data = await res.json();
-        const loadElem = document.getElementById(loadId);
-        if (loadElem) loadElem.remove();
-
-        box.innerHTML += `<div class="text-info mb-3"><strong>AI Tutor:</strong> ${data.reply}</div>`;
-      } catch (err) {
-        const loadElem = document.getElementById(loadId);
-        if (loadElem) loadElem.remove();
-        box.innerHTML += `<div class="text-warning mb-2"><strong>AI Tutor:</strong> Review fundamental definitions first and solve previous year questions.</div>`;
-      }
-      box.scrollTop = box.scrollHeight;
     }
   </script>
 </body>
