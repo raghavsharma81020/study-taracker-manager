@@ -1465,5 +1465,237 @@ def sitemap():
 </urlset>
 """
   return Response(xml_data, mimetype="application/xml")
+  import json
+import google.generativeai as genai
+from flask import Flask, jsonify, render_template, request, session
+
+# Configure Gemini if key is present
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
+if GEMINI_KEY:
+  genai.configure(api_key=GEMINI_KEY)
+
+
+@app.route("/api/generate-hud", methods=["POST"])
+def generate_hud():
+  data = request.get_json() or {}
+  name = data.get("name", "Scholar")
+  grade = data.get("grade", "Class 11")
+  target_exam = data.get("target_exam", "JEE")
+  daily_hours = data.get("daily_hours", "6")
+
+  # High-reliability fallback blueprints in case Gemini is offline or rate-limited
+  fallback_blueprints = {
+      "JEE": {
+          "theme": "engineer",
+          "system_title": "IIT-JEE QUANTUM CORE // ENG-OS",
+          "badge": "ENGINEERING ASPIRANT",
+          "primary_color": "#00f0ff",
+          "accent_color": "#8b5cf6",
+          "subjects": [
+              {
+                  "name": "Physics",
+                  "chapter": "Rotational Dynamics & Inertia",
+                  "hours": 3.0,
+                  "total_q": 45,
+              },
+              {
+                  "name": "Physics",
+                  "chapter": "Work, Power & Energy",
+                  "hours": 2.5,
+                  "total_q": 30,
+              },
+              {
+                  "name": "Mathematics",
+                  "chapter": "Coordinate Geometry & Conic Sections",
+                  "hours": 4.0,
+                  "total_q": 60,
+              },
+              {
+                  "name": "Mathematics",
+                  "chapter": "Calculus: Continuity & Limits",
+                  "hours": 3.5,
+                  "total_q": 50,
+              },
+              {
+                  "name": "Chemistry",
+                  "chapter": "Chemical Bonding & Molecular Structure",
+                  "hours": 2.5,
+                  "total_q": 40,
+              },
+              {
+                  "name": "Chemistry",
+                  "chapter": "Thermodynamics & Thermochemistry",
+                  "hours": 3.0,
+                  "total_q": 35,
+              },
+          ],
+      },
+      "NEET": {
+          "theme": "medical",
+          "system_title": "NEET-UG SURGICAL BIO-MATRIX // MED-OS",
+          "badge": "FUTURE DOCTOR / MBBS ASPIRANT",
+          "primary_color": "#10b981",
+          "accent_color": "#ec4899",
+          "subjects": [
+              {
+                  "name": "Biology (Botany)",
+                  "chapter": "Plant Physiology & Photosynthesis",
+                  "hours": 3.0,
+                  "total_q": 70,
+              },
+              {
+                  "name": "Biology (Zoology)",
+                  "chapter": "Human Circulatory System & Cardiac Cycle",
+                  "hours": 3.5,
+                  "total_q": 85,
+              },
+              {
+                  "name": "Biology (Genetics)",
+                  "chapter": "Molecular Basis of Inheritance",
+                  "hours": 4.0,
+                  "total_q": 90,
+              },
+              {
+                  "name": "Chemistry",
+                  "chapter": "Organic Chemistry: Hydrocarbons & Mechanisms",
+                  "hours": 3.0,
+                  "total_q": 50,
+              },
+              {
+                  "name": "Chemistry",
+                  "chapter": "Equilibrium & Solutions",
+                  "hours": 2.5,
+                  "total_q": 40,
+              },
+              {
+                  "name": "Physics",
+                  "chapter": "Ray Optics & Optical Instruments",
+                  "hours": 3.0,
+                  "total_q": 40,
+              },
+          ],
+      },
+      "UPSC": {
+          "theme": "civil",
+          "system_title": "CIVIL SERVICES STRATEGIC COMMAND // UPSC-OS",
+          "badge": "IAS / IPS ASPIRANT",
+          "primary_color": "#f59e0b",
+          "accent_color": "#3b82f6",
+          "subjects": [
+              {
+                  "name": "Indian Polity",
+                  "chapter": "Fundamental Rights & Constitutional Framework",
+                  "hours": 4.0,
+                  "total_q": 30,
+              },
+              {
+                  "name": "Modern History",
+                  "chapter": "Freedom Struggle 1857-1947",
+                  "hours": 3.5,
+                  "total_q": 25,
+              },
+              {
+                  "name": "Geography",
+                  "chapter": "Geomorphology & Monsoon Mechanisms",
+                  "hours": 3.0,
+                  "total_q": 30,
+              },
+              {
+                  "name": "Economics",
+                  "chapter": "Macroeconomic Indicators & Fiscal Policy",
+                  "hours": 3.0,
+                  "total_q": 25,
+              },
+          ],
+      },
+  }
+
+  # Pick default archetype based on target
+  selected_key = "JEE"
+  if "NEET" in target_exam.upper() or "MED" in target_exam.upper():
+    selected_key = "NEET"
+  elif (
+      "UPSC" in target_exam.upper()
+      or "CIVIL" in target_exam.upper()
+      or "GOVT" in target_exam.upper()
+  ):
+    selected_key = "UPSC"
+
+  blueprint = fallback_blueprints.get(selected_key, fallback_blueprints["JEE"])
+
+  # Attempt Gemini AI Real-time Generation
+  if GEMINI_KEY:
+    try:
+      model = genai.GenerativeModel("gemini-2.5-flash")
+      prompt = f"""
+            You are an expert curriculum architect for competitive students.
+            Create a custom study HUD profile for:
+            - Student Name: {name}
+            - Grade/Class: {grade}
+            - Target Examination/Course: {target_exam}
+            - Daily Target Hours: {daily_hours}
+            
+            Return ONLY raw JSON (no markdown formatting, no backticks, no explanatory text) with this exact schema:
+            {{
+                "theme": "engineer" or "medical" or "civil",
+                "system_title": "Custom Futuristic HUD Title",
+                "badge": "Personalized Role Badge",
+                "primary_color": "#hex",
+                "accent_color": "#hex",
+                "subjects": [
+                    {{"name": "Subject Name", "chapter": "Important High-Yield Chapter", "hours": 3.0, "total_q": 40}},
+                    {{"name": "Subject Name", "chapter": "High-Yield Chapter 2", "hours": 2.5, "total_q": 50}},
+                    {{"name": "Subject Name", "chapter": "High-Yield Chapter 3", "hours": 3.5, "total_q": 35}},
+                    {{"name": "Subject Name", "chapter": "High-Yield Chapter 4", "hours": 2.0, "total_q": 30}},
+                    {{"name": "Subject Name", "chapter": "High-Yield Chapter 5", "hours": 4.0, "total_q": 60}}
+                ]
+            }}
+            """
+      response = model.generate_content(prompt)
+      cleaned_text = (
+          response.text.strip()
+          .replace("```json", "")
+          .replace("```", "")
+          .strip()
+      )
+      parsed_data = json.loads(cleaned_text)
+      return jsonify({"status": "success", "profile": parsed_data})
+    except Exception as e:
+      print("Gemini API fallback engaged:", str(e))
+
+  return jsonify({"status": "success", "profile": blueprint})
+
+
+@app.route("/ai-tutor", methods=["POST"])
+def ai_tutor():
+  data = request.get_json() or {}
+  question = data.get("question", "")
+  user_exam = data.get("exam", "General")
+  student_name = data.get("name", "Student")
+
+  if not GEMINI_KEY:
+    return jsonify({
+        "reply": (
+            f"Exam Coach for {user_exam}: Focus on fundamental definitions,"
+            " past exam patterns, and high-yield problem solving steps."
+        )
+    })
+
+  try:
+    model = genai.GenerativeModel("gemini-2.5-flash")
+    prompt = f"""
+        You are an elite, highly encouraging AI Professor coaching {student_name} for the {user_exam} exam.
+        Answer their doubt concisely in maximum 3 bullet points or short steps. Be rigorous, precise, and exam-focused.
+        Question: {question}
+        """
+    response = model.generate_content(prompt)
+    return jsonify({"reply": response.text.strip()})
+  except Exception as e:
+    return jsonify({
+        "reply": (
+            "Break down the problem by writing the known variables and applying"
+            " standard first-principles formulas."
+        )
+    })
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
