@@ -1,3192 +1,639 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <!-- Google Search Console Verification Tag -->
-<meta name="google-site-verification" content="CuUqmr9IJ7a5NMQk9sVn7QoMckTYuQkAxGj0xQbJ0Tg" />
-
-<!-- Search Engine Optimization (SEO) -->
-<meta name="description" content="Study Tracker & Manager engineered by Raghav Sharma. Gamified Kanban study workspace with AI Mock Exams and Focus Audio." />
-<meta name="keywords" content="Raghav Sharma, Study Tracker, Study Manager, AI Study Planner, Pomodoro Focus, Raghav Sharma Study Tracker" />
-<meta name="author" content="Raghav Sharma" />
-<meta name="robots" content="index, follow" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Study Tracker & Manager ✦ Made by Raghav Sharma</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+  <title>CYBER-STUDY // Student Command Center</title>
+  
+  <meta name="description" content="Futuristic Student Study Tracker and Syllabus Manager" />
+  <meta name="author" content="Raghav Sharma" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
-    :root[data-theme="dark"] {
-      --bg-color: #0b0f19;
-      --card-bg: #151d2f;
-      --card-border: #243049;
-      --accent-color: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.35);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --input-bg: #0b0f19;
-      --input-border: #243049;
-      --table-row-hover: rgba(255, 255, 255, 0.03);
-      --flip-front-bg: linear-gradient(135deg, #151d2f, #0b0f19);
-      --flip-back-bg: linear-gradient(135deg, #312e81, #1e1b4b);
-      --log-bg: rgba(255, 255, 255, 0.02);
-      --kanban-col-bg: rgba(21, 29, 47, 0.6);
-      --kanban-card-bg: #151d2f;
-      --badge-locked-bg: rgba(255, 255, 255, 0.04);
-      --badge-unlocked-bg: rgba(99, 102, 241, 0.15);
-      --cheat-sheet-bg: rgba(99, 102, 241, 0.05);
-      --chat-user-bg: #4f46e5;
-      --chat-ai-bg: #151d2f;
-      --heat-0: #1e293b;
-      --heat-1: #0e4429;
-      --heat-2: #006d32;
-      --heat-3: #26a641;
-      --heat-4: #39d353;
-      --gold-vip: linear-gradient(135deg, #f59e0b, #d97706);
+    :root {
+      --bg-space: #050811;
+      --card-bg: rgba(13, 19, 36, 0.75);
+      --card-border: rgba(0, 240, 255, 0.15);
+      --cyber-cyan: #00f0ff;
+      --cyber-pink: #ff007f;
+      --cyber-purple: #8b5cf6;
+      --cyber-green: #10b981;
+      --cyber-amber: #f59e0b;
+      --text-main: #f1f5f9;
+      --text-muted: #64748b;
     }
 
-    :root[data-theme="light"] {
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --accent-color: #4f46e5;
-      --accent-glow: rgba(79, 70, 229, 0.2);
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --input-bg: #ffffff;
-      --input-border: #cbd5e1;
-      --table-row-hover: rgba(0, 0, 0, 0.03);
-      --flip-front-bg: linear-gradient(135deg, #ffffff, #f8fafc);
-      --flip-back-bg: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-      --log-bg: rgba(0, 0, 0, 0.02);
-      --kanban-col-bg: #f1f5f9;
-      --kanban-card-bg: #ffffff;
-      --badge-locked-bg: #f1f5f9;
-      --badge-unlocked-bg: #e0e7ff;
-      --cheat-sheet-bg: #f8fafc;
-      --chat-user-bg: #4f46e5;
-      --chat-ai-bg: #f1f5f9;
-      --heat-0: #ebedf0;
-      --heat-1: #9be9a8;
-      --heat-2: #40c463;
-      --heat-3: #30a14e;
-      --heat-4: #216e39;
-      --gold-vip: linear-gradient(135deg, #f59e0b, #d97706);
-    }
+    * { box-sizing: border-box; }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-space);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.05) 0%, transparent 40%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
       color: var(--text-main);
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      padding-bottom: 50px;
     }
 
-    .card-pro {
+    h1, h2, h3, .brand-font {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .mono-font {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Glass Panels */
+    .cyber-panel {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
-    }
-
-    .brand-glow {
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-    }
-
-    .stat-badge {
-      border-radius: 14px;
-      padding: 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-    }
-
-    .badge-High { background-color: rgba(239, 68, 68, 0.18); color: #ef4444; border: 1px solid #ef4444; }
-    .badge-Medium { background-color: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid #f59e0b; }
-    .badge-Low { background-color: rgba(59, 130, 246, 0.18); color: #3b82f6; border: 1px solid #3b82f6; }
-    
-    .status-Backlog { background-color: #64748b; color: #fff; }
-    .status-InProgress { background-color: #0284c7; color: #fff; }
-    .status-Done { background-color: #10b981; color: #fff; }
-
-    .form-control, .form-select {
-      background-color: var(--input-bg);
-      border: 1px solid var(--input-border);
-      color: var(--text-main);
-    }
-
-    .form-control:focus, .form-select:focus {
-      background-color: var(--input-bg);
-      border-color: var(--accent-color);
-      color: var(--text-main);
-      box-shadow: 0 0 0 0.25rem var(--accent-glow);
-    }
-
-    .table { color: var(--text-main); --bs-table-bg: transparent; }
-    .table > :not(caption) > * > * { border-bottom-color: var(--card-border); }
-    .table-hover > tbody > tr:hover { background-color: var(--table-row-hover); color: var(--text-main); }
-
-    .timer-ring { font-size: 3.2rem; font-weight: 800; letter-spacing: 2px; }
-
-    /* Flashcard 3D Animation */
-    .flashcard-scene {
-      perspective: 1000px;
-      width: 100%;
-      height: 250px;
-      cursor: pointer;
-    }
-
-    .flashcard-inner {
-      width: 100%;
-      height: 100%;
       position: relative;
-      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-      transform-style: preserve-3d;
-      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.25s ease, transform 0.25s ease;
     }
 
-    .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+    .cyber-panel:hover {
+      border-color: rgba(0, 240, 255, 0.35);
+    }
 
-    .flashcard-face {
+    .cyber-panel::before {
+      content: "";
       position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      border-radius: 16px;
-      border: 2px solid var(--card-border);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    }
-
-    .flashcard-front { background: var(--flip-front-bg); color: var(--text-main); }
-    .flashcard-back { background: var(--flip-back-bg); color: var(--text-main); transform: rotateY(180deg); }
-
-    .session-log-item {
-      background: var(--log-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 6px;
-    }
-
-    .heatmap-grid { display: flex; gap: 6px; flex-wrap: wrap; }
-    .heatmap-cell { width: 22px; height: 22px; border-radius: 4px; transition: transform 0.15s ease; cursor: pointer; }
-    .heatmap-cell:hover { transform: scale(1.25); }
-
-    .heat-lvl-0 { background-color: var(--heat-0); }
-    .heat-lvl-1 { background-color: var(--heat-1); }
-    .heat-lvl-2 { background-color: var(--heat-2); }
-    .heat-lvl-3 { background-color: var(--heat-3); }
-    .heat-lvl-4 { background-color: var(--heat-4); }
-
-    .kanban-col-wrapper {
-      background: var(--kanban-col-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      min-height: 480px;
-    }
-
-    .kanban-dropzone { flex-grow: 1; min-height: 200px; padding-bottom: 10px; }
-
-    .kanban-card {
-      background: var(--kanban-card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      cursor: grab;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-
-    .kanban-card:active { cursor: grabbing; }
-    .kanban-ghost { opacity: 0.35; background: var(--accent-color) !important; border: 2px dashed #fff !important; }
-    .kanban-chosen { transform: scale(1.02); box-shadow: 0 12px 28px rgba(0,0,0,0.25); }
-
-    .badge-card {
-      border-radius: 12px;
-      padding: 12px;
-      border: 1px solid var(--card-border);
-      background: var(--badge-locked-bg);
-      transition: all 0.2s ease;
-    }
-    .badge-card.unlocked {
-      background: var(--badge-unlocked-bg);
-      border-color: var(--accent-color);
-    }
-
-    .roadmap-day-card {
-      border-left: 4px solid var(--accent-color);
-      background: var(--log-bg);
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 14px;
-      border-top: 1px solid var(--card-border);
-      border-right: 1px solid var(--card-border);
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .cheat-section {
-      background: var(--cheat-sheet-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-
-    .fab-tutor {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1040;
-      border-radius: 50px;
-      padding: 12px 22px;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      border: none;
-      color: #fff;
-      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      animation: pulse-glow 2.5s infinite;
-    }
-
-    .fab-scratchpad {
-      position: fixed;
-      bottom: 24px;
-      left: 24px;
-      z-index: 1040;
-      border-radius: 50px;
-      padding: 12px 20px;
-      background: #151d2f;
-      border: 1px solid var(--card-border);
-      color: #f8fafc;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-    }
-
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
-      70% { box-shadow: 0 0 0 14px rgba(99, 102, 241, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-    }
-
-    .xp-float-toast {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      z-index: 2000;
-      background: linear-gradient(135deg, #6366f1, #4338ca);
-      color: #fff;
-      padding: 12px 22px;
-      border-radius: 30px;
-      font-weight: 700;
-      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transform: translateY(-20px);
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .xp-float-toast.show { transform: translateY(0); opacity: 1; }
-
-    #zenModeOverlay {
-      display: none;
-      position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #060911;
-      color: #fff;
-      z-index: 9999;
-      flex-direction: column;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+      opacity: 0.6;
+    }
+
+    /* Nav HUD */
+    .nav-hud {
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      background: rgba(5, 8, 17, 0.85);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .status-badge {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-    }
-    #zenModeOverlay.active { display: flex; }
-
-    .quest-card {
-      background: var(--log-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-bottom: 8px;
-    }
-
-    .chat-bubble-user {
-      background-color: var(--chat-user-bg);
-      color: #fff;
-      border-radius: 14px 14px 2px 14px;
-      padding: 10px 14px;
-      max-width: 82%;
-      margin-left: auto;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-    .chat-bubble-ai {
-      background-color: var(--chat-ai-bg);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
-      border-radius: 14px 14px 14px 2px;
-      padding: 12px 16px;
-      max-width: 90%;
-      margin-right: auto;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    .prompt-chip {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
+      gap: 6px;
       padding: 4px 12px;
-      font-size: 0.78rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--cyber-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyber-cyan);
+    }
+
+    /* Metric Cards */
+    .metric-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: 'Orbitron', sans-serif;
+      line-height: 1;
+    }
+
+    .progress-track {
+      background: rgba(255, 255, 255, 0.05);
+      height: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* Buttons */
+    .btn-cyber {
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--cyber-cyan);
+      color: var(--cyber-cyan);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-cyber:hover {
+      background: var(--cyber-cyan);
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+    }
+
+    /* Tables */
+    .cyber-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    .cyber-table tr {
+      background: rgba(18, 26, 48, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .cyber-table tr:hover {
+      background: rgba(26, 38, 70, 0.6);
+    }
+
+    .cyber-table td, .cyber-table th {
+      padding: 14px 16px;
+      border: none;
+      vertical-align: middle;
+    }
+
+    .cyber-table th {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    /* Inputs */
+    .cyber-input {
+      background: rgba(8, 12, 24, 0.8);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .cyber-input:focus {
+      background: rgba(8, 12, 24, 0.95);
+      border-color: var(--cyber-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+      color: #fff;
+      outline: none;
+    }
+
+    /* Revision pill tags */
+    .rev-tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
       cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
       color: var(--text-muted);
       transition: all 0.2s;
     }
-    .prompt-chip:hover { border-color: var(--accent-color); color: var(--text-main); }
 
-    .quiz-option {
-      background: var(--input-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .quiz-option:hover { border-color: var(--accent-color); background: var(--table-row-hover); }
-    .quiz-option.correct { background: rgba(16, 185, 129, 0.15) !important; border-color: #10b981 !important; color: #10b981; }
-    .quiz-option.incorrect { background: rgba(239, 68, 68, 0.15) !important; border-color: #ef4444 !important; color: #ef4444; }
-
-    @media print {
-      body { background-color: #ffffff !important; color: #000000 !important; }
-      .card-pro, .stat-badge { background: #ffffff !important; border: 1px solid #cccccc !important; color: #000000 !important; box-shadow: none !important; }
-      .no-print, .btn, form, #timer, .dropdown-toggle, .filter-bar, .modal, .flashcard-section, .session-log-card, .view-toggles, .badge-card, .sound-bar, .fab-tutor, .fab-scratchpad, .offcanvas, .xp-float-toast, #zenModeOverlay, footer, .quest-section { display: none !important; }
-      .table { color: #000000 !important; }
+    .rev-tag.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--cyber-green);
+      color: var(--cyber-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
     }
   </style>
 </head>
-<body class="py-4">
-  <div id="xpToast" class="xp-float-toast">
-    <span class="fs-5">✨</span>
-    <span id="xpToastText">+15 XP Earned!</span>
-  </div>
 
-  <!-- Fullscreen Zen Mode Distraction-Free HUD -->
-  <div id="zenModeOverlay">
-    <button class="btn btn-outline-light btn-sm position-absolute top-0 end-0 m-4 rounded-pill" onclick="toggleZenMode()">
-      <i class="bi bi-x-lg"></i> Exit Zen Mode
-    </button>
-    <div class="text-center px-3" style="max-width: 650px;">
-      <span class="badge bg-primary px-3 py-2 rounded-pill mb-3 tracking-wider text-uppercase">Deep Zen Focus HUD</span>
-      <h1 class="display-1 fw-bold my-3 text-primary font-monospace" id="zenTimerDisplay">25:00</h1>
-      <p class="fs-5 text-secondary fst-italic mb-4" id="zenMotivationalQuote">“Concentrate all your thoughts upon the work at hand.”</p>
-      
-      <div class="btn-group mb-4">
-        <button class="btn btn-primary px-4 py-2" onclick="startTimer()"><i class="bi bi-play-fill"></i> Start Focus</button>
-        <button class="btn btn-secondary px-4 py-2" onclick="pauseTimer()"><i class="bi bi-pause-fill"></i> Pause</button>
-        <button class="btn btn-outline-light px-4 py-2" onclick="resetTimer()"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+<body>
+
+  <!-- TOP HUD BAR -->
+  <nav class="nav-hud py-3 mb-4">
+    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <div class="fs-4 text-info"><i class="bi bi-cpu"></i></div>
+        <div>
+          <div class="brand-font fw-bold fs-5 text-white">STUDY-TRACKER <span style="color: var(--cyber-cyan);">// OS</span></div>
+          <small class="text-muted mono-font">STUDENT_ID: {{ username if username else 'RAGHAV_SHARMA' }} | SYSTEM: ONLINE</small>
+        </div>
       </div>
 
-      <div class="d-flex justify-content-center align-items-center gap-3">
-        <button class="btn btn-sm btn-outline-info rounded-pill px-3" onclick="toggleMasterAmbient()">
-          <i class="bi bi-soundwave"></i> Master Soundboard Toggle
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="container-xl">
-    <!-- Header with VIP Upgrade & Raghav Sharma Branding -->
-    <header class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary gap-2">
-      <div>
-        <h2 class="fw-bold mb-0">⚡ <span class="brand-glow">Study Tracker & Manager</span></h2>
-        <small class="text-secondary">Engineered with precision by <span class="text-info fw-bold">Raghav Sharma</span> • 
-          {% if stats.is_premium %}
-          <span class="badge bg-warning text-dark border border-warning rounded-pill ms-1"><i class="bi bi-gem"></i> VIP Pro Scholar</span>
-          {% else %}
-          <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill ms-1">Free Tier</span>
-          {% endif %}
-        </small>
-      </div>
-      <div class="d-flex gap-2 align-items-center no-print">
-        {% if not stats.is_premium %}
-        <button class="btn btn-sm btn-warning fw-bold d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#upgradeModal">
-          <i class="bi bi-gem"></i> Unlock VIP Pro
-        </button>
-        {% endif %}
-        <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#mockExamModal">
-          <i class="bi bi-file-earmark-ruled"></i> AI Mock Exam
-        </button>
-        <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1 shadow-sm" onclick="toggleZenMode()">
-          <i class="bi bi-fullscreen"></i> <span>Zen</span>
-        </button>
-        <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="fetchAIMotivation()">
-          <i class="bi bi-lightning-charge text-warning"></i> <span>Inspire</span>
-        </button>
-        <button class="btn btn-sm btn-outline-info d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#parseNotesModal">
-          <i class="bi bi-file-earmark-text"></i> Notes
-        </button>
-        <button class="btn btn-sm btn-primary d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#roadmapModal">
-          <i class="bi bi-compass"></i> Syllabus
-        </button>
-        <button id="themeToggleBtn" onclick="toggleTheme()" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
-          <i id="themeIcon" class="bi bi-moon-stars-fill"></i>
-          <span id="themeLabel" class="d-none d-sm-inline">Dark</span>
-        </button>
-        <a href="/export/csv" class="btn btn-sm btn-outline-success" title="Export Official Transcript">
-          <i class="bi bi-file-earmark-spreadsheet"></i> CSV
-        </a>
-        <a href="/logout" class="btn btn-sm btn-outline-danger" title="Sign Out">
-          <i class="bi bi-box-arrow-right"></i> Logout
+      <div class="d-flex align-items-center gap-3">
+        <div class="status-badge mono-font">
+          <span class="status-dot"></span> LIVE SYNC
+        </div>
+        <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+          <i class="bi bi-power"></i> Exit
         </a>
       </div>
-    </header>
-
-    <!-- Gamification & Level XP Header Bar -->
-    <div class="card-pro p-3 mb-4">
-      <div class="row align-items-center g-3">
-        <div class="col-md-3">
-          <div class="d-flex align-items-center gap-2">
-            <div class="fs-2">🎖️</div>
-            <div>
-              <div class="fw-bold mb-0" id="userLevelTitle">Level {{ stats.level }} Scholar</div>
-              <small class="text-secondary" id="userTotalXpText">{{ stats.xp }} Total XP Earned</small>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="d-flex justify-content-between small text-secondary mb-1">
-            <span>Level Progress</span>
-            <span id="userXpProgressText">{{ stats.level_progress }}% ({{ stats.xp % 250 }} / 250 XP)</span>
-          </div>
-          <div class="progress" style="height: 10px; background-color: var(--input-bg);">
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="userProgressBar" role="progressbar" style="width: {{ stats.level_progress }}%;"></div>
-          </div>
-        </div>
-        <div class="col-md-3 text-md-end">
-          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
-            <i class="bi bi-bullseye"></i> Goal: {{ stats.today_focus_mins }} / {{ stats.daily_goal }} mins ({{ stats.goal_percent }}%)
-          </span>
-        </div>
-      </div>
     </div>
+  </nav>
 
-    <!-- Top Metrics Overview with Predictive Exam Readiness Gauge -->
+  <div class="container-fluid px-4">
+
+    <!-- METRICS OVERVIEW HUD -->
     <div class="row g-3 mb-4">
-      <div class="col-lg-3 col-6">
-        <div class="stat-badge text-center">
-          <span class="text-secondary small">Daily Focus Streak 🔥</span>
-          <h3 class="fw-bold my-1 text-warning">{{ stats.streak }} <small class="fs-6 fw-normal text-secondary">days</small></h3>
-          <small class="text-secondary">{{ stats.today_focus_mins }}m study logged today</small>
-        </div>
-      </div>
-      <div class="col-lg-3 col-6">
-        <div class="stat-badge text-center">
-          <span class="text-secondary small">Exam Readiness 🎯</span>
-          <h3 class="fw-bold my-1 text-info">{{ stats.readiness_score }}%</h3>
-          <span class="badge {{ stats.grade_badge }} rounded-pill small">{{ stats.exam_grade }}</span>
-        </div>
-      </div>
-      <div class="col-lg-3 col-6">
-        <div class="stat-badge text-center">
-          <span class="text-secondary small">Deck Mastery 🧠</span>
-          <h3 class="fw-bold my-1 text-primary">{{ stats.deck_mastery_rate }}%</h3>
-          <small class="text-secondary">{{ stats.mastered_cards }} of {{ stats.total_cards }} cards mastered</small>
-        </div>
-      </div>
-      <div class="col-lg-3 col-6">
-        <div class="stat-badge text-center">
-          <span class="text-secondary small">Completion Rate 📈</span>
-          <h3 class="fw-bold my-1 text-success">{{ stats.rate }}%</h3>
-          <small class="text-secondary">{{ stats.completed }} of {{ stats.total }} done</small>
-        </div>
-      </div>
-    </div>
-
-    <!-- 30-Day Activity Heatmap -->
-    <div class="card-pro p-4 mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h6 class="fw-bold mb-0"><i class="bi bi-calendar-check text-success"></i> 30-Day Focus Consistency Heatmap</h6>
-          <small class="text-secondary">Visual record of your daily focus minutes</small>
-        </div>
-        <div class="d-flex align-items-center gap-1 small text-secondary">
-          <span>Less</span>
-          <div class="heatmap-cell heat-lvl-0"></div>
-          <div class="heatmap-cell heat-lvl-1"></div>
-          <div class="heatmap-cell heat-lvl-2"></div>
-          <div class="heatmap-cell heat-lvl-3"></div>
-          <div class="heatmap-cell heat-lvl-4"></div>
-          <span>More</span>
-        </div>
-      </div>
-      <div class="heatmap-grid">
-        {% for day in stats.heatmap %}
-        <div class="heatmap-cell heat-lvl-{{ day.level }}" 
-             title="{{ day.label }}: {{ day.minutes }} focus minutes"></div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Daily Quests & Upcoming Exam Deadline Radar Row -->
-    <div class="row g-4 mb-4 quest-section">
-      <!-- Daily Quests Bounty Board -->
-      <div class="col-md-6">
-        <div class="card-pro p-4 h-100">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0"><i class="bi bi-check2-circle text-primary"></i> Daily Study Quests & Bounties</h6>
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">+XP Rewards</span>
+      <div class="col-6 col-lg-3">
+        <div class="cyber-panel p-3">
+          <div class="d-flex justify-content-between text-muted small mono-font mb-1">
+            <span>TODAY'S TARGET</span>
+            <i class="bi bi-clock-history text-info"></i>
           </div>
-          {% for q in stats.quests %}
-          <div class="quest-card d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-2">
-              <span class="fs-5">{{ q.icon }}</span>
-              <div>
-                <span class="small fw-semibold {{ 'text-decoration-line-through text-secondary' if q.completed else 'text-light' }}">{{ q.title }}</span>
-                <small class="text-warning d-block">+{{ q.reward_xp }} XP Reward</small>
-              </div>
-            </div>
-            <div>
-              {% if q.completed %}
-              <button class="btn btn-sm btn-success py-0 px-2 small rounded-pill" onclick="claimDailyQuest({{ q.reward_xp }}, this)">
-                <i class="bi bi-gift-fill"></i> Claim
-              </button>
-              {% else %}
-              <span class="badge bg-secondary rounded-pill small">In Progress</span>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- Exam Countdown Radar -->
-      <div class="col-md-6">
-        <div class="card-pro p-4 h-100">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0"><i class="bi bi-hourglass-top text-warning"></i> Exam & Deadline Radar</h6>
-            <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill small">Target Urgency</span>
-          </div>
-          {% if stats.upcoming_deadlines %}
-            {% for d in stats.upcoming_deadlines %}
-            <div class="session-log-item d-flex justify-content-between align-items-center mb-2">
-              <div>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill me-1 small">{{ d.subject }}</span>
-                <span class="fw-semibold small">{{ d.topic }}</span>
-              </div>
-              <div>
-                {% if d.days_left < 0 %}
-                <span class="badge bg-danger rounded-pill">Overdue</span>
-                {% elif d.days_left == 0 %}
-                <span class="badge bg-danger rounded-pill animate-pulse">Due Today!</span>
-                {% elif d.days_left <= 2 %}
-                <span class="badge bg-warning text-dark rounded-pill">{{ d.days_left }} Days Left</span>
-                {% else %}
-                <span class="badge bg-secondary rounded-pill">{{ d.days_left }} Days</span>
-                {% endif %}
-              </div>
-            </div>
-            {% endfor %}
-          {% else %}
-            <div class="text-center py-4 text-secondary small">
-              <i class="bi bi-shield-check fs-2 text-success d-block mb-1"></i>
-              No urgent deadlines approaching! Add a due date to targets to track exam countdowns.
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    <!-- Achievement Badges Showcase -->
-    <div class="card-pro p-4 mb-4">
-      <h6 class="fw-bold mb-3"><i class="bi bi-award-fill text-warning"></i> Study Achievements & Badges</h6>
-      <div class="row g-2">
-        {% for b in stats.badges %}
-        <div class="col-md-2 col-6 col-sm-4">
-          <div class="badge-card text-center {{ 'unlocked' if b.unlocked else 'opacity-50' }}">
-            <div class="fs-3 mb-1">{{ b.icon }}</div>
-            <div class="fw-bold small">{{ b.name }}</div>
-            <small class="text-secondary d-block" style="font-size: 0.75rem;">{{ b.desc }}</small>
-            <span class="badge {{ 'bg-success' if b.unlocked else 'bg-secondary' }} rounded-pill mt-1" style="font-size: 0.65rem;">
-              {{ 'Unlocked' if b.unlocked else 'Locked' }}
-            </span>
+          <div class="metric-val text-white mb-2" id="dailyHours">4.5 <span class="fs-6 text-muted">/ 6h</span></div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 75%; background: var(--cyber-cyan); color: var(--cyber-cyan);"></div>
           </div>
         </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Flashcards Deck with Spaced Repetition -->
-    <div class="card-pro p-4 mb-4 flashcard-section">
-      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-        <div>
-          <h5 class="fw-bold mb-0"><i class="bi bi-collection-play text-primary"></i> Spaced Repetition Flashcard Deck</h5>
-          <small class="text-secondary">Rate recall on the back face or click 🔊 to listen with the AI Voice Narrator</small>
-        </div>
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-outline-info" onclick="readAloudCurrentCard()" title="Listen to question & answer">
-            <i class="bi bi-volume-up-fill"></i> Read Aloud
-          </button>
-          <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCardModal">
-            <i class="bi bi-plus-lg"></i> New Card
-          </button>
-          <button class="btn btn-sm btn-outline-secondary" onclick="shuffleCards()" title="Shuffle Deck">
-            <i class="bi bi-shuffle"></i>
-          </button>
-        </div>
       </div>
 
-      <div class="row align-items-center justify-content-center">
-        <div class="col-lg-8">
-          <div class="flashcard-scene" onclick="flipCard()">
-            <div class="flashcard-inner" id="cardInner">
-              <!-- Front Face (Question) -->
-              <div class="flashcard-face flashcard-front">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="badge bg-primary rounded-pill px-3" id="cardSubject">General</span>
-                  <span id="cardMasteryBadge" class="badge bg-secondary rounded-pill">Unranked</span>
-                </div>
-                <div class="text-center my-auto py-2">
-                  <span class="text-secondary small text-uppercase tracking-wider">Question ❓</span>
-                  <h4 class="fw-bold mt-2 mb-0" id="cardQuestion">No flashcards in your deck!</h4>
-                </div>
-                <div class="text-end text-secondary small" id="cardIndex">0 / 0</div>
-              </div>
-
-              <!-- Back Face (Answer + Leitner Recall Ratings) -->
-              <div class="flashcard-face flashcard-back">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="badge bg-success rounded-pill px-3">Answer Key</span>
-                  <small class="text-secondary">Rate your recall:</small>
-                </div>
-                <div class="text-center my-auto py-2">
-                  <span class="text-success small text-uppercase tracking-wider fw-bold">Explanation & Solution 💡</span>
-                  <p class="fs-5 mt-2 mb-0 text-light" id="cardAnswer">Add your first card or use '+Cards' on any task in your table.</p>
-                </div>
-                <!-- Leitner Rating Buttons -->
-                <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25" onclick="event.stopPropagation()">
-                  <div class="btn-group btn-group-sm">
-                    <button class="btn btn-sm btn-outline-danger" onclick="rateFlashcard(1)" title="Still struggling with this">🔴 Hard (+5 XP)</button>
-                    <button class="btn btn-sm btn-outline-warning" onclick="rateFlashcard(2)" title="Recalled with effort">🟡 Good (+15 XP)</button>
-                    <button class="btn btn-sm btn-outline-success" onclick="rateFlashcard(3)" title="Mastered instantly">🟢 Mastered (+15 XP)</button>
-                  </div>
-                  <a href="#" id="deleteCardBtn" class="btn btn-sm btn-link text-danger p-0 text-decoration-none">
-                    <i class="bi bi-trash"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
+      <div class="col-6 col-lg-3">
+        <div class="cyber-panel p-3">
+          <div class="d-flex justify-content-between text-muted small mono-font mb-1">
+            <span>SYLLABUS COVERAGE</span>
+            <i class="bi bi-journal-bookmark text-warning"></i>
           </div>
+          <div class="metric-val text-warning mb-2" id="syllabusPercent">68%</div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 68%; background: var(--cyber-amber); color: var(--cyber-amber);"></div>
+          </div>
+        </div>
+      </div>
 
-          <div class="d-flex justify-content-between align-items-center mt-3 px-2">
-            <button class="btn btn-sm btn-outline-secondary" onclick="prevCard()">
-              <i class="bi bi-chevron-left"></i> Previous
-            </button>
-            <button class="btn btn-sm btn-outline-primary px-4" onclick="flipCard()">
-              <i class="bi bi-arrow-repeat"></i> Flip Card
-            </button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="nextCard()">
-              Next <i class="bi bi-chevron-right"></i>
-            </button>
+      <div class="col-6 col-lg-3">
+        <div class="cyber-panel p-3">
+          <div class="d-flex justify-content-between text-muted small mono-font mb-1">
+            <span>ACTIVE STREAK</span>
+            <i class="bi bi-fire text-danger"></i>
+          </div>
+          <div class="metric-val text-danger mb-2">12 <span class="fs-6 text-muted">DAYS</span></div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 100%; background: var(--cyber-pink); color: var(--cyber-pink);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="cyber-panel p-3">
+          <div class="d-flex justify-content-between text-muted small mono-font mb-1">
+            <span>MOCK TEST AVG</span>
+            <i class="bi bi-graph-up-arrow text-success"></i>
+          </div>
+          <div class="metric-val text-success mb-2">84.2%</div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: 84%; background: var(--cyber-green); color: var(--cyber-green);"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="row g-4 mb-4">
-      <div class="col-md-7">
-        <div class="card-pro p-4 h-100">
-          <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-primary"></i> Study Hours per Subject</h6>
-          <div style="height: 240px; position: relative;">
-            <canvas id="subjectChart"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-5">
-        <div class="card-pro p-4 h-100">
-          <h6 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill text-info"></i> Task Distribution</h6>
-          <div style="height: 240px; position: relative;">
-            <canvas id="statusChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Workspace Row -->
+    <!-- MAIN TWO COLUMN WORKSTATION -->
     <div class="row g-4">
-      <!-- Left Column: Upgraded Focus Sprint (Custom Time) + Multi-Track Studio + Add Target -->
-      <div class="col-lg-4 no-print">
-        <!-- Pomodoro Focus Module -->
-        <div class="card-pro p-4 mb-4 text-center">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="text-uppercase tracking-wider text-secondary fw-bold mb-0">⏱️ Focus Sprint (+50 XP)</h6>
-            <button class="btn btn-sm btn-link text-secondary p-0" onclick="playChimeSound()" title="Test Chime Sound">
-              <i class="bi bi-volume-up-fill"></i> Sound Test
-            </button>
-          </div>
 
-          <!-- Quick Presets -->
-          <div class="btn-group btn-group-sm w-100 mb-2">
-            <button class="btn btn-outline-primary active" id="btnMode25" onclick="setTimerMode(25, 'Focus', 'btnMode25')">25m</button>
-            <button class="btn btn-outline-primary" id="btnMode45" onclick="setTimerMode(45, 'Deep Sprint', 'btnMode45')">45m</button>
-            <button class="btn btn-outline-primary" id="btnMode60" onclick="setTimerMode(60, 'Power Hour', 'btnMode60')">60m</button>
-            <button class="btn btn-outline-primary" id="btnMode5" onclick="setTimerMode(5, 'Short Break', 'btnMode5')">5m</button>
-          </div>
-
-          <!-- Custom Minutes Input -->
-          <div class="input-group input-group-sm mb-2">
-            <span class="input-group-text bg-transparent border-secondary text-secondary small">Custom Mins</span>
-            <input type="number" id="customMinsInput" class="form-control text-center" min="1" max="180" value="30" placeholder="e.g. 35">
-            <button class="btn btn-outline-primary" onclick="setCustomTimerMode()"><i class="bi bi-check2"></i> Set</button>
-          </div>
-
-          <div class="timer-ring text-primary my-2" id="timer">25:00</div>
-
-          <div class="btn-group w-100 mb-3">
-            <button class="btn btn-primary btn-sm" onclick="startTimer()"><i class="bi bi-play-fill"></i> Start</button>
-            <button class="btn btn-secondary btn-sm" onclick="pauseTimer()"><i class="bi bi-pause-fill"></i> Pause</button>
-            <button class="btn btn-outline-secondary btn-sm" onclick="resetTimer()"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
-          </div>
-
-          <!-- Multi-Track Ambient Studio Soundboard -->
-          <div class="p-3 border border-secondary border-opacity-50 rounded-3 text-start sound-bar" style="background: var(--input-bg);">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <small class="text-secondary fw-bold"><i class="bi bi-soundwave text-info"></i> Multi-Track Soundboard</small>
-              <button class="btn btn-sm btn-outline-info py-0 px-2" id="btnMasterSound" onclick="toggleMasterAmbient()">
-                <i class="bi bi-play-circle"></i> Master Soundboard
-              </button>
-            </div>
-            <!-- Track 1: Rain -->
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <small style="width: 70px;">🌧️ Rain</small>
-              <input type="range" class="form-range" id="volRain" min="0" max="1" step="0.05" value="0.5" oninput="adjustTrackVolume('rain', this.value)">
-            </div>
-            <!-- Track 2: Ocean -->
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <small style="width: 70px;">🌊 Ocean</small>
-              <input type="range" class="form-range" id="volOcean" min="0" max="1" step="0.05" value="0" oninput="adjustTrackVolume('ocean', this.value)">
-            </div>
-            <!-- Track 3: Fire -->
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <small style="width: 70px;">🔥 Fire</small>
-              <input type="range" class="form-range" id="volFire" min="0" max="1" step="0.05" value="0" oninput="adjustTrackVolume('fire', this.value)">
-            </div>
-            <!-- Track 4: Alpha Waves -->
-            <div class="d-flex align-items-center gap-2">
-              <small style="width: 70px;">🧠 Alpha</small>
-              <input type="range" class="form-range" id="volAlpha" min="0" max="1" step="0.05" value="0.3" oninput="adjustTrackVolume('alpha', this.value)">
-            </div>
-          </div>
-        </div>
-
-        <!-- Session History Log Card -->
-        <div class="card-pro p-4 mb-4 session-log-card">
+      <!-- LEFT COLUMN: SYLLABUS & REVISION PLANNER (studytracker.co.in style) -->
+      <div class="col-12 col-xl-8">
+        
+        <!-- MODULE 1: SUBJECT WISE PROGRESS MATRIX -->
+        <div class="cyber-panel p-4 mb-4">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary"></i> Recent Focus Log</h6>
-            {% if recent_sessions %}
-            <form action="/session/clear" method="POST" onsubmit="return confirm('Clear your study session history?')">
-              <button type="submit" class="btn btn-sm btn-link text-danger p-0 text-decoration-none small">Clear Log</button>
-            </form>
-            {% endif %}
-          </div>
-
-          <div style="max-height: 180px; overflow-y: auto;">
-            {% if recent_sessions %}
-              {% for sess in recent_sessions %}
-              <div class="session-log-item d-flex justify-content-between align-items-center small">
-                <div>
-                  <span class="badge {{ 'bg-primary' if sess['session_type'] == 'Focus' else 'bg-secondary' }} rounded-pill me-1">
-                    {{ sess['session_type'] }}
-                  </span>
-                  <span class="fw-semibold">{{ sess['duration_minutes'] }} mins</span>
-                </div>
-                <div class="text-secondary">
-                  {{ sess['session_date'] }} at {{ sess['session_time'] }}
-                </div>
-              </div>
-              {% endfor %}
-            {% else %}
-              <div class="text-center py-3 text-secondary small">
-                <i class="bi bi-hourglass-split fs-4 d-block mb-1"></i>
-                No sessions completed yet today.<br>Finish a session to earn +50 XP!
-              </div>
-            {% endif %}
-          </div>
-        </div>
-
-        <!-- Add Target Form -->
-        <div class="card-pro p-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0"><i class="bi bi-plus-circle text-primary"></i> Add Study Target (+15 XP)</h5>
-            <kbd class="text-secondary small">Ctrl+K</kbd>
-          </div>
-          <form action="/add" method="POST">
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Subject / Course</label>
-              <input type="text" id="targetSubjectInput" name="subject" class="form-control" placeholder="e.g. Operating Systems" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Topic / Chapter</label>
-              <input type="text" name="topic" class="form-control" placeholder="e.g. Deadlock & Semaphore" required>
-            </div>
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label class="form-label small text-secondary">Priority</label>
-                <select name="priority" class="form-select">
-                  <option value="High">🔴 High</option>
-                  <option value="Medium" selected>🟡 Medium</option>
-                  <option value="Low">🔵 Low</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label small text-secondary">Est. Hours</label>
-                <input type="number" step="0.5" name="estimated_hours" class="form-control" value="2.0">
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Target Due Date</label>
-              <input type="date" name="due_date" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary w-100 fw-semibold">📌 Save to Backlog</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Right Column: Interactive Kanban Board & Table Switcher -->
-      <div class="col-lg-8">
-        <div class="card-pro p-4">
-          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
             <div>
-              <h5 class="fw-bold mb-0"><i class="bi bi-kanban text-primary"></i> Active Study Workspace</h5>
-              <small class="text-secondary">Drag cards across columns to update task status in real-time</small>
+              <h5 class="brand-font text-white mb-1"><i class="bi bi-layers-half text-info me-2"></i>Syllabus & Topic Tracker</h5>
+              <small class="text-muted">Direct syllabus milestone & 3-stage spaced revision cycle</small>
             </div>
-
-            <div class="btn-group btn-group-sm view-toggles">
-              <button class="btn btn-outline-primary active" id="btnKanbanView" onclick="switchView('kanban')">
-                <i class="bi bi-columns-gap"></i> Kanban Board
-              </button>
-              <button class="btn btn-outline-primary" id="btnTableView" onclick="switchView('table')">
-                <i class="bi bi-table"></i> Table List
-              </button>
-            </div>
+            <button class="btn btn-cyber btn-sm" onclick="addNewTopicPrompt()">
+              <i class="bi bi-plus-lg me-1"></i> Add Topic
+            </button>
           </div>
 
-          <!-- Live Search & Subject Filter -->
-          <div class="row g-2 mb-3 filter-bar">
-            <div class="col-md-7">
-              <div class="input-group input-group-sm">
-                <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-search"></i></span>
-                <input type="text" id="searchInput" class="form-control" placeholder="Search topic or subject..." onkeyup="filterTasks()">
-              </div>
-            </div>
-            <div class="col-md-5">
-              <select id="subjectFilter" class="form-select form-select-sm" onchange="filterTasks()">
-                <option value="ALL">All Subjects</option>
-              </select>
-            </div>
-          </div>
+          <div class="table-responsive">
+            <table class="cyber-table">
+              <thead>
+                <tr>
+                  <th>Subject & Chapter</th>
+                  <th>Status</th>
+                  <th>Hours</th>
+                  <th class="text-center">Spaced Revisions</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody id="topicList">
+                <!-- Sample Subject Rows -->
+                <tr>
+                  <td>
+                    <div class="fw-bold text-white">Full Stack Engineering</div>
+                    <small class="text-muted">Module 4: Flask API, Auth & SQLite ORM</small>
+                  </td>
+                  <td><span class="badge bg-success bg-opacity-25 text-success border border-success">Completed</span></td>
+                  <td class="mono-font">3.5 hrs</td>
+                  <td class="text-center">
+                    <span class="rev-tag active me-1" onclick="toggleRev(this)">R1</span>
+                    <span class="rev-tag active me-1" onclick="toggleRev(this)">R2</span>
+                    <span class="rev-tag" onclick="toggleRev(this)">R3</span>
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-info rounded-circle" title="Mark Revised"><i class="bi bi-check2"></i></button>
+                  </td>
+                </tr>
 
-          <!-- 1. KANBAN BOARD VIEW -->
-          <div id="kanbanViewContainer">
-            <div class="row g-3">
-              <!-- Column 1: Backlog / To Do -->
-              <div class="col-md-4">
-                <div class="kanban-col-wrapper">
-                  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
-                    <span class="fw-bold text-secondary small text-uppercase tracking-wider">⏳ To Do</span>
-                    <span class="badge bg-secondary rounded-pill" id="count-Backlog">0</span>
-                  </div>
-                  <div class="kanban-dropzone" id="col-Backlog" data-status="Backlog">
-                    {% for task in tasks if task['status'] == 'Backlog' %}
-                    <div class="kanban-card task-card"
-                         data-id="{{ task['id'] }}"
-                         data-subject="{{ task['subject'] }}"
-                         data-topic="{{ task['topic'] }}"
-                         data-priority="{{ task['priority'] }}"
-                         data-hours="{{ task['estimated_hours'] }}"
-                         data-due="{{ task['due_date'] }}"
-                         data-search="{{ task['subject'] | lower }} {{ task['topic'] | lower }}">
-                      <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small px-2">
-                          {{ task['subject'] }}
-                        </span>
-                        <span class="badge badge-{{ task['priority'] }} rounded-pill small px-2">
-                          {{ task['priority'] }}
-                        </span>
-                      </div>
-                      <h6 class="fw-bold mb-2 text-light">{{ task['topic'] }}</h6>
-                      <div class="d-flex justify-content-between align-items-center text-secondary small mb-3">
-                        <span><i class="bi bi-clock"></i> {{ task['estimated_hours'] }}h</span>
-                        <span><i class="bi bi-calendar-event"></i> {{ task['due_date'] if task['due_date'] else 'No Due' }}</span>
-                      </div>
-                      <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
-                        <div class="btn-group btn-group-sm">
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="openAITutorForTopic('{{ task['subject'] }}', '{{ task['topic'] }}')" title="Ask AI Tutor">
-                            <i class="bi bi-robot"></i> Tutor
-                          </button>
-                          <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="openFeynmanModal('{{ task['subject'] }}', '{{ task['topic'] }}')" title="Test with Feynman Technique (+50 XP)">
-                            <i class="bi bi-lightbulb"></i> Feynman
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="openAIMindMap('{{ task['subject'] }}', '{{ task['topic'] }}')" title="Visual Mind Map">
-                            <i class="bi bi-diagram-3"></i> Map
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="generateAINotes('{{ task['subject'] }}', '{{ task['topic'] }}')" title="AI Notes & Cheat Sheet">
-                            <i class="bi bi-journal-text"></i> Notes
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="generateAIFlashcards('{{ task['subject'] }}', '{{ task['topic'] }}', this)" title="Generate Flashcards">
-                            <i class="bi bi-card-checklist"></i> +Cards
-                          </button>
-                          <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="openAIQuizModal('{{ task['subject'] }}', '{{ task['topic'] }}')" title="Take Practice Quiz">
-                            <i class="bi bi-question-circle"></i> Quiz
-                          </button>
-                        </div>
-                        <div>
-                          <button class="btn btn-sm btn-link text-warning p-0 me-2 edit-btn"
-                                  data-id="{{ task['id'] }}"
-                                  data-subject="{{ task['subject'] }}"
-                                  data-topic="{{ task['topic'] }}"
-                                  data-priority="{{ task['priority'] }}"
-                                  data-hours="{{ task['estimated_hours'] }}"
-                                  data-due="{{ task['due_date'] }}">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-                          <a href="/delete/{{ task['id'] }}" class="btn btn-sm btn-link text-danger p-0">
-                            <i class="bi bi-trash"></i>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                </div>
-              </div>
+                <tr>
+                  <td>
+                    <div class="fw-bold text-white">Data Structures & Algo</div>
+                    <small class="text-muted">Dynamic Programming & Graph Traversal</small>
+                  </td>
+                  <td><span class="badge bg-warning bg-opacity-25 text-warning border border-warning">In Progress</span></td>
+                  <td class="mono-font">2.0 hrs</td>
+                  <td class="text-center">
+                    <span class="rev-tag active me-1" onclick="toggleRev(this)">R1</span>
+                    <span class="rev-tag me-1" onclick="toggleRev(this)">R2</span>
+                    <span class="rev-tag" onclick="toggleRev(this)">R3</span>
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-info rounded-circle"><i class="bi bi-check2"></i></button>
+                  </td>
+                </tr>
 
-              <!-- Column 2: In Progress -->
-              <div class="col-md-4">
-                <div class="kanban-col-wrapper">
-                  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
-                    <span class="fw-bold text-info small text-uppercase tracking-wider">⚡ In Progress</span>
-                    <span class="badge bg-info text-dark rounded-pill" id="count-InProgress">0</span>
-                  </div>
-                  <div class="kanban-dropzone" id="col-InProgress" data-status="In Progress">
-                    {% for task in tasks if task['status'] == 'In Progress' %}
-                    <div class="kanban-card task-card"
-                         data-id="{{ task['id'] }}"
-                         data-subject="{{ task['subject'] }}"
-                         data-topic="{{ task['topic'] }}"
-                         data-priority="{{ task['priority'] }}"
-                         data-hours="{{ task['estimated_hours'] }}"
-                         data-due="{{ task['due_date'] }}"
-                         data-search="{{ task['subject'] | lower }} {{ task['topic'] | lower }}">
-                      <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill small px-2">
-                          {{ task['subject'] }}
-                        </span>
-                        <span class="badge badge-{{ task['priority'] }} rounded-pill small px-2">
-                          {{ task['priority'] }}
-                        </span>
-                      </div>
-                      <h6 class="fw-bold mb-2 text-light">{{ task['topic'] }}</h6>
-                      <div class="d-flex justify-content-between align-items-center text-secondary small mb-3">
-                        <span><i class="bi bi-clock"></i> {{ task['estimated_hours'] }}h</span>
-                        <span><i class="bi bi-calendar-event"></i> {{ task['due_date'] if task['due_date'] else 'No Due' }}</span>
-                      </div>
-                      <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
-                        <div class="btn-group btn-group-sm">
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="openAITutorForTopic('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-robot"></i> Tutor
-                          </button>
-                          <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="openFeynmanModal('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-lightbulb"></i> Feynman
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="openAIMindMap('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-diagram-3"></i> Map
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="generateAINotes('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-journal-text"></i> Notes
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="generateAIFlashcards('{{ task['subject'] }}', '{{ task['topic'] }}', this)">
-                            <i class="bi bi-card-checklist"></i> +Cards
-                          </button>
-                          <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="openAIQuizModal('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-question-circle"></i> Quiz
-                          </button>
-                        </div>
-                        <div>
-                          <button class="btn btn-sm btn-link text-warning p-0 me-2 edit-btn"
-                                  data-id="{{ task['id'] }}"
-                                  data-subject="{{ task['subject'] }}"
-                                  data-topic="{{ task['topic'] }}"
-                                  data-priority="{{ task['priority'] }}"
-                                  data-hours="{{ task['estimated_hours'] }}"
-                                  data-due="{{ task['due_date'] }}">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-                          <a href="/delete/{{ task['id'] }}" class="btn btn-sm btn-link text-danger p-0">
-                            <i class="bi bi-trash"></i>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Column 3: Done / Completed -->
-              <div class="col-md-4">
-                <div class="kanban-col-wrapper">
-                  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
-                    <span class="fw-bold text-success small text-uppercase tracking-wider">✅ Completed (+35 XP)</span>
-                    <span class="badge bg-success rounded-pill" id="count-Done">0</span>
-                  </div>
-                  <div class="kanban-dropzone" id="col-Done" data-status="Done">
-                    {% for task in tasks if task['status'] == 'Done' %}
-                    <div class="kanban-card task-card"
-                         data-id="{{ task['id'] }}"
-                         data-subject="{{ task['subject'] }}"
-                         data-topic="{{ task['topic'] }}"
-                         data-priority="{{ task['priority'] }}"
-                         data-hours="{{ task['estimated_hours'] }}"
-                         data-due="{{ task['due_date'] }}"
-                         data-search="{{ task['subject'] | lower }} {{ task['topic'] | lower }}">
-                      <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small px-2">
-                          {{ task['subject'] }}
-                        </span>
-                        <span class="badge badge-{{ task['priority'] }} rounded-pill small px-2">
-                          {{ task['priority'] }}
-                        </span>
-                      </div>
-                      <h6 class="fw-bold mb-2 text-decoration-line-through text-secondary">{{ task['topic'] }}</h6>
-                      <div class="d-flex justify-content-between align-items-center text-secondary small mb-3">
-                        <span><i class="bi bi-clock"></i> {{ task['estimated_hours'] }}h</span>
-                        <span><i class="bi bi-check2-all text-success"></i> Finished</span>
-                      </div>
-                      <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
-                        <div class="btn-group btn-group-sm">
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="openAITutorForTopic('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-robot"></i> Tutor
-                          </button>
-                          <button class="btn btn-sm btn-outline-warning py-0 px-2" onclick="openFeynmanModal('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-lightbulb"></i> Feynman
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="openAIMindMap('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-diagram-3"></i> Map
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="generateAINotes('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-journal-text"></i> Notes
-                          </button>
-                          <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="generateAIFlashcards('{{ task['subject'] }}', '{{ task['topic'] }}', this)">
-                            <i class="bi bi-card-checklist"></i> +Cards
-                          </button>
-                          <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="openAIQuizModal('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                            <i class="bi bi-question-circle"></i> Quiz
-                          </button>
-                        </div>
-                        <div>
-                          <button class="btn btn-sm btn-link text-warning p-0 me-2 edit-btn"
-                                  data-id="{{ task['id'] }}"
-                                  data-subject="{{ task['subject'] }}"
-                                  data-topic="{{ task['topic'] }}"
-                                  data-priority="{{ task['priority'] }}"
-                                  data-hours="{{ task['estimated_hours'] }}"
-                                  data-due="{{ task['due_date'] }}">
-                            <i class="bi bi-pencil"></i>
-                          </button>
-                          <a href="/delete/{{ task['id'] }}" class="btn btn-sm btn-link text-danger p-0">
-                            <i class="bi bi-trash"></i>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. TABLE VIEW -->
-          <div id="tableViewContainer" class="d-none">
-            {% if tasks %}
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0" id="backlogTable">
-                <thead>
-                  <tr class="text-secondary small">
-                    <th>Subject & Topic</th>
-                    <th>Priority</th>
-                    <th>Est. Time</th>
-                    <th>Status</th>
-                    <th class="text-center no-print">AI Tools ✨</th>
-                    <th class="text-end no-print">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for task in tasks %}
-                  <tr class="task-row" 
-                      data-subject="{{ task['subject'] }}" 
-                      data-status="{{ task['status'] }}" 
-                      data-search="{{ task['subject'] | lower }} {{ task['topic'] | lower }}">
-                    <td>
-                      <div class="fw-bold task-subject">{{ task['subject'] }}</div>
-                      <small class="text-secondary task-topic">{{ task['topic'] }}</small>
-                    </td>
-                    <td>
-                      <span class="badge badge-{{ task['priority'] }} rounded-pill px-2">
-                        {{ task['priority'] }}
-                      </span>
-                    </td>
-                    <td><span class="text-secondary small">{{ task['estimated_hours'] }}h</span></td>
-                    <td>
-                      <span class="badge status-{{ task['status'].replace(' ', '') }} rounded-pill px-2">
-                        {{ task['status'] }}
-                      </span>
-                    </td>
-                    <td class="text-center no-print">
-                      <div class="btn-group btn-group-sm">
-                        <button class="btn btn-sm btn-outline-info" onclick="openAITutorForTopic('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                          <i class="bi bi-robot"></i> Tutor
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning" onclick="openFeynmanModal('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                          <i class="bi bi-lightbulb"></i> Feynman
-                        </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="openAIMindMap('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                          <i class="bi bi-diagram-3"></i> Map
-                        </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="generateAINotes('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                          <i class="bi bi-journal-text"></i> Notes
-                        </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="generateAIFlashcards('{{ task['subject'] }}', '{{ task['topic'] }}', this)">
-                          <i class="bi bi-card-checklist"></i> +Cards
-                        </button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="openAIQuizModal('{{ task['subject'] }}', '{{ task['topic'] }}')">
-                          <i class="bi bi-question-circle-fill"></i> Quiz
-                        </button>
-                      </div>
-                    </td>
-                    <td class="text-end no-print">
-                      <button class="btn btn-sm btn-outline-warning border-0 edit-btn me-1"
-                              data-id="{{ task['id'] }}"
-                              data-subject="{{ task['subject'] }}"
-                              data-topic="{{ task['topic'] }}"
-                              data-priority="{{ task['priority'] }}"
-                              data-hours="{{ task['estimated_hours'] }}"
-                              data-due="{{ task['due_date'] }}">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                      <a href="/delete/{{ task['id'] }}" class="btn btn-sm btn-outline-danger border-0">
-                        <i class="bi bi-trash3"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            {% endif %}
-          </div>
-
-          <div id="noResultsMessage" class="text-center py-4 text-secondary d-none">
-            <i class="bi bi-funnel fs-2 text-warning"></i>
-            <p class="mt-2 mb-0 small">No tasks match your search or filter criteria.</p>
+                <tr>
+                  <td>
+                    <div class="fw-bold text-white">Database Systems</div>
+                    <small class="text-muted">ACID Properties, Normalization & Indexing</small>
+                  </td>
+                  <td><span class="badge bg-secondary bg-opacity-25 text-light border border-secondary">Pending</span></td>
+                  <td class="mono-font">0.0 hrs</td>
+                  <td class="text-center">
+                    <span class="rev-tag me-1" onclick="toggleRev(this)">R1</span>
+                    <span class="rev-tag me-1" onclick="toggleRev(this)">R2</span>
+                    <span class="rev-tag" onclick="toggleRev(this)">R3</span>
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-info rounded-circle"><i class="bi bi-check2"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- VIP Branded Footer -->
-    <footer class="text-center mt-5 pt-4 border-top border-secondary text-secondary small no-print">
-      <p class="mb-1">
-        ⚡ <strong>Study Tracker & Manager</strong> • Crafted for High Achievers by <span class="text-light fw-bold">Raghav Sharma</span>
-      </p>
-      <p class="text-muted" style="font-size: 0.75rem;">
-        v5.0 Diamond Pro Edition • AI Concept Mapping & Spaced Repetition Engine
-      </p>
-    </footer>
-  </div>
+        <!-- MODULE 2: TEST SERIES & MOCK SCORE ANALYZER -->
+        <div class="cyber-panel p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="brand-font text-white mb-1"><i class="bi bi-clipboard2-pulse text-warning me-2"></i>Mock Test Logs & Analytics</h5>
+              <small class="text-muted">Track test dates, accuracy %, and score trends</small>
+            </div>
+            <button class="btn btn-outline-light btn-sm mono-font rounded-pill" onclick="logMockScore()">
+              + Log Score
+            </button>
+          </div>
 
-  <!-- Floating Button for AI Tutor Assistant -->
-  <button class="btn btn-primary fab-tutor no-print" onclick="openAITutorGeneral()">
-    <i class="bi bi-robot fs-5"></i> <span>Ask AI Tutor (+10 XP)</span>
-  </button>
+          <div class="row g-3" id="mockCardContainer">
+            <div class="col-md-4">
+              <div class="p-3 rounded border border-secondary border-opacity-25 bg-dark bg-opacity-50">
+                <small class="text-muted mono-font">MOCK_TEST #01</small>
+                <div class="fw-bold fs-5 text-white">General Aptitude & Logic</div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <span class="text-success fw-bold mono-font fs-6">88 / 100</span>
+                  <span class="badge bg-success bg-opacity-25 text-success">92% Acc</span>
+                </div>
+              </div>
+            </div>
 
-  <!-- Floating Button for Quick Scratchpad -->
-  <button class="btn btn-dark fab-scratchpad no-print" data-bs-toggle="offcanvas" data-bs-target="#scratchpadOffcanvas">
-    <i class="bi bi-journal-text text-warning fs-5"></i> <span>Scratchpad</span>
-  </button>
+            <div class="col-md-4">
+              <div class="p-3 rounded border border-secondary border-opacity-25 bg-dark bg-opacity-50">
+                <small class="text-muted mono-font">MOCK_TEST #02</small>
+                <div class="fw-bold fs-5 text-white">Core Computer Systems</div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <span class="text-info fw-bold mono-font fs-6">76 / 100</span>
+                  <span class="badge bg-info bg-opacity-25 text-info">84% Acc</span>
+                </div>
+              </div>
+            </div>
 
-  <!-- Scratchpad Offcanvas Drawer -->
-  <div class="offcanvas offcanvas-start card-pro border-end border-secondary text-light" tabindex="-1" id="scratchpadOffcanvas" style="width: 380px;">
-    <div class="offcanvas-header border-bottom border-secondary">
-      <div>
-        <h5 class="offcanvas-title fw-bold mb-0"><i class="bi bi-journal-text text-warning"></i> Quick Scratchpad</h5>
-        <small class="text-secondary">Auto-saves locally for your quick study thoughts</small>
-      </div>
-      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column p-3">
-      <textarea id="scratchpadArea" class="form-control flex-grow-1" placeholder="Type quick formulas, notes, or thoughts while in deep focus..." style="font-family: monospace; font-size: 0.9rem;" oninput="saveScratchpad()"></textarea>
-      <div class="d-flex justify-content-between align-items-center mt-2">
-        <small class="text-secondary" id="scratchpadStatus">Auto-saved</small>
-        <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="clearScratchpad()">Clear</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Slide-over Offcanvas AI Study Tutor Assistant Drawer -->
-  <div class="offcanvas offcanvas-end card-pro border-start border-secondary text-light" tabindex="-1" id="aiTutorOffcanvas" style="width: 440px;">
-    <div class="offcanvas-header border-bottom border-secondary">
-      <div>
-        <h5 class="offcanvas-title fw-bold mb-0"><i class="bi bi-robot text-primary"></i> Professor Sync (AI Tutor)</h5>
-        <small class="text-secondary" id="tutorContext">Context: General Learning</small>
-      </div>
-      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column p-3">
-      <div class="d-flex flex-wrap gap-1 mb-3 pb-2 border-bottom border-secondary border-opacity-25">
-        <span class="prompt-chip" onclick="sendQuickPrompt('Explain this core concept simply with an analogy.')">💡 Explain simply</span>
-        <span class="prompt-chip" onclick="sendQuickPrompt('Give 2 real-world industry application examples.')">🌍 Real examples</span>
-        <span class="prompt-chip" onclick="sendQuickPrompt('Give me a practice problem to solve step-by-step.')">📝 Practice problem</span>
-        <span class="prompt-chip" onclick="sendQuickPrompt('What are the most common mistakes students make on this in exams?')">⚠️ Exam tips</span>
-      </div>
-
-      <div class="flex-grow-1 overflow-auto pe-1 mb-3" id="tutorChatHistory" style="max-height: calc(100vh - 270px);">
-        <div class="chat-bubble-ai">
-          👋 Hi there! I'm Professor Sync, your AI study assistant engineered by Raghav Sharma. Ask me anything about your syllabus!
+            <div class="col-md-4">
+              <div class="p-3 rounded border border-secondary border-opacity-25 bg-dark bg-opacity-50">
+                <small class="text-muted mono-font">MOCK_TEST #03</small>
+                <div class="fw-bold fs-5 text-white">Full Length Simulation</div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <span class="text-warning fw-bold mono-font fs-6">82 / 100</span>
+                  <span class="badge bg-warning bg-opacity-25 text-warning">86% Acc</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
       </div>
 
-      <div class="mt-auto">
-        <form id="tutorChatForm" onsubmit="handleTutorSend(event)">
+      <!-- RIGHT COLUMN: FOCUS ENGINE & GEMINI AI TUTOR HUD -->
+      <div class="col-12 col-xl-4">
+        
+        <!-- CYBER FOCUS POMODORO -->
+        <div class="cyber-panel p-4 mb-4 text-center">
+          <div class="text-muted mono-font small mb-2"><i class="bi bi-bullseye text-danger me-1"></i> CYBER FOCUS ENGINE</div>
+          
+          <div class="my-4">
+            <div id="timerDisplay" class="display-3 fw-bold mono-font" style="color: var(--cyber-cyan); text-shadow: 0 0 25px rgba(0,240,255,0.4);">
+              25:00
+            </div>
+            <small class="text-muted" id="timerMode">DEEP_WORK_PHASE</small>
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 mb-3">
+            <button class="btn btn-cyber" id="startBtn" onclick="toggleTimer()">START SESSION</button>
+            <button class="btn btn-outline-secondary mono-font" onclick="resetTimer()">RESET</button>
+          </div>
+
+          <div class="btn-group w-100 btn-group-sm">
+            <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25, 'DEEP_WORK_PHASE')">25m</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(50, 'INTENSE_CYCLE')">50m</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(5, 'SHORT_BREAK')">5m Break</button>
+          </div>
+        </div>
+
+        <!-- GEMINI AI TUTOR TERMINAL (NO PRO ADS - FULL ACCESS) -->
+        <div class="cyber-panel p-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-robot text-info fs-5"></i>
+            <div>
+              <h6 class="brand-font text-white mb-0">CYBER TUTOR AI</h6>
+              <small class="text-muted mono-font">POWERED BY GEMINI 3.6 FLASH</small>
+            </div>
+          </div>
+
+          <div id="aiChatBox" class="p-3 mb-3 rounded" style="background: rgba(4, 7, 16, 0.7); height: 240px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem;">
+            <div class="text-info mono-font mb-2">[SYSTEM]: Welcome Scholar. Ask any doubt, syllabus breakdown, or formula derivation.</div>
+          </div>
+
           <div class="input-group">
-            <input type="text" id="tutorInput" class="form-control" placeholder="Ask your question..." autocomplete="off" required>
-            <button class="btn btn-outline-secondary" type="button" id="btnVoiceDictate" onclick="toggleVoiceDictation()" title="Speak with microphone">
-              <i class="bi bi-mic-fill text-info" id="voiceMicIcon"></i>
-            </button>
-            <button class="btn btn-primary px-3" type="submit" id="btnTutorSend">
-              <i class="bi bi-send-fill"></i>
-            </button>
+            <input type="text" id="aiQuery" class="form-control cyber-input mono-font" placeholder="Ask AI study question...">
+            <button class="btn btn-cyber" onclick="sendCyberAI()"><i class="bi bi-send-fill"></i></button>
           </div>
-        </form>
+        </div>
+
       </div>
+
     </div>
+
   </div>
 
-  <!-- Modal: VIP Pro In-App Subscription Upgrade -->
-  <div class="modal fade" id="upgradeModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content card-pro text-center p-4">
-        <div class="fs-1 text-warning mb-2">💎</div>
-        <h4 class="fw-bold mb-1 brand-glow">Unlock VIP Pro Scholar</h4>
-        <p class="text-secondary small mb-3">Engineered by Raghav Sharma for Top Performers</p>
-
-        <div class="p-3 rounded-3 text-start mb-3" style="background: var(--log-bg); border: 1px solid var(--card-border);">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-check-circle-fill text-warning"></i>
-            <span class="small fw-semibold">AI Mock Exam Paper Generator</span>
-          </div>
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-check-circle-fill text-warning"></i>
-            <span class="small fw-semibold">Unlimited Voice AI Tutor Chats</span>
-          </div>
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-check-circle-fill text-warning"></i>
-            <span class="small fw-semibold">+200 Instant Bonus XP Reward</span>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-check-circle-fill text-warning"></i>
-            <span class="small fw-semibold">Gold Scholar Badge & Priority Features</span>
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center p-3 mb-3 rounded-3 border border-secondary" style="background: var(--input-bg);">
-          <div class="text-start">
-            <span class="fw-bold d-block">Lifetime VIP Pass</span>
-            <small class="text-secondary">One-time payment</small>
-          </div>
-          <h4 class="fw-bold text-warning mb-0">$9.99</h4>
-        </div>
-
-        <button class="btn btn-warning w-100 fw-bold py-2 shadow-sm" id="btnConfirmUpgrade" onclick="processUpgrade('VIP Pro Scholar')">
-          <i class="bi bi-gem"></i> Instant 1-Click Upgrade
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: AI Mock Exam Generator -->
-  <div class="modal fade" id="mockExamModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div>
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-file-earmark-ruled text-primary"></i> AI Formal Mock Exam Paper Generator</h5>
-            <small class="text-secondary">Synthesizes rigorous university-style exam papers with marking schemes (+40 XP)</small>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="row g-3 mb-4 pb-3 border-bottom border-secondary">
-            <div class="col-md-6">
-              <label class="form-label small text-secondary">Course Subject / Topic</label>
-              <input type="text" id="mockSubjectInput" class="form-control form-control-sm" placeholder="e.g. Operating Systems / Corporate Finance / Organic Chemistry" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label small text-secondary">Difficulty Level</label>
-              <select id="mockDifficultySelect" class="form-select form-select-sm">
-                <option value="Undergraduate Standard">Standard Undergraduate</option>
-                <option value="Advanced / Honors" selected>Advanced / Honors Level</option>
-                <option value="Mastery / Competitive">Competitive Exam Level</option>
-              </select>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-              <button class="btn btn-primary btn-sm w-100 fw-semibold" id="btnGenMockExam" onclick="generateMockExam()">
-                <i class="bi bi-stars"></i> Generate
-              </button>
-            </div>
-          </div>
-
-          <div id="mockExamLoader" class="text-center py-5 d-none">
-            <div class="spinner-border text-primary mb-3" role="status"></div>
-            <h6 class="fw-bold">Synthesizing Exam Paper & Solution Key with Gemini AI...</h6>
-            <p class="text-secondary small">Formulating analytical questions, point breakdowns, and grading rubrics</p>
-          </div>
-
-          <div id="mockExamResults" class="d-none">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h5 class="fw-bold mb-0 text-light" id="examPaperTitle">Official Mock Examination</h5>
-                <small class="text-secondary" id="examMetaInfo">Time: 45 Mins • Total Marks: 50</small>
-              </div>
-              <button class="btn btn-sm btn-outline-info" onclick="window.print()">
-                <i class="bi bi-printer"></i> Print / Save PDF
-              </button>
-            </div>
-            <div id="examPaperContainer" class="p-3 rounded-3" style="background: var(--input-bg); border: 1px solid var(--card-border);"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: AI Feynman Technique Studio -->
-  <div class="modal fade" id="feynmanModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div>
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-lightbulb-fill text-warning"></i> Feynman Technique AI Evaluator</h5>
-            <small class="text-secondary" id="feynmanSubTitle">Explain the topic in simple terms to test real understanding (+50 XP)</small>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="mb-3">
-            <label class="form-label small text-secondary">Explain this concept in your own words (as if teaching a 10-year-old child):</label>
-            <textarea id="feynmanInputText" rows="4" class="form-control" placeholder="E.g. Think of a deadlock like four cars arriving at a 4-way stop at the exact same moment where everyone waits for the person on their right..."></textarea>
-          </div>
-          <button class="btn btn-warning btn-sm fw-semibold w-100 mb-3" id="btnSubmitFeynman" onclick="submitFeynmanExplanation()">
-            <i class="bi bi-stars"></i> Evaluate My Explanation with Gemini AI
-          </button>
-
-          <div id="feynmanLoader" class="text-center py-4 d-none">
-            <div class="spinner-border text-warning spinner-border-sm mb-2" role="status"></div>
-            <small class="text-secondary d-block">Analyzing conceptual clarity, metaphors, and identifying blind spots...</small>
-          </div>
-
-          <div id="feynmanResults" class="d-none pt-3 border-top border-secondary">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h6 class="fw-bold mb-0 text-light">Feynman Mastery Score</h6>
-                <small class="text-secondary" id="feynmanTierBadge">Proficient</small>
-              </div>
-              <h3 class="fw-bold text-warning mb-0" id="feynmanScoreText">85%</h3>
-            </div>
-
-            <div class="cheat-section mb-2">
-              <strong class="text-success small d-block mb-1">✅ Conceptual Strengths:</strong>
-              <ul id="feynmanStrengths" class="small text-light mb-0 ps-3"></ul>
-            </div>
-
-            <div class="cheat-section mb-2">
-              <strong class="text-danger small d-block mb-1">⚠️ Blind Spots & Gaps:</strong>
-              <ul id="feynmanBlindSpots" class="small text-light mb-0 ps-3"></ul>
-            </div>
-
-            <div class="cheat-section">
-              <strong class="text-info small d-block mb-1">💡 Ideal Child-Friendly Metaphor:</strong>
-              <p id="feynmanAnalogy" class="small text-light mb-0"></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: AI Concept Mind Map (Mermaid.js) -->
-  <div class="modal fade" id="mindMapModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div>
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-diagram-3 text-info"></i> AI Visual Concept Mind Map</h5>
-            <small class="text-secondary" id="mindMapSubTitle">Visual breakdown (+25 XP)</small>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4 text-center">
-          <div id="mindMapLoader" class="text-center py-5">
-            <div class="spinner-border text-info mb-3" role="status"></div>
-            <h6 class="fw-bold">Generating Visual Concept Mind Map with Gemini AI...</h6>
-            <p class="text-secondary small">Constructing node hierarchy, pillars, and branch relationships</p>
-          </div>
-          <div id="mindMapContainer" class="d-none overflow-auto p-3 rounded-3" style="background: var(--input-bg); min-height: 380px;"></div>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 1: Edit Task Modal -->
-  <div class="modal fade" id="editTaskModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square text-warning"></i> Edit Study Target</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="editTaskForm" method="POST" action="">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Subject / Course</label>
-              <input type="text" id="editSubject" name="subject" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Topic / Chapter</label>
-              <input type="text" id="editTopic" name="topic" class="form-control" required>
-            </div>
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <label class="form-label small text-secondary">Priority</label>
-                <select id="editPriority" name="priority" class="form-select">
-                  <option value="High">🔴 High</option>
-                  <option value="Medium">🟡 Medium</option>
-                  <option value="Low">🔵 Low</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label small text-secondary">Est. Hours</label>
-                <input type="number" step="0.5" id="editHours" name="estimated_hours" class="form-control">
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Target Due Date</label>
-              <input type="date" id="editDueDate" name="due_date" class="form-control">
-            </div>
-          </div>
-          <div class="modal-footer border-secondary">
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-warning btn-sm fw-semibold">Update Target</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 2: Create Flashcard Modal -->
-  <div class="modal fade" id="addCardModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title fw-bold"><i class="bi bi-card-heading text-primary"></i> Create Study Flashcard</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form action="/flashcard/add" method="POST">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Subject / Category</label>
-              <input type="text" id="fcInputSubject" name="card_subject" class="form-control" placeholder="e.g. Python Core / OS" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Question or Prompt</label>
-              <textarea id="fcInputQuestion" name="card_question" rows="2" class="form-control" placeholder="e.g. What is the difference between a Process and a Thread?" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small text-secondary">Answer Key / Explanation</label>
-              <textarea id="fcInputAnswer" name="card_answer" rows="3" class="form-control" placeholder="e.g. A process is an executing program with isolated memory, while a thread is a segment of a process sharing memory space." required></textarea>
-            </div>
-          </div>
-          <div class="modal-footer border-secondary">
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-sm fw-semibold">Save to Deck</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 3: Interactive AI Practice Quiz Modal -->
-  <div class="modal fade" id="quizModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div>
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-stars text-primary"></i> AI Practice Quiz</h5>
-            <small class="text-secondary" id="quizSubTitle">Testing your mastery</small>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4" id="quizBody">
-          <div id="quizLoader" class="text-center py-5">
-            <div class="spinner-border text-primary mb-3" role="status"></div>
-            <h6 class="fw-bold">Generating questions with Gemini AI...</h6>
-            <p class="text-secondary small">Synthesizing multiple-choice revision quiz</p>
-          </div>
-          <div id="quizContent" class="d-none"></div>
-        </div>
-        <div class="modal-footer border-secondary justify-content-between">
-          <div id="quizScoreTracker" class="text-secondary small"></div>
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 4: AI 7-Day Study Syllabus Roadmap Modal -->
-  <div class="modal fade" id="roadmapModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div>
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-compass text-primary"></i> AI 7-Day Study Syllabus & Roadmap</h5>
-            <small class="text-secondary">Synthesize a complete learning timetable with Gemini AI (+30 XP)</small>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="row g-3 mb-4 pb-3 border-bottom border-secondary">
-            <div class="col-md-4">
-              <label class="form-label small text-secondary">Course / Exam / Topic</label>
-              <input type="text" id="roadmapSubject" class="form-control form-control-sm" placeholder="e.g. Data Structures & Algorithms / SQL Mastery" required>
-            </div>
-            <div class="col-md-5">
-              <label class="form-label small text-secondary">Learning Goal or Target</label>
-              <input type="text" id="roadmapGoal" class="form-control form-control-sm" placeholder="e.g. Prepare for Technical Interviews / Exam in 1 week">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-secondary">Study Time / Day</label>
-              <div class="input-group input-group-sm">
-                <input type="number" id="roadmapHours" class="form-control" value="2.5" step="0.5">
-                <button class="btn btn-primary px-3" id="btnGenRoadmap" onclick="generateAIRoadmap()">
-                  <i class="bi bi-stars"></i> Generate
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div id="roadmapLoader" class="text-center py-5 d-none">
-            <div class="spinner-border text-primary mb-3" role="status"></div>
-            <h6 class="fw-bold">Building 7-Day Curriculum with Gemini AI...</h6>
-            <p class="text-secondary small">Structuring daily objectives, tasks, and key milestones</p>
-          </div>
-
-          <div id="roadmapResults" class="d-none">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-              <div>
-                <h5 class="fw-bold mb-1" id="roadmapCourseTitle">Course Roadmap</h5>
-                <p class="text-secondary small mb-0" id="roadmapOverview"></p>
-              </div>
-              <button class="btn btn-sm btn-success" id="btnImportRoadmap" onclick="importRoadmapToKanban()">
-                <i class="bi bi-box-arrow-in-down"></i> Import All 7 Days to Kanban (+40 XP)
-              </button>
-            </div>
-            <div id="roadmapTimeline" class="mt-3"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 5: AI Topic Cheat Sheet & Smart Notes Modal -->
-  <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div class="d-flex align-items-center gap-2">
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-journal-bookmark-fill text-info"></i> AI Smart Cheat Sheet</h5>
-            <button class="btn btn-sm btn-outline-info py-0 px-2" onclick="readAloudCheatSheet()" title="Listen to Cheat Sheet">
-              <i class="bi bi-volume-up-fill"></i> Listen
-            </button>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4" id="notesBody">
-          <div id="notesLoader" class="text-center py-5">
-            <div class="spinner-border text-info mb-3" role="status"></div>
-            <h6 class="fw-bold">Synthesizing Smart Cheat Sheet with Gemini AI...</h6>
-            <p class="text-secondary small">Extracting bullet intuitions, memory hacks, and exam traps</p>
-          </div>
-          <div id="notesContent" class="d-none">
-            <div class="cheat-section">
-              <h6 class="fw-bold text-primary mb-2"><i class="bi bi-lightning-charge"></i> Core Intuition & Summary</h6>
-              <div id="notesSummary" class="small text-light"></div>
-            </div>
-            <div class="cheat-section">
-              <h6 class="fw-bold text-info mb-2"><i class="bi bi-key-fill"></i> Key Definitions & Concepts</h6>
-              <div id="notesConcepts" class="small text-light"></div>
-            </div>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="cheat-section h-100 mb-0">
-                  <h6 class="fw-bold text-warning mb-2"><i class="bi bi-lightbulb-fill"></i> Memory Hack & Mnemonic</h6>
-                  <p id="notesMemory" class="small text-light mb-0"></p>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="cheat-section h-100 mb-0">
-                  <h6 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-octagon-fill"></i> Common Exam Traps</h6>
-                  <ul id="notesTraps" class="small text-light mb-0 ps-3"></ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 6: AI Notes Parser Modal -->
-  <div class="modal fade" id="parseNotesModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-pro">
-        <div class="modal-header border-secondary">
-          <div>
-            <h5 class="modal-title fw-bold mb-0"><i class="bi bi-file-earmark-text text-info"></i> AI Study Notes & Syllabus Parser</h5>
-            <small class="text-secondary">Paste raw lecture notes ➔ Auto-extract Kanban targets + Flashcards (+45 XP)</small>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="mb-3">
-            <label class="form-label small text-secondary">Course / Subject Name</label>
-            <input type="text" id="rawNotesSubject" class="form-control" placeholder="e.g. Distributed Systems / Biology 101" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label small text-secondary">Paste Raw Study Notes / Text Snippet</label>
-            <textarea id="rawNotesText" rows="6" class="form-control" placeholder="Paste your lecture notes, textbook summary, or syllabus outline here... Gemini AI will extract actionable Kanban study tasks and revision flashcards automatically." required></textarea>
-          </div>
-          <div id="parseLoader" class="text-center py-3 d-none">
-            <div class="spinner-border text-info spinner-border-sm mb-2" role="status"></div>
-            <small class="text-secondary d-block">Analyzing notes and generating structured learning assets...</small>
-          </div>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-info btn-sm fw-semibold" id="btnParseNotes" onclick="handleParseNotes()">
-            <i class="bi bi-magic"></i> Extract Tasks & Flashcards
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 7: AI Motivation Coach Modal -->
-  <div class="modal fade" id="motivationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content card-pro text-center p-4">
-        <div class="fs-1 text-warning mb-2">⚡</div>
-        <h5 class="fw-bold mb-3 brand-glow">Raghav Sharma's AI Focus Coach</h5>
-        <div class="p-3 rounded-3 mb-3" style="background: var(--log-bg); border: 1px solid var(--card-border);">
-          <p class="fs-5 fst-italic mb-2 text-light" id="aiQuoteText">“Discipline is the bridge between goals and accomplishment.”</p>
-          <small class="text-info fw-bold" id="aiQuoteAuthor">— Jim Rohn</small>
-        </div>
-        <div class="text-start p-3 rounded-3 mb-3 border border-secondary border-opacity-50 small" style="background: var(--input-bg);">
-          <strong class="text-warning d-block mb-1">🎯 Tactical Focus Strategy:</strong>
-          <span id="aiTacticalTip" class="text-secondary">Open your hardest task right now and spend just 5 minutes without opening any other browser tab.</span>
-        </div>
-        <button type="button" class="btn btn-primary w-100 fw-semibold" data-bs-dismiss="modal">
-          Let's Conquer Today 🚀
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- SCRIPT ENGINE -->
   <script>
-    const chartPayload = {{ chart_data | safe }};
-    let flashcards = {{ flashcards_json | safe }};
-    let currentCardIndex = 0;
-    let subjectChartInstance = null;
-    let statusChartInstance = null;
-    let generatedRoadmapCache = null;
-
-    // Initialize Mermaid.js
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'dark',
-      securityLevel: 'loose'
-    });
-
-    // --- In-App Checkout Upgrade Handler ---
-    function processUpgrade(planName) {
-      const btn = document.getElementById('btnConfirmUpgrade');
-      btn.disabled = true;
-      btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Activating VIP Pass...`;
-
-      fetch('/subscription/upgrade', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planName })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          playLevelUpFanfare();
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          btn.innerHTML = `<i class="bi bi-check-circle"></i> VIP Unlocked!`;
-          setTimeout(() => window.location.reload(), 1000);
-        } else {
-          alert('Upgrade failed. Try again.');
-          btn.disabled = false;
-        }
-      })
-      .catch(() => {
-        btn.disabled = false;
-        alert('Server connection error.');
-      });
+    // 1. Revision Pill Toggle
+    function toggleRev(elem) {
+      elem.classList.toggle('active');
     }
 
-    // --- AI Mock Exam Generator ---
-    function generateMockExam() {
-      const subject = document.getElementById('mockSubjectInput').value.trim();
-      const diff = document.getElementById('mockDifficultySelect').value;
-      const btn = document.getElementById('btnGenMockExam');
-      const loader = document.getElementById('mockExamLoader');
-      const results = document.getElementById('mockExamResults');
+    // 2. Add New Topic Handler
+    function addNewTopicPrompt() {
+      const subject = prompt("Enter Subject Name (e.g., Mathematics, Physics, CS):");
+      if (!subject) return;
+      const chapter = prompt("Enter Chapter / Unit Name:");
+      if (!chapter) return;
 
-      if (!subject) {
-        alert('Please enter a course subject for the mock exam.');
-        return;
-      }
-
-      btn.disabled = true;
-      loader.classList.remove('d-none');
-      results.classList.add('d-none');
-
-      fetch('/ai/generate-mock-exam', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject, difficulty: diff })
-      })
-      .then(res => res.json())
-      .then(data => {
-        btn.disabled = false;
-        loader.classList.add('d-none');
-        if (data.status === 'success' && data.exam) {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          results.classList.remove('d-none');
-          const ex = data.exam;
-          document.getElementById('examPaperTitle').textContent = ex.exam_title;
-          document.getElementById('examMetaInfo').textContent = `Time: ${ex.time_allowed} • Total Marks: ${ex.total_marks}`;
-
-          let html = `<div class="mb-3 text-secondary small fst-italic">Instructions: ${ex.instructions}</div>`;
-          (ex.sections || []).forEach(sec => {
-            html += `<h6 class="fw-bold text-primary mt-3 mb-2 pb-1 border-bottom border-secondary border-opacity-25">${sec.section_name}</h6>`;
-            (sec.questions || []).forEach(q => {
-              html += `
-                <div class="mb-3 p-3 rounded-3 border border-secondary border-opacity-50" style="background: var(--log-bg);">
-                  <div class="d-flex justify-content-between mb-1">
-                    <strong class="text-light">Q${q.q_num}.</strong>
-                    <span class="badge bg-secondary rounded-pill">${q.marks} Marks</span>
-                  </div>
-                  <p class="text-light mb-2 small">${q.question}</p>
-                  <details class="small text-secondary">
-                    <summary class="text-info" style="cursor: pointer;">Reveal Marking Scheme & Solution Key</summary>
-                    <div class="mt-2 p-2 rounded border border-secondary border-opacity-25 text-light" style="background: var(--input-bg);">
-                      <strong>💡 Solution:</strong> ${q.solution_hint}
-                    </div>
-                  </details>
-                </div>
-              `;
-            });
-          });
-          document.getElementById('examPaperContainer').innerHTML = html;
-        } else {
-          alert('AI Mock Exam Error: ' + (data.error || 'Failed to synthesize exam.'));
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        loader.classList.add('d-none');
-        alert('Server error during mock exam synthesis.');
-      });
+      const tbody = document.getElementById('topicList');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <div class="fw-bold text-white">${subject}</div>
+          <small class="text-muted">${chapter}</small>
+        </td>
+        <td><span class="badge bg-warning bg-opacity-25 text-warning border border-warning">In Progress</span></td>
+        <td class="mono-font">0.0 hrs</td>
+        <td class="text-center">
+          <span class="rev-tag me-1" onclick="toggleRev(this)">R1</span>
+          <span class="rev-tag me-1" onclick="toggleRev(this)">R2</span>
+          <span class="rev-tag" onclick="toggleRev(this)">R3</span>
+        </td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-info rounded-circle"><i class="bi bi-check2"></i></button>
+        </td>
+      `;
+      tbody.prepend(tr);
     }
 
-    // --- Feynman Technique Studio ---
-    let currentFeynmanSubject = "";
-    let currentFeynmanTopic = "";
+    // 3. Log Mock Test Score
+    function logMockScore() {
+      const testName = prompt("Enter Mock Test Name:");
+      const score = prompt("Enter Score (e.g., 85/100):");
+      if (!testName || !score) return;
 
-    function openFeynmanModal(subject, topic) {
-      currentFeynmanSubject = subject;
-      currentFeynmanTopic = topic;
-      document.getElementById('feynmanSubTitle').textContent = `Testing Mastery for: ${subject} ➔ ${topic}`;
-      document.getElementById('feynmanInputText').value = "";
-      document.getElementById('feynmanResults').classList.add('d-none');
-      document.getElementById('feynmanLoader').classList.add('d-none');
-      
-      const modal = new bootstrap.Modal(document.getElementById('feynmanModal'));
-      modal.show();
-    }
-
-    function submitFeynmanExplanation() {
-      const explanation = document.getElementById('feynmanInputText').value.trim();
-      if (!explanation) {
-        alert('Please write your simple explanation of the concept.');
-        return;
-      }
-
-      const btn = document.getElementById('btnSubmitFeynman');
-      const loader = document.getElementById('feynmanLoader');
-      btn.disabled = true;
-      loader.classList.remove('d-none');
-      document.getElementById('feynmanResults').classList.add('d-none');
-
-      fetch('/ai/feynman-evaluate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: currentFeynmanSubject,
-          topic: currentFeynmanTopic,
-          explanation: explanation
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        btn.disabled = false;
-        loader.classList.add('d-none');
-        if (data.status === 'success' && data.result) {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          const r = data.result;
-          document.getElementById('feynmanResults').classList.remove('d-none');
-          document.getElementById('feynmanScoreText').textContent = `${r.feynman_score}%`;
-          document.getElementById('feynmanTierBadge').textContent = r.mastery_tier;
-          
-          document.getElementById('feynmanStrengths').innerHTML = (r.strengths || []).map(s => `<li>${s}</li>`).join('');
-          document.getElementById('feynmanBlindSpots').innerHTML = (r.blind_spots || []).map(b => `<li>${b}</li>`).join('');
-          document.getElementById('feynmanAnalogy').textContent = r.simplified_analogy;
-        } else {
-          alert('Feynman Evaluation Error: ' + (data.error || 'Failed to evaluate.'));
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        loader.classList.add('d-none');
-        alert('Server error during Feynman evaluation.');
-      });
-    }
-
-    // --- Auto-Saving Quick Scratchpad ---
-    function initScratchpad() {
-      const saved = localStorage.getItem('raghav_study_scratchpad');
-      if (saved) {
-        document.getElementById('scratchpadArea').value = saved;
-      }
-    }
-
-    function saveScratchpad() {
-      const val = document.getElementById('scratchpadArea').value;
-      localStorage.setItem('raghav_study_scratchpad', val);
-      const status = document.getElementById('scratchpadStatus');
-      status.textContent = 'Saving...';
-      setTimeout(() => { status.textContent = 'Auto-saved locally'; }, 400);
-    }
-
-    function clearScratchpad() {
-      if (confirm('Clear all scratchpad text?')) {
-        document.getElementById('scratchpadArea').value = '';
-        localStorage.removeItem('raghav_study_scratchpad');
-        document.getElementById('scratchpadStatus').textContent = 'Cleared';
-      }
-    }
-
-    // --- AI Visual Mind-Map Generator ---
-    function openAIMindMap(subject, topic) {
-      const modal = new bootstrap.Modal(document.getElementById('mindMapModal'));
-      document.getElementById('mindMapSubTitle').textContent = `${subject} ➔ ${topic}`;
-      document.getElementById('mindMapLoader').classList.remove('d-none');
-      document.getElementById('mindMapContainer').classList.add('d-none');
-      modal.show();
-
-      fetch('/ai/generate-mindmap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject, topic: topic })
-      })
-      .then(res => res.json())
-      .then(async data => {
-        document.getElementById('mindMapLoader').classList.add('d-none');
-        if (data.status === 'success' && data.mermaid_code) {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          const container = document.getElementById('mindMapContainer');
-          container.classList.remove('d-none');
-          
-          const renderId = `mermaid-${Date.now()}`;
-          const { svg } = await mermaid.render(renderId, data.mermaid_code);
-          container.innerHTML = svg;
-        } else {
-          alert('AI Mind Map Error: ' + (data.error || 'Failed to render concept map.'));
-        }
-      })
-      .catch(err => {
-        document.getElementById('mindMapLoader').classList.add('d-none');
-        alert('Server error generating concept mind map.');
-      });
-    }
-
-    // --- Web Speech Synthesis (AI Voice Reader / Text-to-Speech) ---
-    function speakText(text) {
-      if (!('speechSynthesis' in window)) {
-        alert('Text-to-speech is not supported in this browser.');
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const cleanText = text.replace(/<[^>]*>/g, ' ');
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    function readAloudCurrentCard() {
-      if (!flashcards || flashcards.length === 0) return;
-      const card = flashcards[currentCardIndex];
-      speakText(`Question: ${card.question}. Answer: ${card.answer}`);
-    }
-
-    function readAloudCheatSheet() {
-      const summary = document.getElementById('notesSummary').textContent;
-      const concepts = document.getElementById('notesConcepts').textContent;
-      const memory = document.getElementById('notesMemory').textContent;
-      speakText(`Cheat sheet summary: ${summary}. Key Concepts: ${concepts}. Memory hack: ${memory}`);
-    }
-
-    // --- Daily Quest Claim ---
-    function claimDailyQuest(rewardXp, btnElement) {
-      btnElement.disabled = true;
-      fetch(`/quest/claim/${rewardXp}`, { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          btnElement.innerHTML = `<i class="bi bi-check-circle"></i> Claimed!`;
-          btnElement.className = 'btn btn-sm btn-secondary py-0 px-2 small rounded-pill';
-        }
-      })
-      .catch(() => { btnElement.disabled = false; });
-    }
-
-    // --- Dynamic XP & Fanfare Sound System ---
-    function playLevelUpFanfare() {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const chord = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
-        chord.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.08);
-          gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + idx * 0.08 + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.08 + 0.6);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.08);
-          osc.stop(ctx.currentTime + idx * 0.08 + 0.65);
-        });
-      } catch (err) {}
-    }
-
-    function updateLiveXP(xpData) {
-      if (!xpData) return;
-
-      const toast = document.getElementById('xpToast');
-      const toastText = document.getElementById('xpToastText');
-      if (toast && toastText) {
-        toastText.textContent = `+${xpData.gained} XP Earned! 🌟`;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2400);
-      }
-
-      const totalXpEl = document.getElementById('userTotalXpText');
-      if (totalXpEl) totalXpEl.textContent = `${xpData.xp} Total XP Earned`;
-
-      const levelTitleEl = document.getElementById('userLevelTitle');
-      if (levelTitleEl) {
-        const prevLevel = levelTitleEl.textContent;
-        const nextLevel = `Level ${xpData.level} Scholar`;
-        if (prevLevel !== nextLevel) {
-          playLevelUpFanfare();
-        }
-        levelTitleEl.textContent = nextLevel;
-      }
-
-      const headerBadge = document.getElementById('headerLevelBadge');
-      if (headerBadge) headerBadge.innerHTML = `<i class="bi bi-trophy-fill"></i> Level ${xpData.level}`;
-
-      const progressText = document.getElementById('userXpProgressText');
-      if (progressText) progressText.textContent = `${xpData.level_progress}% (${xpData.xp_in_level} / 250 XP)`;
-
-      const progressBar = document.getElementById('userProgressBar');
-      if (progressBar) progressBar.style.width = `${xpData.level_progress}%`;
-    }
-
-    // --- Zen Mode Toggle ---
-    function toggleZenMode() {
-      const overlay = document.getElementById('zenModeOverlay');
-      overlay.classList.toggle('active');
-    }
-
-    // --- AI Motivation Coach ---
-    function fetchAIMotivation() {
-      const modal = new bootstrap.Modal(document.getElementById('motivationModal'));
-      modal.show();
-
-      fetch('/ai/motivate', { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          document.getElementById('aiQuoteText').textContent = `“${data.quote}”`;
-          document.getElementById('aiQuoteAuthor').textContent = `— ${data.author}`;
-          document.getElementById('aiTacticalTip').textContent = data.tactical_tip;
-          document.getElementById('zenMotivationalQuote').textContent = `“${data.quote}” — ${data.author}`;
-        }
-      })
-      .catch(() => {});
-    }
-
-    // --- Leitner Flashcard Spaced Repetition Recall Rating ---
-    function rateFlashcard(level) {
-      if (!flashcards || flashcards.length === 0) return;
-      const card = flashcards[currentCardIndex];
-
-      fetch(`/flashcard/review/${card.id}/${level}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(data => {
-        card.mastery_level = level;
-        renderCurrentCard();
-        if (data.xp_data) updateLiveXP(data.xp_data);
-        setTimeout(() => nextCard(), 400);
-      })
-      .catch(err => console.error('Flashcard rating error:', err));
-    }
-
-    // --- AI Document / Lecture Notes Parser ---
-    function handleParseNotes() {
-      const subject = document.getElementById('rawNotesSubject').value.trim();
-      const text = document.getElementById('rawNotesText').value.trim();
-      const btn = document.getElementById('btnParseNotes');
-      const loader = document.getElementById('parseLoader');
-
-      if (!subject || !text) {
-        alert('Please fill in both the Course Name and Notes Text.');
-        return;
-      }
-
-      btn.disabled = true;
-      loader.classList.remove('d-none');
-
-      fetch('/ai/parse-text', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject, text: text })
-      })
-      .then(res => res.json())
-      .then(data => {
-        loader.classList.add('d-none');
-        if (data.status === 'success') {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          btn.innerHTML = `<i class="bi bi-check2"></i> Done! +45 XP`;
-          setTimeout(() => window.location.reload(), 900);
-        } else {
-          alert('AI Error: ' + (data.error || 'Failed to parse text.'));
-          btn.disabled = false;
-        }
-      })
-      .catch(err => {
-        loader.classList.add('d-none');
-        btn.disabled = false;
-        alert('Server error during notes parsing.');
-      });
-    }
-
-    // --- Web Speech API Voice Dictation ---
-    let speechRecognition = null;
-    let isDictating = false;
-
-    function toggleVoiceDictation() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert('Voice dictation is supported in Google Chrome or Microsoft Edge.');
-        return;
-      }
-
-      if (!speechRecognition) {
-        speechRecognition = new SpeechRecognition();
-        speechRecognition.continuous = false;
-        speechRecognition.interimResults = false;
-        speechRecognition.lang = 'en-US';
-
-        speechRecognition.onresult = function(event) {
-          const transcript = event.results[0][0].transcript;
-          const input = document.getElementById('tutorInput');
-          input.value = transcript;
-          stopVoiceDictation();
-          document.getElementById('tutorChatForm').dispatchEvent(new Event('submit'));
-        };
-
-        speechRecognition.onerror = () => stopVoiceDictation();
-        speechRecognition.onend = () => stopVoiceDictation();
-      }
-
-      if (isDictating) {
-        speechRecognition.stop();
-        stopVoiceDictation();
-      } else {
-        speechRecognition.start();
-        isDictating = true;
-        const icon = document.getElementById('voiceMicIcon');
-        icon.className = 'bi bi-record-fill text-danger';
-        document.getElementById('tutorInput').placeholder = 'Listening to you speak...';
-      }
-    }
-
-    function stopVoiceDictation() {
-      isDictating = false;
-      const icon = document.getElementById('voiceMicIcon');
-      if (icon) icon.className = 'bi bi-mic-fill text-info';
-      const input = document.getElementById('tutorInput');
-      if (input) input.placeholder = 'Ask your question...';
-    }
-
-    // --- AI Tutor Assistant Drawer ---
-    let currentTutorSubject = "General Learning";
-    let currentTutorTopic = "General Knowledge";
-    let tutorOffcanvasInstance = null;
-
-    function openAITutorGeneral() {
-      currentTutorSubject = "General Learning";
-      currentTutorTopic = "General Concepts";
-      document.getElementById('tutorContext').textContent = "Context: General Learning";
-      if (!tutorOffcanvasInstance) {
-        tutorOffcanvasInstance = new bootstrap.Offcanvas(document.getElementById('aiTutorOffcanvas'));
-      }
-      tutorOffcanvasInstance.show();
-    }
-
-    function openAITutorForTopic(subject, topic) {
-      currentTutorSubject = subject;
-      currentTutorTopic = topic;
-      document.getElementById('tutorContext').textContent = `Studying: ${subject} ➔ ${topic}`;
-      if (!tutorOffcanvasInstance) {
-        tutorOffcanvasInstance = new bootstrap.Offcanvas(document.getElementById('aiTutorOffcanvas'));
-      }
-      tutorOffcanvasInstance.show();
-    }
-
-    function sendQuickPrompt(promptText) {
-      document.getElementById('tutorInput').value = promptText;
-      document.getElementById('tutorChatForm').dispatchEvent(new Event('submit'));
-    }
-
-    function handleTutorSend(e) {
-      e.preventDefault();
-      const input = document.getElementById('tutorInput');
-      const message = input.value.trim();
-      if (!message) return;
-
-      const historyBox = document.getElementById('tutorChatHistory');
-      historyBox.innerHTML += `<div class="chat-bubble-user">${message}</div>`;
-      input.value = '';
-
-      const loaderId = `ai-loader-${Date.now()}`;
-      historyBox.innerHTML += `
-        <div class="chat-bubble-ai" id="${loaderId}">
-          <span class="spinner-border spinner-border-sm text-primary" role="status"></span> Thinking...
+      const container = document.getElementById('mockCardContainer');
+      const div = document.createElement('div');
+      div.className = "col-md-4";
+      div.innerHTML = `
+        <div class="p-3 rounded border border-secondary border-opacity-25 bg-dark bg-opacity-50">
+          <small class="text-muted mono-font">MOCK_TEST #LOGGED</small>
+          <div class="fw-bold fs-5 text-white">${testName}</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-info fw-bold mono-font fs-6">${score}</span>
+            <span class="badge bg-info bg-opacity-25 text-info">Logged</span>
+          </div>
         </div>
       `;
-      historyBox.scrollTop = historyBox.scrollHeight;
-
-      fetch('/ai/tutor-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: message,
-          subject: currentTutorSubject,
-          topic: currentTutorTopic
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const loaderEl = document.getElementById(loaderId);
-        if (data.status === 'success') {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          const formattedReply = data.reply.replace(/\n/g, '<br>');
-          const safeEscapedReply = encodeURIComponent(data.reply);
-          const safeSubject = encodeURIComponent(currentTutorSubject);
-          const safeQuestion = encodeURIComponent(message.substring(0, 80));
-
-          loaderEl.innerHTML = `
-            <div>${formattedReply}</div>
-            <div class="mt-2 pt-2 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
-              <button class="btn btn-sm btn-link text-info p-0 small" onclick="speakText('${encodeURIComponent(data.reply)}')">
-                <i class="bi bi-volume-up"></i> Listen
-              </button>
-              <button class="btn btn-sm btn-outline-info py-0 px-2 small" onclick="saveAITutorAsFlashcard('${safeSubject}', '${safeQuestion}', '${safeEscapedReply}')">
-                <i class="bi bi-card-plus"></i> Save to Flashcards (+10 XP)
-              </button>
-            </div>
-          `;
-        } else {
-          loaderEl.innerHTML = `<span class="text-danger">AI Error: ${data.error || 'Failed to get answer.'}</span>`;
-        }
-        historyBox.scrollTop = historyBox.scrollHeight;
-      })
-      .catch(err => {
-        const loaderEl = document.getElementById(loaderId);
-        loaderEl.innerHTML = `<span class="text-danger">Server connection error.</span>`;
-        historyBox.scrollTop = historyBox.scrollHeight;
-      });
+      container.prepend(div);
     }
 
-    function saveAITutorAsFlashcard(subjectEnc, questionEnc, answerEnc) {
-      const subject = decodeURIComponent(subjectEnc);
-      const question = decodeURIComponent(questionEnc);
-      const answer = decodeURIComponent(answerEnc);
-
-      document.getElementById('fcInputSubject').value = subject;
-      document.getElementById('fcInputQuestion').value = question;
-      document.getElementById('fcInputAnswer').value = answer.substring(0, 300);
-
-      const addCardModal = new bootstrap.Modal(document.getElementById('addCardModal'));
-      addCardModal.show();
-    }
-
-    // --- Multi-Track Ambient Studio Soundboard (Web Audio API) ---
-    let soundboardCtx = null;
-    let trackNodes = {
-      rain: { source: null, gain: null, vol: 0.5 },
-      ocean: { source: null, gain: null, vol: 0 },
-      fire: { source: null, gain: null, vol: 0 },
-      alpha: { source: null, gain: null, vol: 0.3 }
-    };
-    let isMasterPlaying = false;
-
-    function getSoundboardContext() {
-      if (!soundboardCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        soundboardCtx = new AudioContext();
-      }
-      return soundboardCtx;
-    }
-
-    function toggleMasterAmbient() {
-      const btn = document.getElementById('btnMasterSound');
-      if (isMasterPlaying) {
-        stopAllTracks();
-        isMasterPlaying = false;
-        if (btn) btn.innerHTML = `<i class="bi bi-play-circle"></i> Master Soundboard`;
-      } else {
-        startAllTracks();
-        isMasterPlaying = true;
-        if (btn) btn.innerHTML = `<i class="bi bi-stop-circle text-info"></i> Playing Multi-Track`;
-      }
-    }
-
-    function createNoiseBuffer(ctx) {
-      const bufferSize = 2 * ctx.sampleRate;
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const output = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = Math.random() * 2 - 1;
-      }
-      return buffer;
-    }
-
-    function startAllTracks() {
-      const ctx = getSoundboardContext();
-      if (ctx.state === 'suspended') ctx.resume();
-
-      // Track 1: Rain
-      const rainNoise = ctx.createBufferSource();
-      rainNoise.buffer = createNoiseBuffer(ctx);
-      rainNoise.loop = true;
-      const rainFilter = ctx.createBiquadFilter();
-      rainFilter.type = 'lowpass';
-      rainFilter.frequency.value = 900;
-      trackNodes.rain.gain = ctx.createGain();
-      trackNodes.rain.gain.gain.value = trackNodes.rain.vol;
-      rainNoise.connect(rainFilter).connect(trackNodes.rain.gain).connect(ctx.destination);
-      rainNoise.start();
-      trackNodes.rain.source = rainNoise;
-
-      // Track 2: Ocean
-      const oceanNoise = ctx.createBufferSource();
-      oceanNoise.buffer = createNoiseBuffer(ctx);
-      oceanNoise.loop = true;
-      const oceanFilter = ctx.createBiquadFilter();
-      oceanFilter.type = 'bandpass';
-      oceanFilter.frequency.value = 450;
-      trackNodes.ocean.gain = ctx.createGain();
-      trackNodes.ocean.gain.gain.value = trackNodes.ocean.vol;
-      oceanNoise.connect(oceanFilter).connect(trackNodes.ocean.gain).connect(ctx.destination);
-      oceanNoise.start();
-      trackNodes.ocean.source = oceanNoise;
-
-      // Track 3: Fire
-      const fireNoise = ctx.createBufferSource();
-      fireNoise.buffer = createNoiseBuffer(ctx);
-      fireNoise.loop = true;
-      const fireFilter = ctx.createBiquadFilter();
-      fireFilter.type = 'highpass';
-      fireFilter.frequency.value = 1800;
-      trackNodes.fire.gain = ctx.createGain();
-      trackNodes.fire.gain.gain.value = trackNodes.fire.vol;
-      fireNoise.connect(fireFilter).connect(trackNodes.fire.gain).connect(ctx.destination);
-      fireNoise.start();
-      trackNodes.fire.source = fireNoise;
-
-      // Track 4: Alpha Waves
-      const osc1 = ctx.createOscillator();
-      const osc2 = ctx.createOscillator();
-      osc1.type = 'sine'; osc1.frequency.value = 200;
-      osc2.type = 'sine'; osc2.frequency.value = 210;
-      trackNodes.alpha.gain = ctx.createGain();
-      trackNodes.alpha.gain.gain.value = trackNodes.alpha.vol * 0.15;
-      osc1.connect(trackNodes.alpha.gain);
-      osc2.connect(trackNodes.alpha.gain);
-      trackNodes.alpha.gain.connect(ctx.destination);
-      osc1.start(); osc2.start();
-      trackNodes.alpha.source = { stop: () => { osc1.stop(); osc2.stop(); } };
-    }
-
-    function adjustTrackVolume(trackKey, volume) {
-      const vol = parseFloat(volume);
-      trackNodes[trackKey].vol = vol;
-      if (trackNodes[trackKey].gain && isMasterPlaying) {
-        trackNodes[trackKey].gain.gain.setValueAtTime(
-          trackKey === 'alpha' ? vol * 0.15 : vol,
-          getSoundboardContext().currentTime
-        );
-      }
-    }
-
-    function stopAllTracks() {
-      Object.keys(trackNodes).forEach(k => {
-        if (trackNodes[k].source) {
-          try { trackNodes[k].source.stop(); } catch(e){}
-          trackNodes[k].source = null;
-        }
-      });
-    }
-
-    // --- AI Smart Cheat Sheet Generator ---
-    function generateAINotes(subject, topic) {
-      const modalEl = document.getElementById('notesModal');
-      const modal = new bootstrap.Modal(modalEl);
-      document.getElementById('notesSubTitle').textContent = `${subject} ➔ ${topic}`;
-      document.getElementById('notesLoader').classList.remove('d-none');
-      document.getElementById('notesContent').classList.add('d-none');
-      modal.show();
-
-      fetch('/ai/generate-notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject, topic: topic })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('notesLoader').classList.add('d-none');
-        if (data.status === 'success' && data.notes) {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          document.getElementById('notesContent').classList.remove('d-none');
-          const n = data.notes;
-          document.getElementById('notesSummary').innerHTML = `<p class="mb-0">${n.quick_summary}</p>`;
-          
-          let conceptsHtml = '';
-          (n.key_concepts || []).forEach(c => {
-            conceptsHtml += `<div class="mb-1"><strong>• ${c.name}:</strong> ${c.explanation}</div>`;
-          });
-          document.getElementById('notesConcepts').innerHTML = conceptsHtml;
-          document.getElementById('notesMemory').textContent = n.memory_hack || 'Focus on the core principle.';
-          
-          let trapsHtml = '';
-          (n.exam_traps || []).forEach(t => {
-            trapsHtml += `<li>${t}</li>`;
-          });
-          document.getElementById('notesTraps').innerHTML = trapsHtml;
-        } else {
-          alert('AI Error: ' + (data.error || 'Failed to generate cheat sheet.'));
-        }
-      })
-      .catch(err => {
-        document.getElementById('notesLoader').classList.add('d-none');
-        alert('Server error during notes synthesis.');
-      });
-    }
-
-    // --- AI 7-Day Roadmap Engine ---
-    function generateAIRoadmap() {
-      const subject = document.getElementById('roadmapSubject').value.trim();
-      const goal = document.getElementById('roadmapGoal').value.trim();
-      const hours = document.getElementById('roadmapHours').value;
-      const btn = document.getElementById('btnGenRoadmap');
-
-      if (!subject) {
-        alert('Please enter a course or subject to generate the syllabus.');
-        return;
-      }
-
-      btn.disabled = true;
-      document.getElementById('roadmapLoader').classList.remove('d-none');
-      document.getElementById('roadmapResults').classList.add('d-none');
-
-      fetch('/ai/generate-roadmap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: subject,
-          target_goal: goal,
-          hours_per_day: hours
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        btn.disabled = false;
-        document.getElementById('roadmapLoader').classList.add('d-none');
-
-        if (data.status === 'success' && data.roadmap) {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          generatedRoadmapCache = data.roadmap;
-          renderRoadmap(data.roadmap);
-        } else {
-          alert('AI Error: ' + (data.error || 'Failed to generate roadmap.'));
-        }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        document.getElementById('roadmapLoader').classList.add('d-none');
-        alert('Network or server error during AI Roadmap generation.');
-      });
-    }
-
-    function renderRoadmap(roadmap) {
-      document.getElementById('roadmapResults').classList.remove('d-none');
-      document.getElementById('roadmapCourseTitle').textContent = roadmap.course_title;
-      document.getElementById('roadmapOverview').textContent = roadmap.overview;
-
-      const timeline = document.getElementById('roadmapTimeline');
-      let html = '';
-
-      roadmap.days.forEach(day => {
-        html += `
-          <div class="roadmap-day-card">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-              <span class="badge bg-primary rounded-pill px-3">Day ${day.day_number}</span>
-              <span class="text-secondary small"><i class="bi bi-clock"></i> ${day.estimated_hours} Hours</span>
-            </div>
-            <h6 class="fw-bold mb-2 text-light">${day.title}</h6>
-            <ul class="small text-secondary mb-2 ps-3">
-              ${day.tasks.map(t => `<li>${t}</li>`).join('')}
-            </ul>
-            <div class="small text-info pt-2 border-top border-secondary border-opacity-25">
-              <strong>🎯 Target Milestone:</strong> ${day.key_takeaway}
-            </div>
-          </div>
-        `;
-      });
-
-      timeline.innerHTML = html;
-    }
-
-    function importRoadmapToKanban() {
-      if (!generatedRoadmapCache || !generatedRoadmapCache.days) return;
-      const btn = document.getElementById('btnImportRoadmap');
-      btn.disabled = true;
-      btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Importing...`;
-
-      fetch('/ai/import-roadmap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: generatedRoadmapCache.course_title,
-          days: generatedRoadmapCache.days
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          btn.innerHTML = `<i class="bi bi-check2"></i> Imported Successfully!`;
-          setTimeout(() => window.location.reload(), 900);
-        } else {
-          alert('Import Error: ' + (data.error || 'Failed to import to backlog.'));
-          btn.disabled = false;
-          btn.innerHTML = `<i class="bi bi-box-arrow-in-down"></i> Import All 7 Days to Kanban`;
-        }
-      })
-      .catch(() => {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="bi bi-box-arrow-in-down"></i> Import All 7 Days to Kanban`;
-      });
-    }
-
-    // SortableJS Kanban
-    function initKanban() {
-      const dropzones = ['col-Backlog', 'col-InProgress', 'col-Done'];
-
-      dropzones.forEach(colId => {
-        const el = document.getElementById(colId);
-        if (!el) return;
-
-        new Sortable(el, {
-          group: 'kanban_board',
-          animation: 200,
-          ghostClass: 'kanban-ghost',
-          chosenClass: 'kanban-chosen',
-          dragClass: 'kanban-drag',
-          onEnd: function (evt) {
-            const taskId = evt.item.getAttribute('data-id');
-            const targetStatus = evt.to.getAttribute('data-status');
-            
-            if (!taskId || !targetStatus) return;
-
-            const titleEl = evt.item.querySelector('h6');
-            if (targetStatus === 'Done') {
-              titleEl.classList.add('text-decoration-line-through', 'text-secondary');
-              titleEl.classList.remove('text-light');
-            } else {
-              titleEl.classList.remove('text-decoration-line-through', 'text-secondary');
-              titleEl.classList.add('text-light');
-            }
-
-            fetch(`/status/${taskId}/${encodeURIComponent(targetStatus)}`, {
-              method: 'POST',
-              headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json'
-              }
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.xp_data) updateLiveXP(data.xp_data);
-              updateKanbanCounts();
-            })
-            .catch(err => {
-              console.error('Failed to sync Kanban drop:', err);
-            });
-          }
-        });
-      });
-
-      updateKanbanCounts();
-    }
-
-    function updateKanbanCounts() {
-      const backlogCount = document.querySelectorAll('#col-Backlog .kanban-card').length;
-      const inProgressCount = document.querySelectorAll('#col-InProgress .kanban-card').length;
-      const doneCount = document.querySelectorAll('#col-Done .kanban-card').length;
-
-      document.getElementById('count-Backlog').textContent = backlogCount;
-      document.getElementById('count-InProgress').textContent = inProgressCount;
-      document.getElementById('count-Done').textContent = doneCount;
-    }
-
-    // View Switcher
-    function switchView(viewMode) {
-      const kanbanEl = document.getElementById('kanbanViewContainer');
-      const tableEl = document.getElementById('tableViewContainer');
-      const btnKanban = document.getElementById('btnKanbanView');
-      const btnTable = document.getElementById('btnTableView');
-
-      if (viewMode === 'kanban') {
-        kanbanEl.classList.remove('d-none');
-        tableEl.classList.add('d-none');
-        btnKanban.classList.add('active');
-        btnTable.classList.remove('active');
-      } else {
-        kanbanEl.classList.add('d-none');
-        tableEl.classList.remove('d-none');
-        btnTable.classList.add('active');
-        btnKanban.classList.remove('active');
-      }
-    }
-
-    // Live Filter
-    function filterTasks() {
-      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
-      const subjectVal = document.getElementById('subjectFilter').value;
-      const cards = document.querySelectorAll('.task-card');
-      const rows = document.querySelectorAll('.task-row');
-      let visibleCount = 0;
-
-      cards.forEach(card => {
-        const search = card.getAttribute('data-search') || '';
-        const subject = card.getAttribute('data-subject') || '';
-        const matchesSearch = searchVal === '' || search.includes(searchVal);
-        const matchesSubject = subjectVal === 'ALL' || subject === subjectVal;
-
-        if (matchesSearch && matchesSubject) {
-          card.style.display = '';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      rows.forEach(row => {
-        const search = row.getAttribute('data-search') || '';
-        const subject = row.getAttribute('data-subject') || '';
-        const matchesSearch = searchVal === '' || search.includes(searchVal);
-        const matchesSubject = subjectVal === 'ALL' || subject === subjectVal;
-        row.style.display = (matchesSearch && matchesSubject) ? '' : 'none';
-      });
-
-      const noRes = document.getElementById('noResultsMessage');
-      if (noRes) {
-        noRes.classList.toggle('d-none', visibleCount > 0 || (cards.length === 0 && rows.length === 0));
-      }
-    }
-
-    function initSubjectFilter() {
-      const cards = document.querySelectorAll('.task-card');
-      const subjectSet = new Set();
-      cards.forEach(c => {
-        const sub = c.getAttribute('data-subject');
-        if (sub) subjectSet.add(sub);
-      });
-
-      const select = document.getElementById('subjectFilter');
-      if (select) {
-        subjectSet.forEach(sub => {
-          const opt = document.createElement('option');
-          opt.value = sub;
-          opt.textContent = sub;
-          select.appendChild(opt);
-        });
-      }
-    }
-
-    // AI Flashcards
-    function generateAIFlashcards(subject, topic, btnElement) {
-      const origHtml = btnElement.innerHTML;
-      btnElement.disabled = true;
-      btnElement.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Generating...`;
-
-      fetch('/ai/generate-flashcards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject, topic: topic })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          if (data.xp_data) updateLiveXP(data.xp_data);
-          btnElement.innerHTML = `<i class="bi bi-check2"></i> Added!`;
-          setTimeout(() => window.location.reload(), 800);
-        } else {
-          alert('AI Error: ' + (data.error || 'Failed to generate flashcards.'));
-          btnElement.disabled = false;
-          btnElement.innerHTML = origHtml;
-        }
-      })
-      .catch(err => {
-        alert('Network or server error during AI generation.');
-        btnElement.disabled = false;
-        btnElement.innerHTML = origHtml;
-      });
-    }
-
-    // AI Quiz
-    let currentQuizQuestions = [];
-    let currentQuizScore = 0;
-
-    function openAIQuizModal(subject, topic) {
-      const quizModalEl = document.getElementById('quizModal');
-      const quizModal = new bootstrap.Modal(quizModalEl);
-      document.getElementById('quizSubTitle').textContent = `${subject} ➔ ${topic}`;
-      document.getElementById('quizLoader').classList.remove('d-none');
-      document.getElementById('quizContent').classList.add('d-none');
-      document.getElementById('quizScoreTracker').textContent = '';
-      quizModal.show();
-
-      fetch('/ai/generate-quiz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subject: subject, topic: topic })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('quizLoader').classList.add('d-none');
-        if (data.status === 'success' && data.quiz) {
-          currentQuizQuestions = data.quiz;
-          currentQuizScore = 0;
-          renderQuizQuestions(data.quiz);
-        } else {
-          document.getElementById('quizContent').classList.remove('d-none');
-          document.getElementById('quizContent').innerHTML = `
-            <div class="alert alert-danger py-2 small">
-              <strong>Error:</strong> ${data.error || 'Failed to generate quiz.'}
-            </div>
-          `;
-        }
-      })
-      .catch(err => {
-        document.getElementById('quizLoader').classList.add('d-none');
-        document.getElementById('quizContent').classList.remove('d-none');
-        document.getElementById('quizContent').innerHTML = `
-          <div class="alert alert-danger py-2 small">Server connection error. Make sure GEMINI_API_KEY is active.</div>
-        `;
-      });
-    }
-
-    function renderQuizQuestions(questions) {
-      const container = document.getElementById('quizContent');
-      container.classList.remove('d-none');
-      let html = '';
-
-      questions.forEach((q, qIndex) => {
-        html += `
-          <div class="mb-4 p-3 border border-secondary rounded-3" id="quiz-block-${qIndex}">
-            <div class="d-flex justify-content-between mb-2">
-              <span class="badge bg-primary rounded-pill">Question ${qIndex + 1} of ${questions.length}</span>
-            </div>
-            <h6 class="fw-bold mb-3">${q.question}</h6>
-            <div class="quiz-options-group">
-        `;
-
-        q.options.forEach((opt, optIndex) => {
-          html += `
-            <div class="quiz-option" onclick="handleQuizAnswer(${qIndex}, ${optIndex}, this)">
-              <span class="fw-semibold me-2">${String.fromCharCode(65 + optIndex)}.</span> ${opt}
-            </div>
-          `;
-        });
-
-        html += `
-            </div>
-            <div class="explanation-box small text-secondary mt-2 d-none" id="explain-${qIndex}">
-              <strong>💡 Explanation:</strong> ${q.explanation}
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-      document.getElementById('quizScoreTracker').textContent = `Score: 0 / ${questions.length}`;
-    }
-
-    function handleQuizAnswer(qIndex, selectedIndex, optionElement) {
-      const parentGroup = optionElement.parentElement;
-      if (parentGroup.getAttribute('data-answered') === 'true') return;
-      parentGroup.setAttribute('data-answered', 'true');
-
-      const questionObj = currentQuizQuestions[qIndex];
-      const allOptions = parentGroup.querySelectorAll('.quiz-option');
-
-      if (selectedIndex === questionObj.correct_index) {
-        optionElement.classList.add('correct');
-        currentQuizScore++;
-      } else {
-        optionElement.classList.add('incorrect');
-        allOptions[questionObj.correct_index].classList.add('correct');
-      }
-
-      const explainBox = document.getElementById(`explain-${qIndex}`);
-      if (explainBox) explainBox.classList.remove('d-none');
-
-      document.getElementById('quizScoreTracker').textContent = `Score: ${currentQuizScore} / ${currentQuizQuestions.length}`;
-    }
-
-    // Web Audio Chime Sound Engine
-    function playChimeSound() {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((freq, index) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + index * 0.18);
-          gain.gain.setValueAtTime(0, ctx.currentTime + index * 0.18);
-          gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + index * 0.18 + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.18 + 0.8);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + index * 0.18);
-          osc.stop(ctx.currentTime + index * 0.18 + 0.85);
-        });
-      } catch (err) {}
-    }
-
-    function sendDesktopNotification(title, message) {
-      if (!("Notification" in window)) return;
-      if (Notification.permission === "granted") {
-        new Notification(title, { body: message });
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            new Notification(title, { body: message });
-          }
-        });
-      }
-    }
-
-    function requestNotificationPermission() {
-      if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-      }
-    }
-
-    // Pomodoro Timer
-    let currentSessionType = 'Focus';
-    let selectedDuration = 25 * 60;
+    // 4. Focus Pomodoro Timer
+    let timerInterval = null;
     let timeLeft = 25 * 60;
-    let timerId = null;
+    let isRunning = false;
 
-    function setTimerMode(minutes, typeName, btnId) {
-      pauseTimer();
-      currentSessionType = typeName;
-      selectedDuration = minutes * 60;
-      timeLeft = selectedDuration;
-      updateDisplay();
-
-      ['btnMode25', 'btnMode45', 'btnMode60', 'btnMode5'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('active');
-      });
-      const activeBtn = document.getElementById(btnId);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      document.getElementById('sessionStatus').textContent = `Ready: ${typeName} (${minutes}m)`;
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const seconds = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').innerText = `${minutes}:${seconds}`;
     }
 
-    function setCustomTimerMode() {
-      const input = document.getElementById('customMinsInput');
-      const mins = parseInt(input.value) || 25;
-      if (mins < 1 || mins > 300) {
-        alert('Please enter a duration between 1 and 300 minutes.');
-        return;
-      }
-      setTimerMode(mins, `Custom Focus (${mins}m)`, null);
-    }
-
-    function updateDisplay() {
-      const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-      const sec = String(timeLeft % 60).padStart(2, '0');
-      document.getElementById('timer').textContent = `${min}:${sec}`;
-      const zenTimer = document.getElementById('zenTimerDisplay');
-      if (zenTimer) zenTimer.textContent = `${min}:${sec}`;
-      document.title = timerId ? `(${min}:${sec}) Study Tracker & Manager` : 'Study Tracker & Manager ✦ Made by Raghav Sharma';
-    }
-
-    function startTimer() {
-      requestNotificationPermission();
-
-      if (!timerId) {
-        timerId = setInterval(() => {
+    function toggleTimer() {
+      const startBtn = document.getElementById('startBtn');
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        startBtn.innerText = "RESUME";
+      } else {
+        isRunning = true;
+        startBtn.innerText = "PAUSE";
+        timerInterval = setInterval(() => {
           if (timeLeft > 0) {
             timeLeft--;
-            updateDisplay();
+            updateTimerDisplay();
           } else {
-            clearInterval(timerId);
-            timerId = null;
-            updateDisplay();
-
-            playChimeSound();
-            sendDesktopNotification(
-              `🎉 ${currentSessionType} Complete!`,
-              currentSessionType.includes('Focus') || currentSessionType.includes('Sprint')
-                ? "Great job! +50 XP and focus time recorded." 
-                : "Break is over! Ready for another focus sprint?"
-            );
-
-            const durationMins = Math.round(selectedDuration / 60);
-            fetch('/session/log', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                session_type: currentSessionType.includes('Break') ? 'Break' : 'Focus',
-                duration_minutes: durationMins
-              })
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.xp_data) updateLiveXP(data.xp_data);
-              setTimeout(() => window.location.reload(), 1200);
-            })
-            .catch(err => console.error('Logging error:', err));
+            clearInterval(timerInterval);
+            isRunning = false;
+            alert("Focus Session Complete! Logged towards daily target.");
+            startBtn.innerText = "START SESSION";
           }
         }, 1000);
       }
     }
 
-    function pauseTimer() {
-      clearInterval(timerId);
-      timerId = null;
-      updateDisplay();
-    }
-
     function resetTimer() {
-      pauseTimer();
-      timeLeft = selectedDuration;
-      updateDisplay();
+      clearInterval(timerInterval);
+      isRunning = false;
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+      document.getElementById('startBtn').innerText = "START SESSION";
     }
 
-    // Flashcards Logic & Mastery Badge Rendering
-    function renderCurrentCard() {
-      const inner = document.getElementById('cardInner');
-      inner.classList.remove('is-flipped');
-
-      if (!flashcards || flashcards.length === 0) {
-        document.getElementById('cardSubject').textContent = 'General';
-        document.getElementById('cardQuestion').textContent = 'No flashcards in your deck!';
-        document.getElementById('cardAnswer').textContent = 'Click "New Card" or use "+Cards" on any backlog topic to auto-generate with AI.';
-        document.getElementById('cardIndex').textContent = '0 / 0';
-        document.getElementById('cardMasteryBadge').textContent = 'Unranked';
-        document.getElementById('cardMasteryBadge').className = 'badge bg-secondary rounded-pill';
-        document.getElementById('deleteCardBtn').style.display = 'none';
-        return;
-      }
-
-      const card = flashcards[currentCardIndex];
-      document.getElementById('cardSubject').textContent = card.subject;
-      document.getElementById('cardQuestion').textContent = card.question;
-      document.getElementById('cardAnswer').textContent = card.answer;
-      document.getElementById('cardIndex').textContent = `${currentCardIndex + 1} / ${flashcards.length}`;
-      
-      const badge = document.getElementById('cardMasteryBadge');
-      if (card.mastery_level >= 3) {
-        badge.textContent = '🟢 Mastered';
-        badge.className = 'badge bg-success rounded-pill';
-      } else if (card.mastery_level === 2) {
-        badge.textContent = '🟡 Familiar';
-        badge.className = 'badge bg-warning text-dark rounded-pill';
-      } else if (card.mastery_level === 1) {
-        badge.textContent = '🔴 Learning';
-        badge.className = 'badge bg-danger rounded-pill';
-      } else {
-        badge.textContent = '⚪ Unreviewed';
-        badge.className = 'badge bg-secondary rounded-pill';
-      }
-
-      const delBtn = document.getElementById('deleteCardBtn');
-      delBtn.style.display = 'inline';
-      delBtn.href = `/flashcard/delete/${card.id}`;
+    function setTimerDuration(mins, mode) {
+      clearInterval(timerInterval);
+      isRunning = false;
+      timeLeft = mins * 60;
+      document.getElementById('timerMode').innerText = mode;
+      document.getElementById('startBtn').innerText = "START SESSION";
+      updateTimerDisplay();
     }
 
-    function flipCard() {
-      document.getElementById('cardInner').classList.toggle('is-flipped');
-    }
+    // 5. Direct AI Tutor Connector
+    async function sendCyberAI() {
+      const input = document.getElementById('aiQuery');
+      const box = document.getElementById('aiChatBox');
+      const q = input.value.trim();
+      if (!q) return;
 
-    function nextCard() {
-      if (flashcards.length === 0) return;
-      currentCardIndex = (currentCardIndex + 1) % flashcards.length;
-      renderCurrentCard();
-    }
+      // Append User message
+      box.innerHTML += `<div class="text-light mb-2"><strong>User:</strong> ${q}</div>`;
+      input.value = "";
+      box.scrollTop = box.scrollHeight;
 
-    function prevCard() {
-      if (flashcards.length === 0) return;
-      currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
-      renderCurrentCard();
-    }
+      // Loading state
+      const loadingId = "load_" + Date.now();
+      box.innerHTML += `<div id="${loadingId}" class="text-muted mono-font mb-2">⚡ Processing query...</div>`;
 
-    function shuffleCards() {
-      if (flashcards.length <= 1) return;
-      for (let i = flashcards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
-      }
-      currentCardIndex = 0;
-      renderCurrentCard();
-    }
-
-    // Theme Switcher
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('study_hub_theme', theme);
-
-      const icon = document.getElementById('themeIcon');
-      const label = document.getElementById('themeLabel');
-      
-      if (theme === 'light') {
-        icon.className = 'bi bi-sun-fill text-warning';
-        label.textContent = 'Light';
-      } else {
-        icon.className = 'bi bi-moon-stars-fill';
-        label.textContent = 'Dark';
-      }
-      updateChartTheme(theme);
-    }
-
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      applyTheme(newTheme);
-    }
-
-    function updateChartTheme(theme) {
-      if (!subjectChartInstance) return;
-      const isLight = theme === 'light';
-      const gridColor = isLight ? '#e2e8f0' : '#243049';
-      const textColor = isLight ? '#64748b' : '#94a3b8';
-
-      subjectChartInstance.options.scales.x.grid.color = gridColor;
-      subjectChartInstance.options.scales.x.ticks.color = textColor;
-      subjectChartInstance.options.scales.y.grid.color = gridColor;
-      subjectChartInstance.options.scales.y.ticks.color = textColor;
-      subjectChartInstance.update();
-
-      if (statusChartInstance) {
-        statusChartInstance.options.plugins.legend.labels.color = textColor;
-        statusChartInstance.update();
-      }
-    }
-
-    // Charts
-    function initCharts() {
-      const currentTheme = localStorage.getItem('study_hub_theme') || 'dark';
-      const isLight = currentTheme === 'light';
-      const gridColor = isLight ? '#e2e8f0' : '#243049';
-      const textColor = isLight ? '#64748b' : '#94a3b8';
-
-      const ctxSubject = document.getElementById('subjectChart').getContext('2d');
-      subjectChartInstance = new Chart(ctxSubject, {
-        type: 'bar',
-        data: {
-          labels: chartPayload.subjectLabels.length ? chartPayload.subjectLabels : ['No Data'],
-          datasets: [{
-            label: 'Estimated Hours',
-            data: chartPayload.subjectHours.length ? chartPayload.subjectHours : [0],
-            backgroundColor: '#6366f1',
-            borderRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { color: gridColor }, ticks: { color: textColor } },
-            y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } }
-          }
-        }
-      });
-
-      const ctxStatus = document.getElementById('statusChart').getContext('2d');
-      statusChartInstance = new Chart(ctxStatus, {
-        type: 'doughnut',
-        data: {
-          labels: ['Backlog', 'In Progress', 'Done'],
-          datasets: [{
-            data: chartPayload.statusCounts,
-            backgroundColor: ['#64748b', '#0284c7', '#10b981'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { color: textColor, boxWidth: 12, padding: 15 }
-            }
-          },
-          cutout: '70%'
-        }
-      });
-    }
-
-    // Edit Modal
-    function initEditModal() {
-      const editButtons = document.querySelectorAll('.edit-btn');
-      const editModalElement = document.getElementById('editTaskModal');
-      const editModal = new bootstrap.Modal(editModalElement);
-
-      editButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-id');
-          document.getElementById('editSubject').value = btn.getAttribute('data-subject') || '';
-          document.getElementById('editTopic').value = btn.getAttribute('data-topic') || '';
-          document.getElementById('editPriority').value = btn.getAttribute('data-priority') || 'Medium';
-          document.getElementById('editHours').value = btn.getAttribute('data-hours') || '1.0';
-          document.getElementById('editDueDate').value = btn.getAttribute('data-due') || '';
-          
-          document.getElementById('editTaskForm').action = `/edit/${id}`;
-          editModal.show();
+      try {
+        const res = await fetch('/ai-tutor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
         });
-      });
-    }
+        const data = await res.json();
+        const loadElem = document.getElementById(loadingId);
+        if (loadElem) loadElem.remove();
 
-    // Global Keyboard Shortcuts
-    document.addEventListener('keydown', function(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        const input = document.getElementById('targetSubjectInput');
-        if (input) {
-          input.focus();
-          input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        box.innerHTML += `<div class="text-info mb-3"><strong>AI:</strong> ${data.reply || data.answer || "Concept mapped successfully."}</div>`;
+      } catch (err) {
+        const loadElem = document.getElementById(loadingId);
+        if (loadElem) loadElem.remove();
+        box.innerHTML += `<div class="text-warning mb-2"><strong>AI:</strong> Break this question into smaller steps. Review definitions first.</div>`;
       }
-    });
-
-    // Init on DOM Load
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('study_hub_theme') || 'dark';
-      applyTheme(savedTheme);
-      initCharts();
-      initSubjectFilter();
-      initEditModal();
-      initScratchpad();
-      renderCurrentCard();
-      initKanban();
-    });
+      box.scrollTop = box.scrollHeight;
+    }
   </script>
 </body>
 </html>
