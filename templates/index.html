@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title id="pageTitle">NEURAL-HUD // Student Command Center</title>
   
+  <!-- PWA Manifest & Mobile Styling -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00f0ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="AI Dynamic Study HUD for JEE, NEET, and Competitive Aspirants" />
   <meta name="author" content="Raghav Sharma" />
 
@@ -299,6 +304,10 @@
         <button class="btn btn-outline-secondary btn-sm mono-font rounded-pill" onclick="openOnboarding()">
           <i class="bi bi-gear-wide-connected me-1"></i> Switch Exam
         </button>
+        <!-- PWA Install Button (Starts hidden, appears on supported devices) -->
+<button id="pwaInstallBtn" class="btn btn-outline-info btn-sm rounded-pill mono-font" style="display: none;">
+  <i class="bi bi-download me-1"></i> Install App
+</button>
         <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">
           <i class="bi bi-power"></i>
         </a>
@@ -457,6 +466,45 @@
 
   <!-- CORE LOGIC & SOUND SYNTHESIS -->
   <script>
+    // --- 1. Register Service Worker for Offline Caching ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => console.log('PWA Service Worker registered:', reg.scope))
+      .catch((err) => console.warn('PWA Service Worker registration failed:', err));
+  });
+}
+
+// --- 2. Handle PWA Install Prompt Button ---
+let deferredPrompt = null;
+const installBtn = document.getElementById('pwaInstallBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent automatic mini-infobar on mobile
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show our custom Install App button
+  if (installBtn) {
+    installBtn.style.display = 'inline-flex';
+  }
+});
+
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    // Show browser native install prompt
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`PWA install prompt choice: ${outcome}`);
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  console.log('PWA successfully installed on device');
+  if (installBtn) installBtn.style.display = 'none';
+});
     let activeProfile = null;
     let chaptersData = [];
 

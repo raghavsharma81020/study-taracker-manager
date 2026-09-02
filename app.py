@@ -1697,5 +1697,15 @@ def ai_tutor():
             " standard first-principles formulas."
         )
     })
+    # --- PWA Mobile App Support ---
+@app.route('/manifest.json')
+def serve_manifest():
+    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+
+@app.route('/sw.js')
+def serve_sw():
+    response = send_from_directory('static', 'sw.js', mimetype='application/javascript')
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

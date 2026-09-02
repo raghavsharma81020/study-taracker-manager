@@ -1,0 +1,18 @@
+{
+  "name": "Cyber Study OS",
+  "short_name": "StudyOS",
+  "description": "Futuristic AI Exam Command Center and Study Tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060913",
+  "theme_color": "#00f0ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/cpu.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
