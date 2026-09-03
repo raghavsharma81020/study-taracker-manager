@@ -41,9 +41,9 @@
 
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* Top Navigation HUD */
+    /* Navigation */
     .top-nav {
-      background: rgba(14, 19, 31, 0.88);
+      background: rgba(14, 19, 31, 0.9);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
@@ -56,7 +56,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 14px;
-      padding: 22px;
+      padding: 20px;
       transition: border-color 0.2s ease;
     }
     .card-panel:hover { border-color: #334155; }
@@ -87,67 +87,33 @@
       transition: width 0.3s ease;
     }
 
-    /* Weekly Velocity */
-    .velocity-chart {
-      display: flex;
-      align-items: flex-end;
-      gap: 10px;
-      height: 75px;
-      padding-top: 10px;
+    /* GitHub-Style 90-Day Heatmap */
+    .heatmap-scroll-container {
+      overflow-x: auto;
+      padding-bottom: 4px;
     }
-    .velocity-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      height: 100%;
+    .heatmap-grid {
+      display: grid;
+      grid-template-rows: repeat(7, 12px);
+      grid-auto-flow: column;
+      grid-auto-columns: 12px;
+      gap: 3.5px;
     }
-    .velocity-bar-track {
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      display: flex;
-      align-items: flex-end;
-      overflow: hidden;
-    }
-    .velocity-bar {
-      width: 100%;
-      background: var(--accent-cyan);
-      border-radius: 6px;
-      transition: height 0.4s ease;
-    }
-    .velocity-label { font-size: 0.65rem; color: var(--text-secondary); }
-
-    /* Subject Breakdown Pill Box */
-    .sub-breakdown-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 8px;
-    }
-
-    /* Filter Pills */
-    .pill-filter {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 20px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
+    .heatmap-cell {
+      width: 12px;
+      height: 12px;
+      border-radius: 2.5px;
+      background: #161b26;
+      border: 1px solid rgba(255, 255, 255, 0.04);
       cursor: pointer;
-      transition: all 0.15s ease;
+      position: relative;
     }
-    .pill-filter:hover, .pill-filter.active {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
-    }
+    .heatmap-cell.l-1 { background: #0e4429; border-color: #006d32; }
+    .heatmap-cell.l-2 { background: #006d32; border-color: #26a641; }
+    .heatmap-cell.l-3 { background: #26a641; border-color: #39d353; }
+    .heatmap-cell.l-4 { background: #39d353; border-color: #56f06f; }
 
-    /* Matrix Rows */
+    /* Topics Matrix */
     .topic-row {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
@@ -186,6 +152,18 @@
       color: var(--accent-emerald);
     }
 
+    /* SRS Queue Item */
+    .srs-item {
+      background: #111a2e;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     /* Inputs */
     .hub-input {
       background: #07090e;
@@ -214,16 +192,22 @@
     }
     .btn-action-primary:hover { background: #0284c7; color: #fff; }
 
-    /* Zen Fullscreen Focus Room */
-    #zenRoom {
-      position: fixed;
-      inset: 0;
-      background: #05070c;
-      z-index: 99999;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    /* Sound Mixer Faders */
+    .sound-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 5px;
+      background: #1e293b;
+      outline: none;
+    }
+    .sound-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
     }
 
     /* Modals */
@@ -249,35 +233,10 @@
       max-height: 90vh;
       overflow-y: auto;
     }
-
-    /* Print Revision Sheet Styles */
-    @media print {
-      body { background: #fff !important; color: #000 !important; }
-      .top-nav, .btn, #velocityBars, #timerDisplay, .no-print, input, textarea, select { display: none !important; }
-      .card-panel { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; page-break-inside: avoid; }
-      .text-white, .text-light, .text-secondary { color: #000 !important; }
-    }
   </style>
 </head>
 
 <body>
-
-  <!-- ================= ZEN FULLSCREEN ROOM ================= -->
-  <div id="zenRoom">
-    <div class="position-absolute top-0 end-0 p-4">
-      <button class="btn btn-outline-secondary rounded-pill mono" onclick="exitZenMode()">
-        <i class="bi bi-x-lg me-1"></i> Exit Zen
-      </button>
-    </div>
-    <div class="text-secondary mono small mb-2 tracking-wide">ZEN FOCUS SANCTUARY</div>
-    <div id="zenTimerDisplay" class="display-1 fw-bold text-white mono mb-4" style="font-size: 7rem;">25:00</div>
-    <div class="d-flex gap-3">
-      <button class="btn btn-action-primary px-5 py-3 fs-5" id="zenStartBtn" onclick="toggleTimer()">Start</button>
-      <button class="btn btn-outline-secondary px-4 py-3" onclick="toggleBrownNoise()">
-        <i class="bi bi-soundwave me-1"></i> Toggle Audio
-      </button>
-    </div>
-  </div>
 
   <!-- ================= 1. NAV BAR HUD ================= -->
   <nav class="top-nav py-3 mb-4">
@@ -296,16 +255,13 @@
         <small class="mono text-light" id="examCountdownText">Loading Target...</small>
       </div>
 
-      <!-- Quick Actions -->
+      <!-- Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('presetModal')">
-          <i class="bi bi-lightning-charge me-1"></i> Load Syllabus
+          <i class="bi bi-lightning-charge me-1"></i> Presets
         </button>
-        <button class="btn btn-outline-light btn-sm rounded-pill" onclick="enterZenMode()">
-          <i class="bi bi-arrows-fullscreen me-1"></i> Zen Focus
-        </button>
-        <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="printCheatSheet()">
-          <i class="bi bi-printer me-1"></i> Print Sheet
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
+          <i class="bi bi-sliders2-vertical me-1"></i> Sound Mixer
         </button>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('profileModal')">
           <i class="bi bi-sliders me-1"></i> Targets
@@ -319,12 +275,12 @@
 
   <div class="container">
 
-    <!-- ================= 2. TOP METRICS & VELOCITY ================= -->
+    <!-- ================= 2. TOP METRICS ================= -->
     <div class="row g-3 mb-4">
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Syllabus Progress</span>
+            <span>Syllabus Covered</span>
             <i class="bi bi-pie-chart text-info"></i>
           </div>
           <div class="stat-number text-info mono" id="statSyllabus">0%</div>
@@ -337,7 +293,7 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Today's Study</span>
+            <span>Today's Hours</span>
             <i class="bi bi-clock text-emerald"></i>
           </div>
           <div class="stat-number text-white mono" id="statHours">0.0 <span class="fs-6 text-secondary">/ 6.0h</span></div>
@@ -350,61 +306,87 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Revisions Logged</span>
-            <i class="bi bi-arrow-repeat text-violet"></i>
+            <span>SRS Due Today</span>
+            <i class="bi bi-arrow-repeat text-warning"></i>
           </div>
-          <div class="stat-number mono" style="color: var(--accent-violet)" id="statRevisions">0</div>
+          <div class="stat-number text-warning mono" id="statSrsDue">0</div>
           <div class="meter-bar">
-            <div id="statRevisionsFill" class="meter-fill" style="width: 0%; background: var(--accent-violet);"></div>
+            <div id="statSrsFill" class="meter-fill bg-warning" style="width: 0%;"></div>
           </div>
         </div>
       </div>
 
       <div class="col-6 col-lg-3">
-        <div class="card-panel py-3">
-          <div class="stat-title d-flex justify-content-between mb-1">
-            <span>Weekly Velocity</span>
-            <small class="mono text-secondary">M-S</small>
+        <div class="card-panel">
+          <div class="stat-title d-flex justify-content-between">
+            <span>Target Cutoff Gap</span>
+            <i class="bi bi-graph-up-arrow text-rose"></i>
           </div>
-          <div class="velocity-chart" id="velocityBars"></div>
+          <div class="stat-number mono" style="color: var(--accent-rose)" id="statCutoffGap">0.0%</div>
+          <div class="meter-bar">
+            <div id="statCutoffFill" class="meter-fill" style="width: 0%; background: var(--accent-rose);"></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ================= 3. SUBJECT-WISE BREAKDOWN ANALYTICS ================= -->
+    <!-- ================= 3. 90-DAY ACTIVITY HEATMAP ================= -->
     <div class="card-panel mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="fw-bold text-white mb-0"><i class="bi bi-bar-chart-steps text-info me-2"></i>Subject-Wise Progress Analytics</h6>
-        <small class="text-secondary">Completion percentage by discipline</small>
+      <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold text-white mb-0"><i class="bi bi-calendar-week me-2 text-info"></i>90-Day Study Consistency Grid</h6>
+          <small class="text-secondary" id="heatmapSummary">0 active days in past 90 days</small>
+        </div>
+        <div class="d-flex align-items-center gap-1 small text-secondary">
+          <span style="font-size: 0.7rem;">Less</span>
+          <span class="heatmap-cell d-inline-block"></span>
+          <span class="heatmap-cell l-1 d-inline-block"></span>
+          <span class="heatmap-cell l-2 d-inline-block"></span>
+          <span class="heatmap-cell l-3 d-inline-block"></span>
+          <span class="heatmap-cell l-4 d-inline-block"></span>
+          <span style="font-size: 0.7rem;">More (6h+)</span>
+        </div>
       </div>
-      <div class="row g-2" id="subjectAnalyticsContainer"></div>
+      <div class="heatmap-scroll-container">
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+      </div>
     </div>
 
     <!-- ================= 4. WORKSPACE ================= -->
     <div class="row g-4">
 
-      <!-- LEFT: CURRICULUM MATRIX + MOCK TEST + RECOVERY + ERRORS -->
+      <!-- LEFT: CURRICULUM + SRS DUE QUEUE + MOCK TEST PREDICTOR -->
       <div class="col-12 col-xl-8">
-        
-        <!-- Checklist Matrix -->
+
+        <!-- Automated Spaced Repetition (SRS) Queue -->
+        <div class="card-panel mb-4" id="srsQueuePanel">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-warning mb-0"><i class="bi bi-alarm me-2"></i>Due for Active Revision Today</h6>
+            <span class="badge bg-warning bg-opacity-25 text-warning" id="srsQueueBadge">0 Pending</span>
+          </div>
+          <p class="text-secondary small mb-3">Chapters automatically queued by the SRS algorithm based on Day 3 (R1), Day 7 (R2), and Day 21 (R3) retention curves.</p>
+          <div id="srsQueueList">
+            <small class="text-secondary">No topics scheduled for revision today. Great retention pace!</small>
+          </div>
+        </div>
+
+        <!-- Curriculum Matrix -->
         <div class="card-panel mb-4">
           <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
-              <h5 class="fw-bold text-white mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Study Matrix</h5>
-              <small class="text-secondary">Track chapter hours, yield priority, and 3-stage revisions</small>
+              <h5 class="fw-bold text-white mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Study Curriculum Matrix</h5>
+              <small class="text-secondary">Check topic completion to update SRS schedules and hours</small>
             </div>
-            <div class="d-flex gap-1 flex-wrap" id="subjectFilterContainer">
-              <span class="pill-filter active" onclick="filterBySubject('ALL', this)">All</span>
-            </div>
+            <div class="d-flex gap-1 flex-wrap" id="subjectFilterContainer"></div>
           </div>
 
-          <!-- Add Topic Bar -->
+          <!-- Add Topic -->
           <div class="row g-2 mb-3">
             <div class="col-md-3">
-              <input type="text" id="inSubject" class="form-control hub-input" placeholder="Subject (e.g. Physics)">
+              <input type="text" id="inSubject" class="form-control hub-input" placeholder="Subject">
             </div>
             <div class="col-md-4">
-              <input type="text" id="inChapter" class="form-control hub-input" placeholder="Chapter / Concept">
+              <input type="text" id="inChapter" class="form-control hub-input" placeholder="Chapter Name">
             </div>
             <div class="col-md-3">
               <select id="inTier" class="form-select hub-input">
@@ -423,34 +405,38 @@
           <div id="topicsContainer"></div>
         </div>
 
-        <!-- Mock Test Score & Target Tracker -->
+        <!-- Mock Test Score & Target Cutoff Predictor -->
         <div class="card-panel mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
             <div>
-              <h6 class="fw-bold text-info mb-0"><i class="bi bi-graph-up-arrow me-2"></i>Mock Test Score Analyzer</h6>
-              <small class="text-secondary">Log practice test scores and track your accuracy</small>
+              <h6 class="fw-bold text-info mb-0"><i class="bi bi-bullseye me-2"></i>Cutoff Predictor & Mock Test Analyzer</h6>
+              <small class="text-secondary">Track scores against target cutoff and predict percentile tiers</small>
             </div>
             <div class="d-flex gap-3 text-end">
               <div>
-                <small class="text-secondary mono d-block">AVG SCORE</small>
-                <span class="fw-bold text-white fs-6 mono" id="mockAvgScore">0.0%</span>
+                <small class="text-secondary mono d-block">TARGET CUTOFF</small>
+                <span class="fw-bold text-warning fs-6 mono" id="dispTargetCutoff">75.0%</span>
               </div>
               <div>
-                <small class="text-secondary mono d-block">HIGH SCORE</small>
-                <span class="fw-bold text-success fs-6 mono" id="mockHighScore">0.0%</span>
+                <small class="text-secondary mono d-block">CURRENT AVG</small>
+                <span class="fw-bold text-white fs-6 mono" id="dispAvgScore">0.0%</span>
+              </div>
+              <div>
+                <small class="text-secondary mono d-block">EST. %ILE</small>
+                <span class="fw-bold text-success fs-6 mono" id="dispEstPercentile">--</span>
               </div>
             </div>
           </div>
 
           <div class="row g-2 mb-3">
             <div class="col-md-4">
-              <input type="text" id="mockNameInput" class="form-control hub-input" placeholder="Test Name (e.g. Full Mock #1)">
+              <input type="text" id="mockNameInput" class="form-control hub-input" placeholder="Test Name (e.g. Mock #1)">
             </div>
             <div class="col-md-3">
-              <input type="number" id="mockScoredInput" class="form-control hub-input" placeholder="Score (e.g. 180)">
+              <input type="number" id="mockScoredInput" class="form-control hub-input" placeholder="Marks Scored">
             </div>
             <div class="col-md-3">
-              <input type="number" id="mockTotalInput" class="form-control hub-input" placeholder="Total (e.g. 300)" value="300">
+              <input type="number" id="mockTotalInput" class="form-control hub-input" placeholder="Total Marks" value="300">
             </div>
             <div class="col-md-2">
               <button class="btn btn-outline-info w-100" onclick="addMockTest()">+ Log</button>
@@ -460,49 +446,15 @@
           <div id="mockHistoryList"></div>
         </div>
 
-        <!-- Backlog Recovery Calculator -->
-        <div class="card-panel mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-bold text-warning mb-0"><i class="bi bi-heart-pulse me-2"></i>Backlog Recovery Calculator</h6>
-          </div>
-          <p class="text-secondary small">Calculate an exact daily buffer to catch up without disturbing your primary lessons.</p>
-
-          <div class="row g-2 align-items-center">
-            <div class="col-md-5">
-              <label class="small text-secondary mb-1">ACCUMULATED BACKLOG (HOURS)</label>
-              <input type="number" id="backlogHoursInput" class="form-control hub-input" value="10" min="1">
-            </div>
-            <div class="col-md-4">
-              <label class="small text-secondary mb-1">DAILY SPARE BUFFER</label>
-              <select id="backlogBufferInput" class="form-select hub-input">
-                <option value="30">30 mins / day</option>
-                <option value="45">45 mins / day</option>
-                <option value="60" selected>60 mins (1 hr) / day</option>
-                <option value="90">90 mins / day</option>
-              </select>
-            </div>
-            <div class="col-md-3 d-flex align-items-end">
-              <button class="btn btn-outline-warning w-100 py-2" onclick="calculateBacklog()">Calculate</button>
-            </div>
-          </div>
-
-          <div id="backlogResultBox" class="mt-3 p-3 rounded" style="display: none; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
-            <div class="fw-bold text-warning" id="backlogDaysResult"></div>
-            <small class="text-light" id="backlogDetailResult"></small>
-          </div>
-        </div>
-
-        <!-- Digital Error Diary -->
+        <!-- Mistake Notebook -->
         <div class="card-panel">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-bold text-danger mb-0"><i class="bi bi-journal-x me-2"></i>Digital Mistake Diary</h6>
             <span class="badge bg-danger bg-opacity-25 text-danger border border-danger" id="mistakeBadge">0 Logged</span>
           </div>
-          <p class="text-secondary small">Log questions you solved incorrectly to build an active pre-exam review checklist.</p>
-
           <div class="row g-2 mb-3">
             <div class="col-md-8">
-              <input type="text" id="mistakeDescInput" class="form-control hub-input" placeholder="e.g., Forgot negative sign in electrostatic potential">
+              <input type="text" id="mistakeDescInput" class="form-control hub-input" placeholder="Question failure reason...">
             </div>
             <div class="col-md-4">
               <select id="mistakeTypeInput" class="form-select hub-input">
@@ -519,12 +471,12 @@
 
       </div>
 
-      <!-- RIGHT: FOCUS TIMER + AUDIO + FLASHCARDS + NOTES -->
+      <!-- RIGHT: FOCUS TIMER + FLASHCARDS + NOTES -->
       <div class="col-12 col-xl-4">
         
-        <!-- Focus Engine -->
+        <!-- Focus Timer -->
         <div class="card-panel text-center mb-4">
-          <div class="stat-title mb-2">FOCUS ENGINE // POMODORO</div>
+          <div class="stat-title mb-2">POMODORO FOCUS ENGINE</div>
           <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">25:00</div>
 
           <div class="d-flex justify-content-center gap-2 mb-3">
@@ -532,43 +484,36 @@
             <button class="btn btn-outline-secondary px-3" onclick="resetTimer()">Reset</button>
           </div>
 
-          <div class="btn-group w-100 btn-group-sm mb-3">
+          <div class="btn-group w-100 btn-group-sm mb-2">
             <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25)">25m</button>
             <button class="btn btn-outline-secondary" onclick="setTimerDuration(50)">50m</button>
             <button class="btn btn-outline-secondary" onclick="setTimerDuration(5)">5m Break</button>
           </div>
-
-          <button class="btn btn-outline-info btn-sm w-100 rounded-pill mono mb-2" id="audioToggleBtn" onclick="toggleBrownNoise()">
-            <i class="bi bi-soundwave me-1"></i> Focus Brown Noise (40Hz)
-          </button>
         </div>
 
-        <!-- Formula Flashcard Deck -->
+        <!-- Flashcard Deck -->
         <div class="card-panel mb-4">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-bold text-white mb-0"><i class="bi bi-card-text me-2 text-info"></i>Formula Deck</h6>
+            <h6 class="fw-bold text-white mb-0"><i class="bi bi-card-text me-2 text-info"></i>Active Recall Deck</h6>
             <button class="btn btn-outline-secondary btn-sm" onclick="openModal('cardModal')"><i class="bi bi-plus-lg"></i></button>
           </div>
-          <p class="text-secondary small mb-2">Active recall cards. Tap to reveal the answer.</p>
-
           <div id="flashcardBox" class="p-3 rounded text-center border border-secondary border-opacity-25" style="background: #07090e; min-height: 110px; cursor: pointer;" onclick="flipCurrentCard()">
             <small class="text-secondary d-block mono mb-1" id="cardTopicLabel">CARD 1/1</small>
             <div class="fw-bold text-white fs-6 mt-2" id="cardContent">Click to flip card</div>
           </div>
-
           <div class="d-flex justify-content-between mt-2">
             <button class="btn btn-sm btn-outline-secondary" onclick="prevCard()">&larr; Prev</button>
             <button class="btn btn-sm btn-outline-secondary" onclick="nextCard()">Next &rarr;</button>
           </div>
         </div>
 
-        <!-- Auto-Saving Scratchpad -->
+        <!-- Scratchpad -->
         <div class="card-panel">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-bold text-white mb-0"><i class="bi bi-pencil-square me-2 text-info"></i>Quick Scratchpad</h6>
             <small class="text-success" id="noteSavedStatus" style="display: none;">Saved</small>
           </div>
-          <textarea id="scratchArea" class="form-control hub-input" rows="7" placeholder="Type formulas, immediate to-dos, or chapter notes here... (auto-saves)" oninput="saveNotes()"></textarea>
+          <textarea id="scratchArea" class="form-control hub-input" rows="8" placeholder="Type formulas or quick notes..." oninput="saveNotes()"></textarea>
         </div>
 
       </div>
@@ -578,48 +523,88 @@
 
   <!-- ================= 5. MODALS ================= -->
 
-  <!-- 1-Click Official Syllabus Preset Modal -->
+  <!-- Multi-Track Ambient Soundscape Mixer Modal -->
+  <div id="soundMixerModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-sliders2-vertical me-2"></i>Multi-Track Ambient Soundscape</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('soundMixerModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Synthesized live via the Web Audio API. Blend brown noise, filtered rainfall, and 40Hz binaural focus waves.</p>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="fw-bold text-white">Audio Engine</span>
+        <button class="btn btn-action-primary btn-sm px-3" id="masterAudioBtn" onclick="toggleAudioEngine()">Start Ambient Audio</button>
+      </div>
+
+      <!-- Brown Noise -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">Deep Brown Noise (40Hz Baseline)</span>
+          <span class="mono text-secondary" id="volValBrown">50%</span>
+        </div>
+        <input type="range" class="sound-slider" id="sliderBrown" min="0" max="100" value="50" oninput="updateAudioGains()">
+      </div>
+
+      <!-- Rainfall -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">Rainfall / Water Stream (Bandpass Pink)</span>
+          <span class="mono text-secondary" id="volValRain">40%</span>
+        </div>
+        <input type="range" class="sound-slider" id="sliderRain" min="0" max="100" value="40" oninput="updateAudioGains()">
+      </div>
+
+      <!-- Binaural Gamma Beat -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">Binaural Beat (200Hz / 240Hz Gamma Focus)</span>
+          <span class="mono text-secondary" id="volValBinaural">30%</span>
+        </div>
+        <input type="range" class="sound-slider" id="sliderBinaural" min="0" max="100" value="30" oninput="updateAudioGains()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Presets Modal -->
   <div id="presetModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-info mb-0"><i class="bi bi-lightning-charge me-2"></i>1-Click Official Syllabus Presets</h5>
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-lightning-charge me-2"></i>Official Syllabus Presets</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('presetModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small">Select your target exam to auto-load official high-yield chapters, estimated hours, and revision tiers directly into your matrix:</p>
-
       <div class="d-grid gap-2">
         <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('JEE')">
           <div class="fw-bold text-info">⚡ IIT-JEE (Main & Advanced)</div>
-          <small class="text-secondary">Pre-maps Modern Physics, Conics, Integral Calculus, Coordination Chemistry.</small>
+          <small class="text-secondary">Modern Physics, Calculus, Conics, Coordination Compounds, GOC.</small>
         </button>
         <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('NEET')">
           <div class="fw-bold text-success">🔬 NEET-UG (Medical)</div>
-          <small class="text-secondary">Pre-maps Human Physiology, Genetics, GOC, Optics, Plant Physiology.</small>
+          <small class="text-secondary">Physiology, Genetics, Hydrocarbons, Optics, Ecology.</small>
         </button>
         <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('CBSE12')">
-          <div class="fw-bold text-warning">📚 CBSE Class 12 Boards (PCM/PCB)</div>
-          <small class="text-secondary">Pre-maps NCERT core chapters, derivations, and high-weightage topics.</small>
+          <div class="fw-bold text-warning">📚 CBSE Class 12 Boards</div>
+          <small class="text-secondary">NCERT Core chapters with weightage-tiered derivations.</small>
         </button>
         <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('CS')">
-          <div class="fw-bold text-violet" style="color: var(--accent-violet);">💻 Full-Stack Software Engineering</div>
-          <small class="text-secondary">Pre-maps Data Structures, System Design, SQL, Docker, Algorithms.</small>
+          <div class="fw-bold text-violet" style="color: var(--accent-violet);">💻 Full-Stack Computer Science</div>
+          <small class="text-secondary">Data Structures, Algorithms, System Design, SQL, APIs.</small>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Profile Targets Modal -->
+  <!-- Profile & Cutoff Target Modal -->
   <div id="profileModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-white mb-0">Study Targets & SQLite Account</h5>
+        <h5 class="fw-bold text-white mb-0">Study Targets & Cutoff Goals</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('profileModal')"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <div class="mb-3">
         <label class="small text-secondary mb-1">STUDENT ID / SYNC USERNAME</label>
         <input type="text" id="cfgUsername" class="form-control hub-input" placeholder="e.g. raghav2026">
-        <small class="text-secondary" style="font-size: 0.75rem;">Use the same ID on your phone and laptop to sync progress.</small>
       </div>
 
       <div class="mb-3">
@@ -628,22 +613,27 @@
       </div>
 
       <div class="mb-3">
-        <label class="small text-secondary mb-1">TARGET EXAM / GOAL</label>
-        <input type="text" id="cfgExam" class="form-control hub-input" placeholder="e.g. JEE Advanced 2026, NEET-UG">
+        <label class="small text-secondary mb-1">TARGET EXAM</label>
+        <input type="text" id="cfgExam" class="form-control hub-input" placeholder="e.g. JEE Advanced 2026">
       </div>
 
-      <div class="row g-2 mb-4">
+      <div class="row g-2 mb-3">
         <div class="col-6">
           <label class="small text-secondary mb-1">DAILY TARGET (HOURS)</label>
           <input type="number" id="cfgHours" class="form-control hub-input" value="6" min="1" max="16">
         </div>
         <div class="col-6">
-          <label class="small text-secondary mb-1">EXAM TARGET DATE</label>
-          <input type="date" id="cfgDate" class="form-control hub-input">
+          <label class="small text-secondary mb-1">TARGET CUTOFF (%)</label>
+          <input type="number" id="cfgCutoff" class="form-control hub-input" value="75" min="1" max="100">
         </div>
       </div>
 
-      <button class="btn btn-action-primary w-100 py-2" onclick="saveConfiguration()">Save & Sync Cloud</button>
+      <div class="mb-4">
+        <label class="small text-secondary mb-1">EXAM TARGET DATE</label>
+        <input type="date" id="cfgDate" class="form-control hub-input">
+      </div>
+
+      <button class="btn btn-action-primary w-100 py-2" onclick="saveConfiguration()">Save Targets</button>
     </div>
   </div>
 
@@ -654,39 +644,37 @@
         <h5 class="fw-bold text-white mb-0">New Flashcard</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('cardModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-
       <div class="mb-3">
-        <label class="small text-secondary mb-1">QUESTION / CONCEPT (FRONT)</label>
-        <input type="text" id="cardFrontInput" class="form-control hub-input" placeholder="e.g., Carnot Engine Efficiency Formula">
+        <label class="small text-secondary mb-1">CONCEPT / QUESTION (FRONT)</label>
+        <input type="text" id="cardFrontInput" class="form-control hub-input" placeholder="e.g., Carnot Efficiency">
       </div>
-
       <div class="mb-4">
         <label class="small text-secondary mb-1">ANSWER / FORMULA (BACK)</label>
-        <input type="text" id="cardBackInput" class="form-control hub-input" placeholder="e.g., η = 1 - (T2 / T1)">
+        <input type="text" id="cardBackInput" class="form-control hub-input" placeholder="e.g., η = 1 - (T2/T1)">
       </div>
-
-      <button class="btn btn-action-primary w-100 py-2" onclick="saveNewCard()">Add to Deck</button>
+      <button class="btn btn-action-primary w-100 py-2" onclick="saveNewCard()">Add Card</button>
     </div>
   </div>
 
-  <!-- ================= 6. ENGINE ================= -->
+  <!-- ================= 6. JAVASCRIPT ENGINE ================= -->
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // State Variables
+    // Core Data State
     let config = JSON.parse(localStorage.getItem('sh_cfg') || JSON.stringify({
       username: "student_default",
       name: "Raghav",
       exam: "Target Exam 2026",
       hours: 6,
+      cutoff: 75,
       date: "2026-10-15"
     }));
 
     let topics = JSON.parse(localStorage.getItem('sh_top') || JSON.stringify([
-      { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-      { subject: "Maths", chapter: "Definite Integration & Area", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-      { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false }
+      { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+      { subject: "Maths", chapter: "Definite Integration & Area", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+      { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
     ]));
 
     let mistakes = JSON.parse(localStorage.getItem('sh_mis') || '[]');
@@ -696,47 +684,37 @@
     ]));
 
     let mockTests = JSON.parse(localStorage.getItem('sh_mocks') || '[]');
-    let velocityData = JSON.parse(localStorage.getItem('sh_vel') || JSON.stringify([3, 4.5, 6, 2, 5, 6.5, 0]));
+    let heatmapData = JSON.parse(localStorage.getItem('sh_heatmap') || '{}');
     let activeSubjectFilter = "ALL";
     let currentCardIdx = 0;
     let isFlipped = false;
 
-    // Presets Library
+    // Presets
     const syllabusPresets = {
       JEE: [
-        { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Work, Energy & Power", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Rotational Dynamics", tier: "Tier 1", hours: 4.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Definite Integrals & Differential Eq", tier: "Tier 1", hours: 4.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Matrices & Determinants", tier: "Tier 2", hours: 2.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Coordinate Geometry (Conics)", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Thermodynamics & Thermochemistry", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "General Organic Chemistry (GOC)", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false }
+        { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Physics", chapter: "Work, Energy & Power", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Physics", chapter: "Rotational Dynamics", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Maths", chapter: "Definite Integrals & Diff Eq", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Maths", chapter: "Coordinate Geometry (Conics)", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Chemistry", chapter: "General Organic Chemistry (GOC)", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
       ],
       NEET: [
-        { subject: "Biology", chapter: "Human Physiology: Neural & Chemical Control", tier: "Tier 1", hours: 4.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Biology", chapter: "Genetics & Molecular Inheritance", tier: "Tier 1", hours: 4.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Biology", chapter: "Ecology & Environmental Biology", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Hydrocarbons & Reaction Mechanisms", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Equilibrium & Solutions", tier: "Tier 2", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Ray Optics & Optical Instruments", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Semiconductors & Electronic Devices", tier: "Tier 1", hours: 2.5, done: false, r1: false, r2: false, r3: false }
+        { subject: "Biology", chapter: "Human Physiology: Neural & Chemical", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Biology", chapter: "Genetics & Molecular Inheritance", tier: "Tier 1", hours: 4.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Chemistry", chapter: "Organic Reaction Mechanisms", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Physics", chapter: "Ray Optics & Optical Instruments", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
       ],
       CBSE12: [
-        { subject: "Physics", chapter: "Electric Charges & Electrostatic Potential", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Electromagnetic Induction & AC", tier: "Tier 2", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Calculus: Continuity & Integrals", tier: "Tier 1", hours: 4.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "3D Geometry & Vectors", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Electrochemistry & Chemical Kinetics", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Aldehydes, Ketones & Carboxylic Acids", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false }
+        { subject: "Physics", chapter: "Electric Charges & Potential", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Maths", chapter: "Calculus: Continuity & Integrals", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Chemistry", chapter: "Aldehydes & Ketones", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
       ],
       CS: [
-        { subject: "Algorithms", chapter: "Dynamic Programming & Recursion", tier: "Tier 1", hours: 4.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Algorithms", chapter: "Graphs: BFS, DFS & Dijkstra", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
-        { subject: "Backend", chapter: "Database Indexing & ACID Transactions", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "Backend", chapter: "REST APIs & Microservice Architectures", tier: "Tier 2", hours: 3.0, done: false, r1: false, r2: false, r3: false },
-        { subject: "DevOps", chapter: "Docker Containers & CI/CD Pipelines", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false }
+        { subject: "Algorithms", chapter: "Dynamic Programming & Graphs", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "Backend", chapter: "Database Indexing & ACID", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+        { subject: "DevOps", chapter: "Docker & CI/CD Pipelines", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
       ]
     };
 
@@ -745,8 +723,8 @@
         topics = JSON.parse(JSON.stringify(syllabusPresets[key]));
         localStorage.setItem('sh_top', JSON.stringify(topics));
         renderSubjectsFilter();
-        renderSubjectAnalytics();
         renderTopics();
+        renderSrsQueue();
         recalculateRealMetrics();
         triggerCloudSync();
         closeModal('presetModal');
@@ -764,25 +742,25 @@
           if (result.data.mistakes) mistakes = result.data.mistakes;
           if (result.data.flashcards) flashcards = result.data.flashcards;
           if (result.data.mockTests) mockTests = result.data.mockTests;
-          if (result.data.velocityData) velocityData = result.data.velocityData;
+          if (result.data.heatmapData) heatmapData = result.data.heatmapData;
         }
       } catch (err) {}
 
       renderHUD();
       renderSubjectsFilter();
-      renderSubjectAnalytics();
       renderTopics();
+      renderSrsQueue();
       renderMistakes();
       renderFlashcard();
       renderMocks();
-      renderVelocity();
+      renderHeatmap();
       recalculateRealMetrics();
 
       const savedNotes = localStorage.getItem('sh_notes_text');
       if (savedNotes) document.getElementById('scratchArea').value = savedNotes;
     });
 
-    // Cloud Sync
+    // Cloud Auto-Sync
     async function triggerCloudSync() {
       const syncBadge = document.getElementById('cloudSyncStatus');
       syncBadge.innerHTML = `<i class="bi bi-arrow-repeat text-warning me-1"></i> Syncing...`;
@@ -794,7 +772,7 @@
         mistakes,
         flashcards,
         mockTests,
-        velocityData,
+        heatmapData,
         notes: document.getElementById('scratchArea').value
       };
 
@@ -810,13 +788,14 @@
       }
     }
 
-    // HUD & Targets
+    // 1. HUD & Target Settings
     function renderHUD() {
       document.getElementById('navExamBadge').innerText = config.exam;
       document.getElementById('cfgUsername').value = config.username;
       document.getElementById('cfgName').value = config.name;
       document.getElementById('cfgExam').value = config.exam;
       document.getElementById('cfgHours').value = config.hours;
+      document.getElementById('cfgCutoff').value = config.cutoff || 75;
       document.getElementById('cfgDate').value = config.date;
 
       const target = new Date(config.date);
@@ -832,56 +811,115 @@
       config.name = document.getElementById('cfgName').value.trim() || "Student";
       config.exam = document.getElementById('cfgExam').value.trim() || "Target Exam";
       config.hours = parseFloat(document.getElementById('cfgHours').value) || 6;
+      config.cutoff = parseFloat(document.getElementById('cfgCutoff').value) || 75;
       config.date = document.getElementById('cfgDate').value || "2026-10-15";
 
       localStorage.setItem('sh_cfg', JSON.stringify(config));
       renderHUD();
       recalculateRealMetrics();
+      renderMocks();
       triggerCloudSync();
       closeModal('profileModal');
     }
 
-    // Analytics
-    function renderSubjectAnalytics() {
-      const container = document.getElementById('subjectAnalyticsContainer');
-      const uniqueSubjects = [...new Set(topics.map(t => t.subject.toUpperCase()))];
-      
-      if (uniqueSubjects.length === 0) {
-        container.innerHTML = `<div class="col-12 text-secondary small">No topics added. Click 'Load Syllabus' to import instantly.</div>`;
+    // 2. 90-Day Activity Heatmap
+    function renderHeatmap() {
+      const grid = document.getElementById('heatmapGrid');
+      grid.innerHTML = '';
+      const today = new Date();
+      let activeDays = 0;
+
+      for (let i = 89; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        const hrs = heatmapData[key] || 0;
+
+        let levelClass = '';
+        if (hrs > 0 && hrs < 2) levelClass = 'l-1';
+        else if (hrs >= 2 && hrs < 4) levelClass = 'l-2';
+        else if (hrs >= 4 && hrs < 6) levelClass = 'l-3';
+        else if (hrs >= 6) levelClass = 'l-4';
+
+        if (hrs > 0) activeDays++;
+
+        const cell = document.createElement('div');
+        cell.className = `heatmap-cell ${levelClass}`;
+        cell.title = `${key}: ${hrs.toFixed(1)} hrs logged`;
+        grid.appendChild(cell);
+      }
+
+      document.getElementById('heatmapSummary').innerText = `${activeDays} active study days logged in past 90 days`;
+    }
+
+    function logStudyHoursToToday(addedHours) {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      heatmapData[todayKey] = (heatmapData[todayKey] || 0) + addedHours;
+      localStorage.setItem('sh_heatmap', JSON.stringify(heatmapData));
+      renderHeatmap();
+    }
+
+    // 3. Automated Spaced Repetition (SRS) Engine
+    function renderSrsQueue() {
+      const container = document.getElementById('srsQueueList');
+      const badge = document.getElementById('srsQueueBadge');
+      const today = new Date();
+      container.innerHTML = '';
+
+      const dueTopics = [];
+
+      topics.forEach((t, idx) => {
+        if (!t.done || !t.doneDate) return;
+        const compDate = new Date(t.doneDate);
+        const diffDays = Math.floor((today - compDate) / (1000 * 60 * 60 * 24));
+
+        if (!t.r1 && diffDays >= 3) {
+          dueTopics.push({ topic: t, index: idx, stage: 'R1 (Day 3 Retention)', key: 'r1' });
+        } else if (t.r1 && !t.r2 && diffDays >= 7) {
+          dueTopics.push({ topic: t, index: idx, stage: 'R2 (Day 7 Consolidation)', key: 'r2' });
+        } else if (t.r2 && !t.r3 && diffDays >= 21) {
+          dueTopics.push({ topic: t, index: idx, stage: 'R3 (Day 21 Long-Term)', key: 'r3' });
+        }
+      });
+
+      badge.innerText = `${dueTopics.length} Pending`;
+      document.getElementById('statSrsDue').innerText = dueTopics.length;
+      document.getElementById('statSrsFill').style.width = `${Math.min(100, dueTopics.length * 25)}%`;
+
+      if (dueTopics.length === 0) {
+        container.innerHTML = `<small class="text-secondary">No topics scheduled for revision today. All retention schedules are up to date!</small>`;
         return;
       }
 
-      container.innerHTML = uniqueSubjects.map(sub => {
-        const subTopics = topics.filter(t => t.subject.toUpperCase() === sub);
-        const doneCount = subTopics.filter(t => t.done).length;
-        const pct = Math.round((doneCount / subTopics.length) * 100);
-        const hours = subTopics.reduce((acc, t) => acc + (t.done ? parseFloat(t.hours) : 0), 0);
-
-        return `
-          <div class="col-12 col-md-4">
-            <div class="sub-breakdown-card">
-              <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="fw-bold text-white small">${sub}</span>
-                <span class="mono small text-info fw-bold">${pct}%</span>
-              </div>
-              <div class="meter-bar mb-2">
-                <div class="meter-fill bg-info" style="width: ${pct}%;"></div>
-              </div>
-              <div class="d-flex justify-content-between text-secondary" style="font-size: 0.7rem;">
-                <span>${doneCount}/${subTopics.length} Chapters</span>
-                <span class="mono">${hours.toFixed(1)}h done</span>
-              </div>
-            </div>
+      dueTopics.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "srs-item";
+        div.innerHTML = `
+          <div>
+            <div class="fw-bold text-white small">${item.topic.chapter}</div>
+            <small class="text-warning mono" style="font-size: 0.72rem;">${item.topic.subject} &bull; ${item.stage}</small>
           </div>
+          <button class="btn btn-outline-warning btn-sm py-1 px-2 mono" style="font-size: 0.75rem;" onclick="completeSrsRevision(${item.index}, '${item.key}')">
+            Mark Revised &check;
+          </button>
         `;
-      }).join('');
+        container.appendChild(div);
+      });
     }
 
-    // Filter & Matrix
+    function completeSrsRevision(idx, key) {
+      topics[idx][key] = true;
+      localStorage.setItem('sh_top', JSON.stringify(topics));
+      renderTopics();
+      renderSrsQueue();
+      recalculateRealMetrics();
+      triggerCloudSync();
+    }
+
+    // 4. Topics Checklist Matrix
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
-      
       container.innerHTML = uniqueSubjects.map(sub => `
         <span class="pill-filter ${activeSubjectFilter === sub ? 'active' : ''}" onclick="filterBySubject('${sub}', this)">${sub}</span>
       `).join('');
@@ -898,9 +936,7 @@
       const container = document.getElementById('topicsContainer');
       container.innerHTML = '';
 
-      const filtered = activeSubjectFilter === 'ALL' 
-        ? topics 
-        : topics.filter(t => t.subject.toUpperCase() === activeSubjectFilter);
+      const filtered = activeSubjectFilter === 'ALL' ? topics : topics.filter(t => t.subject.toUpperCase() === activeSubjectFilter);
 
       filtered.forEach((t) => {
         const idx = topics.indexOf(t);
@@ -937,20 +973,25 @@
       const tier = document.getElementById('inTier').value;
       if (!chap) return;
 
-      topics.unshift({ subject: subj || "General", chapter: chap, tier: tier, hours: 2.5, done: false, r1: false, r2: false, r3: false });
+      topics.unshift({ subject: subj || "General", chapter: chap, tier, hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false });
       localStorage.setItem('sh_top', JSON.stringify(topics));
       document.getElementById('inChapter').value = '';
       renderSubjectsFilter();
-      renderSubjectAnalytics();
       renderTopics();
+      renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
     function toggleDone(idx) {
       topics[idx].done = !topics[idx].done;
+      if (topics[idx].done && !topics[idx].doneDate) {
+        topics[idx].doneDate = new Date().toISOString().slice(0, 10);
+        logStudyHoursToToday(parseFloat(topics[idx].hours) || 2.0);
+      }
       localStorage.setItem('sh_top', JSON.stringify(topics));
-      renderSubjectAnalytics();
+      renderTopics();
+      renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
     }
@@ -959,6 +1000,7 @@
       topics[idx][key] = !topics[idx][key];
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
+      renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
     }
@@ -967,13 +1009,13 @@
       topics.splice(idx, 1);
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderSubjectsFilter();
-      renderSubjectAnalytics();
       renderTopics();
+      renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // Mock Test Analyzer
+    // 5. Mock Test & Cutoff Predictor
     function addMockTest() {
       const name = document.getElementById('mockNameInput').value.trim();
       const scored = parseFloat(document.getElementById('mockScoredInput').value);
@@ -987,26 +1029,37 @@
       document.getElementById('mockNameInput').value = '';
       document.getElementById('mockScoredInput').value = '';
       renderMocks();
+      recalculateRealMetrics();
       triggerCloudSync();
     }
 
     function renderMocks() {
       const list = document.getElementById('mockHistoryList');
       list.innerHTML = '';
+      const targetCutoff = parseFloat(config.cutoff) || 75;
+      document.getElementById('dispTargetCutoff').innerText = `${targetCutoff.toFixed(1)}%`;
 
       if (mockTests.length === 0) {
         list.innerHTML = `<small class="text-secondary">No mock tests logged yet.</small>`;
-        document.getElementById('mockAvgScore').innerText = "0.0%";
-        document.getElementById('mockHighScore').innerText = "0.0%";
+        document.getElementById('dispAvgScore').innerText = "0.0%";
+        document.getElementById('dispEstPercentile').innerText = "--";
+        document.getElementById('statCutoffGap').innerText = `-${targetCutoff.toFixed(1)}%`;
         return;
       }
 
       const pcts = mockTests.map(m => parseFloat(m.pct));
       const avg = (pcts.reduce((a, b) => a + b, 0) / pcts.length).toFixed(1);
-      const high = Math.max(...pcts).toFixed(1);
+      document.getElementById('dispAvgScore').innerText = `${avg}%`;
 
-      document.getElementById('mockAvgScore').innerText = `${avg}%`;
-      document.getElementById('mockHighScore').innerText = `${high}%`;
+      // Percentile Predictor curve estimation
+      const estPercentile = Math.min(99.9, Math.max(10, (parseFloat(avg) * 1.15) - 5)).toFixed(1);
+      document.getElementById('dispEstPercentile').innerText = `${estPercentile}%ile`;
+
+      // Cutoff Gap
+      const diff = (parseFloat(avg) - targetCutoff).toFixed(1);
+      const gapText = diff >= 0 ? `+${diff}%` : `${diff}%`;
+      document.getElementById('statCutoffGap').innerText = gapText;
+      document.getElementById('statCutoffFill').style.width = `${Math.min(100, Math.max(10, parseFloat(avg)))}%`;
 
       mockTests.slice(0, 4).forEach((m, idx) => {
         const item = document.createElement('div');
@@ -1017,7 +1070,7 @@
             <small class="text-secondary mono ms-2">(${m.scored}/${m.total})</small>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <span class="fw-bold mono ${parseFloat(m.pct) >= 60 ? 'text-success' : 'text-warning'}">${m.pct}%</span>
+            <span class="fw-bold mono ${parseFloat(m.pct) >= targetCutoff ? 'text-success' : 'text-warning'}">${m.pct}%</span>
             <button class="btn btn-sm text-secondary" onclick="deleteMock(${idx})"><i class="bi bi-x"></i></button>
           </div>
         `;
@@ -1029,10 +1082,11 @@
       mockTests.splice(idx, 1);
       localStorage.setItem('sh_mocks', JSON.stringify(mockTests));
       renderMocks();
+      recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // Metrics Recalculations
+    // 6. Metrics Recalculations
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -1046,46 +1100,9 @@
       document.getElementById('statHours').innerHTML = `${doneHours.toFixed(1)} <span class="fs-6 text-secondary">/ ${targetHours}h</span>`;
       const hoursPct = Math.min(100, Math.round((doneHours / targetHours) * 100));
       document.getElementById('statHoursFill').style.width = `${hoursPct}%`;
-
-      let revCount = 0;
-      topics.forEach(t => {
-        if (t.r1) revCount++;
-        if (t.r2) revCount++;
-        if (t.r3) revCount++;
-      });
-      document.getElementById('statRevisions').innerText = revCount;
-      document.getElementById('statRevisionsFill').style.width = `${Math.min(100, revCount * 10)}%`;
     }
 
-    function renderVelocity() {
-      const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-      const max = Math.max(...velocityData, 8);
-      const container = document.getElementById('velocityBars');
-      
-      container.innerHTML = velocityData.map((hrs, i) => `
-        <div class="velocity-col">
-          <div class="velocity-bar-track">
-            <div class="velocity-bar" style="height: ${Math.round((hrs / max) * 100)}%;"></div>
-          </div>
-          <span class="velocity-label mono">${days[i]}</span>
-        </div>
-      `).join('');
-    }
-
-    // Backlog Calculator
-    function calculateBacklog() {
-      const hrs = parseFloat(document.getElementById('backlogHoursInput').value) || 0;
-      const buf = parseFloat(document.getElementById('backlogBufferInput').value) || 60;
-      if (hrs <= 0) return;
-
-      const days = Math.ceil((hrs * 60) / buf);
-      document.getElementById('backlogDaysResult').innerText = `Recovery Target: ${days} Days`;
-      document.getElementById('backlogDetailResult').innerText = 
-        `By allocating ${buf} minutes of daily buffer time, you will recover all ${hrs} backlog hours in ${days} days without skipping your primary lessons.`;
-      document.getElementById('backlogResultBox').style.display = 'block';
-    }
-
-    // Error Diary
+    // 7. Error Diary
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -1130,7 +1147,7 @@
       triggerCloudSync();
     }
 
-    // Flashcards Deck
+    // 8. Flashcards
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -1177,7 +1194,7 @@
       triggerCloudSync();
     }
 
-    // Scratchpad Auto-saving
+    // 9. Scratchpad Auto-saving
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
@@ -1187,29 +1204,24 @@
       triggerCloudSync();
     }
 
-    // Focus Engine & Zen Mode
+    // 10. Focus Timer
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
       const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
       const s = (secondsLeft % 60).toString().padStart(2, '0');
       document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-      document.getElementById('zenTimerDisplay').innerText = `${m}:${s}`;
     }
 
     function toggleTimer() {
       const btn = document.getElementById('timerActionBtn');
-      const zenBtn = document.getElementById('zenStartBtn');
-
       if (timerActive) {
         clearInterval(timerRef);
         timerActive = false;
         btn.innerText = "Start";
-        zenBtn.innerText = "Start";
       } else {
         timerActive = true;
         btn.innerText = "Pause";
-        zenBtn.innerText = "Pause";
         timerRef = setInterval(() => {
           if (secondsLeft > 0) {
             secondsLeft--;
@@ -1217,9 +1229,9 @@
           } else {
             clearInterval(timerRef);
             timerActive = false;
-            alert("Focus session complete!");
+            logStudyHoursToToday(0.4);
+            alert("Pomodoro complete! Great study block.");
             btn.innerText = "Start";
-            zenBtn.innerText = "Start";
           }
         }, 1000);
       }
@@ -1231,7 +1243,6 @@
       secondsLeft = 25 * 60;
       updateTimerDisplay();
       document.getElementById('timerActionBtn').innerText = "Start";
-      document.getElementById('zenStartBtn').innerText = "Start";
     }
 
     function setTimerDuration(mins) {
@@ -1240,76 +1251,108 @@
       secondsLeft = mins * 60;
       updateTimerDisplay();
       document.getElementById('timerActionBtn').innerText = "Start";
-      document.getElementById('zenStartBtn').innerText = "Start";
     }
 
-    function enterZenMode() { document.getElementById('zenRoom').style.display = 'flex'; }
-    function exitZenMode() { document.getElementById('zenRoom').style.display = 'none'; }
+    // 11. Multi-Track Ambient Soundscape Mixer (Web Audio API Synthesizer)
+    let audioCtx = null;
+    let brownNode = null, brownGain = null;
+    let rainNode = null, rainGain = null, rainFilter = null;
+    let oscLeft = null, oscRight = null, binauralGain = null;
+    let isMixerRunning = false;
 
-    // Synthesized Audio
-    let audioCtx = null, noiseNode = null;
-    function toggleBrownNoise() {
-      const btn = document.getElementById('audioToggleBtn');
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      
-      if (noiseNode) {
-        noiseNode.stop();
-        noiseNode = null;
-        btn.innerHTML = `<i class="bi bi-soundwave me-1"></i> Focus Brown Noise (40Hz)`;
-        return;
-      }
+    function initAudioMixer() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-      const bufferSize = audioCtx.sampleRate * 2;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      let lastOut = 0.0;
-      for (let i = 0; i < bufferSize; i++) {
+      // Track 1: Brown Noise Generator
+      const bufSize = audioCtx.sampleRate * 2;
+      const bBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const bData = bBuf.getChannelData(0);
+      let lastB = 0.0;
+      for (let i = 0; i < bufSize; i++) {
         let white = Math.random() * 2 - 1;
-        data[i] = (lastOut + (0.02 * white)) / 1.02;
-        lastOut = data[i];
-        data[i] *= 3.5;
+        bData[i] = (lastB + (0.02 * white)) / 1.02;
+        lastB = bData[i];
+        bData[i] *= 3.5;
       }
+      brownNode = audioCtx.createBufferSource();
+      brownNode.buffer = bBuf;
+      brownNode.loop = true;
+      brownGain = audioCtx.createGain();
+      brownNode.connect(brownGain);
+      brownGain.connect(audioCtx.destination);
 
-      noiseNode = audioCtx.createBufferSource();
-      noiseNode.buffer = buffer;
-      noiseNode.loop = true;
-      noiseNode.connect(audioCtx.destination);
-      noiseNode.start();
-      btn.innerHTML = `<i class="bi bi-pause-fill me-1"></i> Stop Ambient Audio`;
+      // Track 2: Filtered Rainfall Pink Noise Generator
+      const rBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const rData = rBuf.getChannelData(0);
+      let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+      for (let i = 0; i < bufSize; i++) {
+        let white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        rData[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
+        b6 = white * 0.115926;
+      }
+      rainNode = audioCtx.createBufferSource();
+      rainNode.buffer = rBuf;
+      rainNode.loop = true;
+      rainFilter = audioCtx.createBiquadFilter();
+      rainFilter.type = "bandpass";
+      rainFilter.frequency.value = 1000;
+      rainGain = audioCtx.createGain();
+      rainNode.connect(rainFilter);
+      rainFilter.connect(rainGain);
+      rainGain.connect(audioCtx.destination);
+
+      // Track 3: Binaural Beat (200Hz + 240Hz Gamma Focus)
+      oscLeft = audioCtx.createOscillator();
+      oscRight = audioCtx.createOscillator();
+      oscLeft.frequency.value = 200;
+      oscRight.frequency.value = 240;
+      binauralGain = audioCtx.createGain();
+      oscLeft.connect(binauralGain);
+      oscRight.connect(binauralGain);
+      binauralGain.connect(audioCtx.destination);
+
+      updateAudioGains();
     }
 
-    // 1-Click Printable Pre-Exam Revision Sheet
-    function printCheatSheet() {
-      const printWindow = window.open('', '_blank');
-      const mistakesHtml = mistakes.length ? mistakes.map(m => `<li><strong>${m.type}:</strong> ${m.desc}</li>`).join('') : '<li>No errors logged yet.</li>';
-      const cardsHtml = flashcards.length ? flashcards.map(c => `<tr><td style="padding: 8px; border: 1px solid #ccc;"><strong>${c.q}</strong></td><td style="padding: 8px; border: 1px solid #ccc;">${c.a}</td></tr>`).join('') : '<tr><td colspan="2">No flashcards.</td></tr>';
+    function toggleAudioEngine() {
+      const btn = document.getElementById('masterAudioBtn');
+      if (!isMixerRunning) {
+        if (!audioCtx) initAudioMixer();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        brownNode.start();
+        rainNode.start();
+        oscLeft.start();
+        oscRight.start();
+        isMixerRunning = true;
+        btn.innerText = "Stop Ambient Audio";
+        btn.classList.replace("btn-action-primary", "btn-outline-danger");
+      } else {
+        audioCtx.close();
+        audioCtx = null;
+        isMixerRunning = false;
+        btn.innerText = "Start Ambient Audio";
+        btn.classList.replace("btn-outline-danger", "btn-action-primary");
+      }
+    }
 
-      printWindow.document.write(`
-        <html>
-        <head>
-          <title>${config.exam} - Pre-Exam Review Sheet</title>
-          <style>
-            body { font-family: sans-serif; padding: 30px; color: #111; }
-            h2, h3 { border-bottom: 2px solid #000; padding-bottom: 5px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-            ul { line-height: 1.6; }
-          </style>
-        </head>
-        <body>
-          <h2>${config.name.toUpperCase()} // ${config.exam.toUpperCase()} PRE-EXAM REVIEW SHEET</h2>
-          <p>Generated on ${new Date().toLocaleDateString()} | Active Prep Target</p>
-          <h3>🔴 Critical Pitfalls & Mistake Diary (${mistakes.length})</h3>
-          <ul>${mistakesHtml}</ul>
-          <h3>⚡ Core Formulas & Active Recall Cards (${flashcards.length})</h3>
-          <table>
-            <thead><tr style="background: #f0f0f0;"><th style="padding: 8px; border: 1px solid #ccc; text-align: left;">Concept</th><th style="padding: 8px; border: 1px solid #ccc; text-align: left;">Formula / Core Rule</th></tr></thead>
-            <tbody>${cardsHtml}</tbody>
-          </table>
-          <script>window.onload = function() { window.print(); window.close(); }<\/script>
-        </body>
-        </html>
-      `);
-      printWindow.document.close();
+    function updateAudioGains() {
+      const bVal = document.getElementById('sliderBrown').value / 100;
+      const rVal = document.getElementById('sliderRain').value / 100;
+      const binVal = (document.getElementById('sliderBinaural').value / 100) * 0.08;
+
+      document.getElementById('volValBrown').innerText = `${Math.round(bVal * 100)}%`;
+      document.getElementById('volValRain').innerText = `${Math.round(rVal * 100)}%`;
+      document.getElementById('volValBinaural').innerText = `${document.getElementById('sliderBinaural').value}%`;
+
+      if (brownGain && audioCtx) brownGain.gain.setValueAtTime(bVal * 0.4, audioCtx.currentTime);
+      if (rainGain && audioCtx) rainGain.gain.setValueAtTime(rVal * 0.35, audioCtx.currentTime);
+      if (binauralGain && audioCtx) binauralGain.gain.setValueAtTime(binVal, audioCtx.currentTime);
     }
   </script>
 </body>
