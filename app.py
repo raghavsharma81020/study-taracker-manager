@@ -1467,6 +1467,18 @@ def sitemap():
   return Response(xml_data, mimetype="application/xml")
   import json
 import google.generativeai as genai
+import os
+import json
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_from_directory
+
+# Safe AI import: Prevents server crashes if the library is missing or loading
+try:
+    import google.generativeai as genai
+    GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
+    if GEMINI_KEY:
+        genai.configure(api_key=GEMINI_KEY)
+except Exception:
+    genai = None
 from flask import Flask, jsonify, render_template, request, session
 
 # Configure Gemini if key is present
