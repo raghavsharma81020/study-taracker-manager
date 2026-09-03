@@ -16,7 +16,13 @@ from flask import (
     session,
     url_for,
 )
-from google import genai
+try:
+    from google import genai
+except ImportError:
+    try:
+        import google.generativeai as genai
+    except ImportError:
+        genai = NoneS
 from google.genai import types
 from werkzeug.security import check_password_hash, generate_password_hash
 
