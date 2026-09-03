@@ -3,211 +3,283 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudyHub // Personal Command Center</title>
+  <title>STUDY // OS Command Center</title>
 
-  <!-- Google Font: Plus Jakarta Sans -->
+  <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-  
-  <!-- Bootstrap 5 & Bootstrap Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     :root {
-      --bg-body: #090d16;
-      --bg-surface: #0f172a;
-      --bg-card: #141e33;
-      --border-color: #1e293b;
-      --border-focus: #38bdf8;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent-blue: #38bdf8;
+      --bg-canvas: #07090e;
+      --bg-surface: #0e131f;
+      --bg-card: #131929;
+      --bg-hover: #182033;
+      --border-subtle: #1e293b;
+      --border-active: #38bdf8;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-cyan: #38bdf8;
       --accent-emerald: #10b981;
       --accent-amber: #f59e0b;
       --accent-rose: #f43f5e;
+      --accent-violet: #818cf8;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      background-color: var(--bg-body);
-      color: var(--text-main);
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
       font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
 
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    /* Top Navigation */
-    .app-navbar {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-color);
+    /* Top HUD */
+    .top-nav {
+      background: rgba(14, 19, 31, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 999;
     }
 
     /* Cards */
-    .hub-card {
+    .card-panel {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-subtle);
       border-radius: 14px;
       padding: 22px;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .hub-card:hover {
+    .card-panel:hover {
       border-color: #334155;
     }
 
-    /* Stat Cards */
-    .stat-pill {
-      font-size: 0.75rem;
+    /* Stat Ribbons */
+    .stat-title {
+      font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
-
-    .stat-value {
-      font-size: 1.75rem;
+    .stat-number {
+      font-size: 1.85rem;
       font-weight: 800;
-      margin-top: 4px;
-      margin-bottom: 6px;
+      line-height: 1.2;
+      margin: 4px 0 8px;
     }
-
-    .custom-progress {
+    .meter-bar {
       height: 6px;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.06);
       border-radius: 99px;
       overflow: hidden;
     }
-
-    .custom-progress-bar {
+    .meter-fill {
       height: 100%;
       border-radius: 99px;
-      transition: width 0.35s ease;
+      transition: width 0.3s ease;
     }
 
-    /* Input & Button Styles */
+    /* Weekly Chart */
+    .velocity-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 75px;
+      padding-top: 10px;
+    }
+    .velocity-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      height: 100%;
+    }
+    .velocity-bar-track {
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+    .velocity-bar {
+      width: 100%;
+      background: var(--accent-cyan);
+      border-radius: 6px;
+      transition: height 0.4s ease;
+    }
+    .velocity-label {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    /* Filter Pills */
+    .pill-filter {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill-filter:hover, .pill-filter.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* Topics Matrix */
+    .topic-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+    .topic-row:hover {
+      background: var(--bg-hover);
+    }
+    .topic-row.done {
+      opacity: 0.6;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .topic-row.done .t-name {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+
+    /* Priority Tiers */
+    .tier-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 5px;
+    }
+    .tier-1 { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .tier-2 { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tier-3 { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+    /* Spaced Repetition Check-tags */
+    .rev-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      user-select: none;
+    }
+    .rev-pill.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+    }
+
+    /* Inputs */
     .hub-input {
-      background: #090d16;
-      border: 1px solid var(--border-color);
+      background: #07090e;
+      border: 1px solid var(--border-subtle);
       color: #fff;
       border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.95rem;
+      padding: 9px 12px;
+      font-size: 0.9rem;
     }
-
     .hub-input:focus {
-      background: #090d16;
-      border-color: var(--border-focus);
+      background: #07090e;
+      border-color: var(--accent-cyan);
       color: #fff;
       box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
       outline: none;
     }
 
-    .btn-action {
-      background: var(--accent-blue);
-      color: #090d16;
+    .btn-action-primary {
+      background: var(--accent-cyan);
+      color: #07090e;
       font-weight: 700;
       border: none;
       border-radius: 8px;
-      padding: 9px 18px;
-      transition: all 0.15s ease;
+      padding: 9px 16px;
+      transition: background 0.15s;
     }
-
-    .btn-action:hover {
+    .btn-action-primary:hover {
       background: #0284c7;
       color: #fff;
     }
 
-    /* Topic Checklist Item */
-    .topic-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 14px 18px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.15s ease;
-    }
-
-    .topic-card:hover {
-      border-color: #334155;
-      background: #131c31;
-    }
-
-    .topic-card.completed {
-      opacity: 0.6;
-      border-color: rgba(16, 185, 129, 0.3);
-    }
-
-    .topic-card.completed .topic-name {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .badge-sub {
-      font-size: 0.72rem;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--accent-blue);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-    }
-
-    /* Modal */
-    .hub-modal {
+    /* Modals */
+    .modal-backdrop-custom {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.82);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(8px);
-      z-index: 1000;
+      z-index: 1050;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
     }
-
-    .hub-modal-content {
-      background: #101827;
+    .modal-frame {
+      background: #111827;
       border: 1px solid #334155;
       border-radius: 16px;
-      max-width: 520px;
+      max-width: 540px;
       width: 100%;
-      padding: 28px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      padding: 26px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ================= TOP NAVIGATION ================= -->
-  <nav class="app-navbar py-3 mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center gap-2">
-        <i class="bi bi-mortarboard-fill fs-4 text-info"></i>
+  <!-- ================= 1. NAV BAR ================= -->
+  <nav class="top-nav py-3 mb-4">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-shield-check fs-4 text-info"></i>
         <div>
-          <span class="fw-bold fs-5 text-white">StudyHub</span>
-          <span class="badge bg-secondary bg-opacity-25 text-info ms-2" id="examBadge">Self Study</span>
+          <span class="fw-bold text-white fs-5">StudyHub</span>
+          <span class="badge bg-secondary bg-opacity-25 text-info ms-2" id="navExamBadge">Active Prep</span>
         </div>
       </div>
 
+      <!-- Live Exam Countdown -->
+      <div class="d-flex align-items-center gap-2 bg-dark px-3 py-1 rounded-pill border border-secondary border-opacity-25">
+        <i class="bi bi-hourglass-split text-warning"></i>
+        <small class="mono text-light" id="examCountdownText">Loading Target...</small>
+      </div>
+
       <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small d-none d-md-inline" id="greetingUser">Welcome back</span>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('profileModal')">
-          <i class="bi bi-gear me-1"></i> Edit Goals
+          <i class="bi bi-sliders me-1"></i> Targets
         </button>
-        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="resetAllData()">
-          <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="exportData()">
+          <i class="bi bi-cloud-arrow-down me-1"></i> Backup
+        </button>
+        <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="resetAllData()">
+          <i class="bi bi-arrow-counterclockwise"></i>
         </button>
       </div>
     </div>
@@ -215,147 +287,164 @@
 
   <div class="container">
 
-    <!-- ================= 4 REAL-TIME METRIC CARDS ================= -->
+    <!-- ================= 2. METRICS & WEEKLY VELOCITY ================= -->
     <div class="row g-3 mb-4">
-      <div class="col-6 col-md-3">
-        <div class="hub-card">
-          <div class="stat-pill d-flex justify-content-between">
-            <span>Syllabus Covered</span>
-            <i class="bi bi-check2-circle text-info"></i>
+      <div class="col-6 col-lg-3">
+        <div class="card-panel">
+          <div class="stat-title d-flex justify-content-between">
+            <span>Syllabus Progress</span>
+            <i class="bi bi-pie-chart text-info"></i>
           </div>
-          <div class="stat-value text-info mono" id="statSyllabus">0%</div>
-          <div class="custom-progress">
-            <div id="statSyllabusBar" class="custom-progress-bar bg-info" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3">
-        <div class="hub-card">
-          <div class="stat-pill d-flex justify-content-between">
-            <span>Hours Logged</span>
-            <i class="bi bi-clock-history text-emerald"></i>
-          </div>
-          <div class="stat-value text-white mono" id="statHours">0.0 <span class="fs-6 text-muted">/ 6h</span></div>
-          <div class="custom-progress">
-            <div id="statHoursBar" class="custom-progress-bar" style="width: 0%; background: var(--accent-emerald);"></div>
+          <div class="stat-number text-info mono" id="statSyllabus">0%</div>
+          <div class="meter-bar">
+            <div id="statSyllabusFill" class="meter-fill bg-info" style="width: 0%;"></div>
           </div>
         </div>
       </div>
 
-      <div class="col-6 col-md-3">
-        <div class="hub-card">
-          <div class="stat-pill d-flex justify-content-between">
-            <span>Daily Streak</span>
-            <i class="bi bi-fire text-danger"></i>
+      <div class="col-6 col-lg-3">
+        <div class="card-panel">
+          <div class="stat-title d-flex justify-content-between">
+            <span>Today's Study</span>
+            <i class="bi bi-clock text-emerald"></i>
           </div>
-          <div class="stat-value text-danger mono" id="statStreak">1 <span class="fs-6 text-muted">DAY</span></div>
-          <div class="custom-progress">
-            <div class="custom-progress-bar bg-danger" style="width: 20%;"></div>
+          <div class="stat-number text-white mono" id="statHours">0.0 <span class="fs-6 text-secondary">/ 6.0h</span></div>
+          <div class="meter-bar">
+            <div id="statHoursFill" class="meter-fill" style="width: 0%; background: var(--accent-emerald);"></div>
           </div>
         </div>
       </div>
 
-      <div class="col-6 col-md-3">
-        <div class="hub-card">
-          <div class="stat-pill d-flex justify-content-between">
-            <span>Focus Sessions</span>
-            <i class="bi bi-lightning-charge text-warning"></i>
+      <div class="col-6 col-lg-3">
+        <div class="card-panel">
+          <div class="stat-title d-flex justify-content-between">
+            <span>Revisions Logged</span>
+            <i class="bi bi-arrow-repeat text-violet"></i>
           </div>
-          <div class="stat-value text-warning mono" id="statPomodoro">0</div>
-          <div class="custom-progress">
-            <div id="statPomodoroBar" class="custom-progress-bar bg-warning" style="width: 0%;"></div>
+          <div class="stat-number mono" style="color: var(--accent-violet)" id="statRevisions">0</div>
+          <div class="meter-bar">
+            <div id="statRevisionsFill" class="meter-fill" style="width: 0%; background: var(--accent-violet);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7-Day Velocity Graph -->
+      <div class="col-6 col-lg-3">
+        <div class="card-panel py-3">
+          <div class="stat-title d-flex justify-content-between mb-1">
+            <span>Weekly Velocity</span>
+            <small class="mono text-secondary">M-S</small>
+          </div>
+          <div class="velocity-chart" id="velocityBars">
+            <!-- 7 Bars Generated in JS -->
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ================= MAIN WORKSPACE GRID ================= -->
+    <!-- ================= 3. WORKSPACE ================= -->
     <div class="row g-4">
 
-      <!-- LEFT SIDE: CHECKLIST + RECOVERY PLANNER + MISTAKE DIARY -->
-      <div class="col-12 col-lg-8">
+      <!-- LEFT: CURRICULUM MATRIX + RECOVERY + ERRORS -->
+      <div class="col-12 col-xl-8">
         
-        <!-- 1. Topic Master Tracker -->
-        <div class="hub-card mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Checklist Matrix -->
+        <div class="card-panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
-              <h5 class="fw-bold text-white mb-0"><i class="bi bi-list-task text-info me-2"></i>Study Syllabus Checklist</h5>
-              <small class="text-muted">Check off topics as you finish them to update your progress in real time</small>
+              <h5 class="fw-bold text-white mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Study Matrix</h5>
+              <small class="text-secondary">Track chapter hours, yield priority, and 3-stage revisions</small>
+            </div>
+            <!-- Subject Filter Pills -->
+            <div class="d-flex gap-1 flex-wrap" id="subjectFilterContainer">
+              <span class="pill-filter active" onclick="filterBySubject('ALL', this)">All</span>
             </div>
           </div>
 
           <!-- Add Topic Bar -->
           <div class="row g-2 mb-3">
-            <div class="col-12 col-md-4">
-              <input type="text" id="inputSubject" class="form-control hub-input" placeholder="Subject (e.g. Physics, Math)">
+            <div class="col-md-3">
+              <input type="text" id="inSubject" class="form-control hub-input" placeholder="Subject (e.g. Physics)">
             </div>
-            <div class="col-12 col-md-5">
-              <input type="text" id="inputChapter" class="form-control hub-input" placeholder="Chapter / Topic Name">
+            <div class="col-md-4">
+              <input type="text" id="inChapter" class="form-control hub-input" placeholder="Chapter / Concept">
             </div>
-            <div class="col-12 col-md-3">
-              <button class="btn btn-action w-100" onclick="addTopic()">
-                <i class="bi bi-plus-lg me-1"></i> Add Topic
+            <div class="col-md-3">
+              <select id="inTier" class="form-select hub-input">
+                <option value="Tier 1">Tier 1 (High Yield)</option>
+                <option value="Tier 2" selected>Tier 2 (Standard)</option>
+                <option value="Tier 3">Tier 3 (Low Yield)</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-action-primary w-100" onclick="addCustomTopic()">
+                <i class="bi bi-plus-lg me-1"></i> Add
               </button>
             </div>
           </div>
 
-          <!-- Topic List Container -->
+          <!-- Topics List -->
           <div id="topicsContainer">
-            <!-- Dynamically Rendered -->
+            <!-- Dynamically populated -->
           </div>
         </div>
 
-        <!-- 2. Backlog Catch-Up Planner -->
-        <div class="hub-card mb-4">
+        <!-- Backlog Recovery Calculator -->
+        <div class="card-panel mb-4">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-bold text-warning mb-0"><i class="bi bi-heart-pulse me-2"></i>Catch-Up Recovery Planner</h6>
+            <h6 class="fw-bold text-warning mb-0"><i class="bi bi-heart-pulse me-2"></i>Backlog Recovery Calculator</h6>
           </div>
-          <p class="text-muted small">Fell behind schedule? Enter how many hours you missed to get an exact daily recovery target.</p>
+          <p class="text-secondary small">Fell behind? Calculate an exact daily buffer without disturbing your main syllabus.</p>
 
           <div class="row g-2 align-items-center">
-            <div class="col-12 col-md-5">
-              <label class="small text-muted mb-1">MISSED HOURS</label>
-              <input type="number" id="backlogInput" class="form-control hub-input" value="8" min="1">
+            <div class="col-md-5">
+              <label class="small text-secondary mb-1">ACCUMULATED BACKLOG (HOURS)</label>
+              <input type="number" id="backlogHoursInput" class="form-control hub-input" value="10" min="1">
             </div>
-            <div class="col-12 col-md-4">
-              <label class="small text-muted mb-1">DAILY EXTRA SPARE TIME</label>
-              <select id="backlogBuffer" class="form-select hub-input">
+            <div class="col-md-4">
+              <label class="small text-secondary mb-1">DAILY SPARE BUFFER</label>
+              <select id="backlogBufferInput" class="form-select hub-input">
                 <option value="30">30 mins / day</option>
                 <option value="45">45 mins / day</option>
                 <option value="60" selected>60 mins (1 hr) / day</option>
                 <option value="90">90 mins / day</option>
               </select>
             </div>
-            <div class="col-12 col-md-3 d-flex align-items-end">
+            <div class="col-md-3 d-flex align-items-end">
               <button class="btn btn-outline-warning w-100 py-2" onclick="calculateBacklog()">
                 Calculate
               </button>
             </div>
           </div>
 
-          <div id="backlogResultBox" class="mt-3 p-3 rounded" style="display: none; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25);">
+          <div id="backlogResultBox" class="mt-3 p-3 rounded" style="display: none; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="fw-bold text-warning" id="backlogDaysResult"></div>
-            <small class="text-light" id="backlogDescResult"></small>
+            <small class="text-light" id="backlogDetailResult"></small>
           </div>
         </div>
 
-        <!-- 3. Error Diary (Silly Mistake Notebook) -->
-        <div class="hub-card">
+        <!-- Digital Error Diary -->
+        <div class="card-panel">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-bold text-danger mb-0"><i class="bi bi-journal-x me-2"></i>Mistake Notebook</h6>
-            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger" id="errorCountBadge">0 Logged</span>
+            <h6 class="fw-bold text-danger mb-0"><i class="bi bi-journal-x me-2"></i>Digital Mistake Diary</h6>
+            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger" id="mistakeBadge">0 Logged</span>
           </div>
-          <p class="text-muted small">Record questions you got wrong during practice so you never repeat the same mistake.</p>
+          <p class="text-secondary small">Log questions you solved incorrectly to build an active pre-exam checklist.</p>
 
           <div class="row g-2 mb-3">
-            <div class="col-12 col-md-8">
-              <input type="text" id="mistakeDesc" class="form-control hub-input" placeholder="e.g. Applied wrong sign in integration or misread the question">
+            <div class="col-md-8">
+              <input type="text" id="mistakeDescInput" class="form-control hub-input" placeholder="e.g., Forgot negative sign in electrostatic potential">
             </div>
-            <div class="col-12 col-md-4">
-              <button class="btn btn-outline-danger w-100" onclick="addMistake()">Log Mistake</button>
+            <div class="col-md-4">
+              <select id="mistakeTypeInput" class="form-select hub-input">
+                <option value="Calculation Slip">Calculation Slip</option>
+                <option value="Formula Memory Gap">Formula Memory Gap</option>
+                <option value="Misread Question">Misread Question</option>
+                <option value="Conceptual Error">Conceptual Error</option>
+              </select>
             </div>
           </div>
+          <button class="btn btn-outline-danger w-100 py-2 mb-3" onclick="addMistakeEntry()">+ Log Mistake</button>
 
           <div id="mistakeList">
             <!-- Dynamically populated -->
@@ -364,36 +453,59 @@
 
       </div>
 
-      <!-- RIGHT SIDE: FOCUS TIMER & QUICK NOTES -->
-      <div class="col-12 col-lg-4">
+      <!-- RIGHT: POMODORO ENGINE + AMBIENT AUDIO + FORMULA DECK -->
+      <div class="col-12 col-xl-4">
         
-        <!-- Focus Timer -->
-        <div class="hub-card text-center mb-4">
-          <div class="stat-pill mb-2">POMODORO FOCUS ENGINE</div>
+        <!-- Focus Engine -->
+        <div class="card-panel text-center mb-4">
+          <div class="stat-title mb-2">FOCUS ENGINE // POMODORO</div>
           <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">
             25:00
           </div>
 
           <div class="d-flex justify-content-center gap-2 mb-3">
-            <button class="btn btn-action px-4" id="timerStartBtn" onclick="toggleTimer()">Start</button>
+            <button class="btn btn-action-primary px-4" id="timerActionBtn" onclick="toggleTimer()">Start</button>
             <button class="btn btn-outline-secondary px-3" onclick="resetTimer()">Reset</button>
           </div>
 
-          <div class="btn-group w-100 btn-group-sm">
-            <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25)">25 min</button>
-            <button class="btn btn-outline-secondary" onclick="setTimerDuration(50)">50 min</button>
-            <button class="btn btn-outline-secondary" onclick="setTimerDuration(5)">5 min Break</button>
+          <div class="btn-group w-100 btn-group-sm mb-3">
+            <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25)">25m</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(50)">50m</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(5)">5m Break</button>
+          </div>
+
+          <!-- Web Audio Synthesizer (Zero External Dependencies) -->
+          <button class="btn btn-outline-info btn-sm w-100 rounded-pill mono" id="audioToggleBtn" onclick="toggleBrownNoise()">
+            <i class="bi bi-soundwave me-1"></i> Focus Brown Noise (40Hz)
+          </button>
+        </div>
+
+        <!-- Formula Flashcard Deck -->
+        <div class="card-panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-white mb-0"><i class="bi bi-card-text me-2 text-info"></i>Formula Deck</h6>
+            <button class="btn btn-outline-secondary btn-sm" onclick="openModal('cardModal')"><i class="bi bi-plus-lg"></i></button>
+          </div>
+          <p class="text-secondary small mb-2">Active recall cards. Tap to reveal the answer.</p>
+
+          <div id="flashcardBox" class="p-3 rounded text-center border border-secondary border-opacity-25" style="background: #07090e; min-height: 110px; cursor: pointer;" onclick="flipCurrentCard()">
+            <small class="text-secondary d-block mono mb-1" id="cardTopicLabel">CARD 1/1</small>
+            <div class="fw-bold text-white fs-6 mt-2" id="cardContent">Click to flip card</div>
+          </div>
+
+          <div class="d-flex justify-content-between mt-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="prevCard()">&larr; Prev</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="nextCard()">Next &rarr;</button>
           </div>
         </div>
 
-        <!-- Quick Notes Scratchpad -->
-        <div class="hub-card">
+        <!-- Auto-Saving Scratchpad -->
+        <div class="card-panel">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-bold text-white mb-0"><i class="bi bi-pencil-square me-2 text-info"></i>Quick Scratchpad</h6>
-            <small class="text-success" id="noteSavedIndicator" style="display: none;">Saved</small>
+            <small class="text-success" id="noteSavedStatus" style="display: none;">Saved</small>
           </div>
-          <p class="text-muted small">Jot down formulas or quick reminders. Saves automatically as you type.</p>
-          <textarea id="scratchpad" class="form-control hub-input" rows="8" placeholder="Type quick notes here..." oninput="saveNotes()"></textarea>
+          <textarea id="scratchArea" class="form-control hub-input" rows="7" placeholder="Type formulas, immediate to-dos, or chapter notes here... (auto-saves)" oninput="saveNotes()"></textarea>
         </div>
 
       </div>
@@ -401,198 +513,308 @@
     </div>
   </div>
 
-  <!-- ================= EDIT PROFILE MODAL ================= -->
-  <div id="profileModal" class="hub-modal">
-    <div class="hub-modal-content">
+  <!-- ================= 4. MODALS ================= -->
+  
+  <!-- Profile Targets Modal -->
+  <div id="profileModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-white mb-0">Study Targets</h5>
+        <h5 class="fw-bold text-white mb-0">Study Targets & Countdown</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('profileModal')"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <div class="mb-3">
-        <label class="small text-muted mb-1">YOUR NAME</label>
-        <input type="text" id="profName" class="form-control hub-input" placeholder="e.g. Raghav">
+        <label class="small text-secondary mb-1">YOUR NAME</label>
+        <input type="text" id="cfgName" class="form-control hub-input" placeholder="e.g., Raghav">
       </div>
 
       <div class="mb-3">
-        <label class="small text-muted mb-1">TARGET EXAM / GOAL</label>
-        <input type="text" id="profExam" class="form-control hub-input" placeholder="e.g. JEE, NEET, Class 12, Computer Science">
+        <label class="small text-secondary mb-1">TARGET EXAM / GOAL</label>
+        <input type="text" id="cfgExam" class="form-control hub-input" placeholder="e.g., JEE Advanced 2026, NEET-UG">
       </div>
 
-      <div class="mb-4">
-        <label class="small text-muted mb-1">DAILY STUDY TARGET (HOURS)</label>
-        <input type="number" id="profHours" class="form-control hub-input" value="6" min="1" max="16">
+      <div class="row g-2 mb-4">
+        <div class="col-6">
+          <label class="small text-secondary mb-1">DAILY TARGET (HOURS)</label>
+          <input type="number" id="cfgHours" class="form-control hub-input" value="6" min="1" max="16">
+        </div>
+        <div class="col-6">
+          <label class="small text-secondary mb-1">EXAM TARGET DATE</label>
+          <input type="date" id="cfgDate" class="form-control hub-input">
+        </div>
       </div>
 
-      <button class="btn btn-action w-100 py-2" onclick="saveProfile()">
-        Save Goals
-      </button>
+      <button class="btn btn-action-primary w-100 py-2" onclick="saveConfiguration()">Save Changes</button>
     </div>
   </div>
 
-  <!-- ================= COMPLETE REAL-TIME SCRIPT ================= -->
+  <!-- Add Flashcard Modal -->
+  <div id="cardModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0">New Flashcard</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('cardModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="mb-3">
+        <label class="small text-secondary mb-1">QUESTION / CONCEPT (FRONT)</label>
+        <input type="text" id="cardFrontInput" class="form-control hub-input" placeholder="e.g., Carnot Engine Efficiency Formula">
+      </div>
+
+      <div class="mb-4">
+        <label class="small text-secondary mb-1">ANSWER / FORMULA (BACK)</label>
+        <input type="text" id="cardBackInput" class="form-control hub-input" placeholder="e.g., η = 1 - (T2 / T1)">
+      </div>
+
+      <button class="btn btn-action-primary w-100 py-2" onclick="saveNewCard()">Add to Deck</button>
+    </div>
+  </div>
+
+  <!-- ================= 5. COMPLETE ENGINE (ZERO FAILURES) ================= -->
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // State Variables (stored in localStorage)
-    let profile = JSON.parse(localStorage.getItem('sh_profile') || '{"name":"Student","exam":"Competitive Prep","hours":6}');
-    let topics = JSON.parse(localStorage.getItem('sh_topics') || '[]');
-    let mistakes = JSON.parse(localStorage.getItem('sh_mistakes') || '[]');
-    let pomoCount = parseInt(localStorage.getItem('sh_pomo') || '0');
+    // State
+    let config = JSON.parse(localStorage.getItem('sh_cfg') || JSON.stringify({
+      name: "Student",
+      exam: "Target Exam 2026",
+      hours: 6,
+      date: "2026-10-15"
+    }));
 
-    // Default topics if clean start
-    if (topics.length === 0) {
-      topics = [
-        { subject: "Core", chapter: "Chapter 1: Foundations & Core Concepts", hours: 2.5, done: false },
-        { subject: "Problem Practice", chapter: "Practice Problem Set #1", hours: 2.0, done: false },
-        { subject: "Revision", chapter: "Formula Sheet & Mistake Review", hours: 1.5, done: false }
-      ];
-      localStorage.setItem('sh_topics', JSON.stringify(topics));
-    }
+    let topics = JSON.parse(localStorage.getItem('sh_top') || JSON.stringify([
+      { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.0, done: false, r1: false, r2: false, r3: false },
+      { subject: "Maths", chapter: "Definite Integration & Area", tier: "Tier 1", hours: 3.5, done: false, r1: false, r2: false, r3: false },
+      { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, r1: false, r2: false, r3: false }
+    ]));
 
-    // Initialize Page
+    let mistakes = JSON.parse(localStorage.getItem('sh_mis') || '[]');
+    let flashcards = JSON.parse(localStorage.getItem('sh_cards') || JSON.stringify([
+      { q: "Work-Energy Theorem", a: "Work Done by all forces = Change in Kinetic Energy (ΔK)" },
+      { q: "De Broglie Wavelength", a: "λ = h / p = h / √(2mE)" }
+    ]));
+
+    let velocityData = JSON.parse(localStorage.getItem('sh_vel') || JSON.stringify([3, 4.5, 6, 2, 5, 6.5, 0]));
+    let activeSubjectFilter = "ALL";
+    let currentCardIdx = 0;
+    let isFlipped = false;
+
+    // Initialization
     window.addEventListener('DOMContentLoaded', () => {
-      renderProfile();
+      renderHUD();
+      renderSubjectsFilter();
       renderTopics();
       renderMistakes();
-      recalculateStats();
+      renderFlashcard();
+      renderVelocity();
+      recalculateRealMetrics();
 
-      const savedNotes = localStorage.getItem('sh_notes');
-      if (savedNotes) {
-        document.getElementById('scratchpad').value = savedNotes;
-      }
+      const savedNotes = localStorage.getItem('sh_notes_text');
+      if (savedNotes) document.getElementById('scratchArea').value = savedNotes;
     });
 
-    // Profile Handling
-    function renderProfile() {
-      document.getElementById('greetingUser').innerText = `Welcome, ${profile.name}`;
-      document.getElementById('examBadge').innerText = profile.exam;
-      document.getElementById('profName').value = profile.name;
-      document.getElementById('profExam').value = profile.exam;
-      document.getElementById('profHours').value = profile.hours;
+    // 1. HUD & Countdown
+    function renderHUD() {
+      document.getElementById('navExamBadge').innerText = config.exam;
+      document.getElementById('cfgName').value = config.name;
+      document.getElementById('cfgExam').value = config.exam;
+      document.getElementById('cfgHours').value = config.hours;
+      document.getElementById('cfgDate').value = config.date;
+
+      const target = new Date(config.date);
+      const now = new Date();
+      const diffDays = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+      
+      document.getElementById('examCountdownText').innerText = 
+        diffDays > 0 ? `${diffDays} DAYS UNTIL ${config.exam.toUpperCase()}` : `${config.exam.toUpperCase()} DAY`;
     }
 
-    function saveProfile() {
-      const name = document.getElementById('profName').value.trim() || "Student";
-      const exam = document.getElementById('profExam').value.trim() || "General Study";
-      const hours = parseFloat(document.getElementById('profHours').value) || 6;
+    function saveConfiguration() {
+      config.name = document.getElementById('cfgName').value.trim() || "Student";
+      config.exam = document.getElementById('cfgExam').value.trim() || "Target Exam";
+      config.hours = parseFloat(document.getElementById('cfgHours').value) || 6;
+      config.date = document.getElementById('cfgDate').value || "2026-10-15";
 
-      profile = { name, exam, hours };
-      localStorage.setItem('sh_profile', JSON.stringify(profile));
-      renderProfile();
-      recalculateStats();
+      localStorage.setItem('sh_cfg', JSON.stringify(config));
+      renderHUD();
+      recalculateRealMetrics();
       closeModal('profileModal');
     }
 
-    // Topic Checklist Handling
+    // 2. Filter & Topics Rendering
+    function renderSubjectsFilter() {
+      const container = document.getElementById('subjectFilterContainer');
+      const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
+      
+      container.innerHTML = uniqueSubjects.map(sub => `
+        <span class="pill-filter ${activeSubjectFilter === sub ? 'active' : ''}" onclick="filterBySubject('${sub}', this)">${sub}</span>
+      `).join('');
+    }
+
+    function filterBySubject(sub, el) {
+      activeSubjectFilter = sub;
+      document.querySelectorAll('.pill-filter').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      renderTopics();
+    }
+
     function renderTopics() {
       const container = document.getElementById('topicsContainer');
       container.innerHTML = '';
 
-      topics.forEach((t, i) => {
+      const filtered = activeSubjectFilter === 'ALL' 
+        ? topics 
+        : topics.filter(t => t.subject.toUpperCase() === activeSubjectFilter);
+
+      filtered.forEach((t, realIdx) => {
+        const idx = topics.indexOf(t);
+        const tierClass = t.tier === 'Tier 1' ? 'tier-1' : (t.tier === 'Tier 2' ? 'tier-2' : 'tier-3');
+
         const div = document.createElement('div');
-        div.className = `topic-card ${t.done ? 'completed' : ''}`;
+        div.className = `topic-row ${t.done ? 'done' : ''}`;
         div.innerHTML = `
           <div class="d-flex align-items-center gap-3">
-            <input type="checkbox" class="form-check-input mt-0" ${t.done ? 'checked' : ''} onchange="toggleTopic(${i})">
+            <input type="checkbox" class="form-check-input mt-0" ${t.done ? 'checked' : ''} onchange="toggleDone(${idx})">
             <div>
-              <div class="fw-bold text-white topic-name">${t.chapter}</div>
+              <div class="fw-bold text-white t-name">${t.chapter}</div>
               <div class="d-flex align-items-center gap-2 mt-1">
-                <span class="badge-sub">${t.subject}</span>
-                <small class="text-muted mono">${t.hours} hrs</small>
+                <span class="badge bg-secondary bg-opacity-25 text-info" style="font-size: 0.68rem;">${t.subject}</span>
+                <span class="tier-badge ${tierClass}">${t.tier}</span>
+                <small class="text-secondary mono">${t.hours}h</small>
               </div>
             </div>
           </div>
-          <button class="btn btn-sm text-secondary" onclick="deleteTopic(${i})">
-            <i class="bi bi-trash3"></i>
-          </button>
+          <div class="d-flex align-items-center gap-2">
+            <span class="rev-pill ${t.r1 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r1')">R1</span>
+            <span class="rev-pill ${t.r2 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r2')">R2</span>
+            <span class="rev-pill ${t.r3 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r3')">R3</span>
+            <button class="btn btn-sm text-secondary ms-2" onclick="deleteTopic(${idx})"><i class="bi bi-trash3"></i></button>
+          </div>
         `;
         container.appendChild(div);
       });
     }
 
-    function addTopic() {
-      const subj = document.getElementById('inputSubject').value.trim() || "General";
-      const chap = document.getElementById('inputChapter').value.trim();
+    function addCustomTopic() {
+      const subj = document.getElementById('inSubject').value.trim();
+      const chap = document.getElementById('inChapter').value.trim();
+      const tier = document.getElementById('inTier').value;
       if (!chap) return;
 
-      topics.unshift({ subject: subj, chapter: chap, hours: 2.0, done: false });
-      localStorage.setItem('sh_topics', JSON.stringify(topics));
-      document.getElementById('inputSubject').value = '';
-      document.getElementById('inputChapter').value = '';
+      topics.unshift({
+        subject: subj || "General",
+        chapter: chap,
+        tier: tier,
+        hours: 2.5,
+        done: false,
+        r1: false,
+        r2: false,
+        r3: false
+      });
+
+      localStorage.setItem('sh_top', JSON.stringify(topics));
+      document.getElementById('inChapter').value = '';
+      renderSubjectsFilter();
       renderTopics();
-      recalculateStats();
+      recalculateRealMetrics();
     }
 
-    function toggleTopic(index) {
-      topics[index].done = !topics[index].done;
-      localStorage.setItem('sh_topics', JSON.stringify(topics));
+    function toggleDone(idx) {
+      topics[idx].done = !topics[idx].done;
+      localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
-      recalculateStats();
+      recalculateRealMetrics();
     }
 
-    function deleteTopic(index) {
-      topics.splice(index, 1);
-      localStorage.setItem('sh_topics', JSON.stringify(topics));
+    function toggleRev(idx, key) {
+      topics[idx][key] = !topics[idx][key];
+      localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
-      recalculateStats();
+      recalculateRealMetrics();
     }
 
-    // Live Stat Recalculation
-    function recalculateStats() {
+    function deleteTopic(idx) {
+      topics.splice(idx, 1);
+      localStorage.setItem('sh_top', JSON.stringify(topics));
+      renderSubjectsFilter();
+      renderTopics();
+      recalculateRealMetrics();
+    }
+
+    // 3. Live Stats & Weekly Chart
+    function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
       const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
 
       document.getElementById('statSyllabus').innerText = `${pct}%`;
-      document.getElementById('statSyllabusBar').style.width = `${pct}%`;
+      document.getElementById('statSyllabusFill').style.width = `${pct}%`;
 
-      // Logged hours from completed topics + pomodoro sessions (25 min each)
-      const topicHours = topics.filter(t => t.done).reduce((sum, t) => sum + (parseFloat(t.hours) || 0), 0);
-      const timerHours = (pomoCount * 25) / 60;
-      const totalHours = topicHours + timerHours;
-      const targetHours = parseFloat(profile.hours) || 6;
+      const doneHours = topics.filter(t => t.done).reduce((acc, t) => acc + (parseFloat(t.hours) || 0), 0);
+      const targetHours = parseFloat(config.hours) || 6;
+      document.getElementById('statHours').innerHTML = `${doneHours.toFixed(1)} <span class="fs-6 text-secondary">/ ${targetHours}h</span>`;
+      const hoursPct = Math.min(100, Math.round((doneHours / targetHours) * 100));
+      document.getElementById('statHoursFill').style.width = `${hoursPct}%`;
 
-      document.getElementById('statHours').innerHTML = `${totalHours.toFixed(1)} <span class="fs-6 text-muted">/ ${targetHours}h</span>`;
-      const hoursPct = Math.min(100, Math.round((totalHours / targetHours) * 100));
-      document.getElementById('statHoursBar').style.width = `${hoursPct}%`;
-
-      document.getElementById('statPomodoro').innerText = pomoCount;
-      document.getElementById('statPomodoroBar').style.width = `${Math.min(100, pomoCount * 20)}%`;
+      let revCount = 0;
+      topics.forEach(t => {
+        if (t.r1) revCount++;
+        if (t.r2) revCount++;
+        if (t.r3) revCount++;
+      });
+      document.getElementById('statRevisions').innerText = revCount;
+      document.getElementById('statRevisionsFill').style.width = `${Math.min(100, revCount * 10)}%`;
     }
 
-    // Backlog Calculator
-    function calculateBacklog() {
-      const hours = parseFloat(document.getElementById('backlogInput').value) || 0;
-      const buffer = parseFloat(document.getElementById('backlogBuffer').value) || 60;
-      if (hours <= 0) return;
+    function renderVelocity() {
+      const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      const max = Math.max(...velocityData, 8);
+      const container = document.getElementById('velocityBars');
+      
+      container.innerHTML = velocityData.map((hrs, i) => `
+        <div class="velocity-col">
+          <div class="velocity-bar-track">
+            <div class="velocity-bar" style="height: ${Math.round((hrs / max) * 100)}%;"></div>
+          </div>
+          <span class="velocity-label mono">${days[i]}</span>
+        </div>
+      `).join('');
+    }
 
-      const days = Math.ceil((hours * 60) / buffer);
-      document.getElementById('backlogDaysResult').innerText = `Recovery Window: ${days} Days`;
-      document.getElementById('backlogDescResult').innerText = `Add ${buffer} minutes to each day's study block. You will catch up on all ${hours} missed hours in ${days} days without ruining your normal schedule.`;
+    // 4. Backlog Recovery Calculator
+    function calculateBacklog() {
+      const hrs = parseFloat(document.getElementById('backlogHoursInput').value) || 0;
+      const buf = parseFloat(document.getElementById('backlogBufferInput').value) || 60;
+      if (hrs <= 0) return;
+
+      const days = Math.ceil((hrs * 60) / buf);
+      document.getElementById('backlogDaysResult').innerText = `Recovery Target: ${days} Days`;
+      document.getElementById('backlogDetailResult').innerText = 
+        `By allocating ${buf} minutes of daily buffer time, you will recover all ${hrs} backlog hours in ${days} days without skipping your primary lessons.`;
       document.getElementById('backlogResultBox').style.display = 'block';
     }
 
-    // Mistake Notebook
-    function addMistake() {
-      const text = document.getElementById('mistakeDesc').value.trim();
-      if (!text) return;
+    // 5. Digital Mistake Diary
+    function addMistakeEntry() {
+      const desc = document.getElementById('mistakeDescInput').value.trim();
+      const type = document.getElementById('mistakeTypeInput').value;
+      if (!desc) return;
 
-      mistakes.unshift({ text, date: new Date().toLocaleDateString() });
-      localStorage.setItem('sh_mistakes', JSON.stringify(mistakes));
-      document.getElementById('mistakeDesc').value = '';
+      mistakes.unshift({ desc, type, date: new Date().toLocaleDateString() });
+      localStorage.setItem('sh_mis', JSON.stringify(mistakes));
+      document.getElementById('mistakeDescInput').value = '';
       renderMistakes();
     }
 
     function renderMistakes() {
       const list = document.getElementById('mistakeList');
-      const badge = document.getElementById('errorCountBadge');
+      const badge = document.getElementById('mistakeBadge');
       list.innerHTML = '';
       badge.innerText = `${mistakes.length} Logged`;
 
       if (mistakes.length === 0) {
-        list.innerHTML = `<small class="text-muted">No mistakes logged yet.</small>`;
+        list.innerHTML = `<small class="text-secondary">No errors recorded. When you solve a question incorrectly in practice, record it here.</small>`;
         return;
       }
 
@@ -600,7 +822,10 @@
         const item = document.createElement('div');
         item.className = "d-flex justify-content-between align-items-center p-2 rounded mb-1 bg-dark border border-secondary border-opacity-25 small";
         item.innerHTML = `
-          <span class="text-light">${m.text}</span>
+          <div>
+            <span class="text-light">${m.desc}</span>
+            <small class="text-danger d-block">${m.type}</small>
+          </div>
           <button class="btn btn-sm text-secondary" onclick="deleteMistake(${i})"><i class="bi bi-x"></i></button>
         `;
         list.appendChild(item);
@@ -609,48 +834,92 @@
 
     function deleteMistake(i) {
       mistakes.splice(i, 1);
-      localStorage.setItem('sh_mistakes', JSON.stringify(mistakes));
+      localStorage.setItem('sh_mis', JSON.stringify(mistakes));
       renderMistakes();
     }
 
-    // Scratchpad Auto-save
-    function saveNotes() {
-      const val = document.getElementById('scratchpad').value;
-      localStorage.setItem('sh_notes', val);
-      const ind = document.getElementById('noteSavedIndicator');
-      ind.style.display = 'inline';
-      setTimeout(() => { ind.style.display = 'none'; }, 1000);
+    // 6. Flashcard Deck
+    function renderFlashcard() {
+      if (flashcards.length === 0) {
+        document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
+        document.getElementById('cardContent').innerText = "Click '+' to add your first formula card.";
+        return;
+      }
+      isFlipped = false;
+      const c = flashcards[currentCardIdx];
+      document.getElementById('cardTopicLabel').innerText = `CARD ${currentCardIdx + 1}/${flashcards.length} (TAP TO FLIP)`;
+      document.getElementById('cardContent').innerText = c.q;
     }
 
-    // Focus Timer
-    let timer = null, timeLeft = 25 * 60, running = false;
+    function flipCurrentCard() {
+      if (flashcards.length === 0) return;
+      isFlipped = !isFlipped;
+      const c = flashcards[currentCardIdx];
+      document.getElementById('cardContent').innerText = isFlipped ? c.a : c.q;
+    }
 
-    function updateTimerUI() {
-      const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-      const s = (timeLeft % 60).toString().padStart(2, '0');
+    function nextCard() {
+      if (flashcards.length <= 1) return;
+      currentCardIdx = (currentCardIdx + 1) % flashcards.length;
+      renderFlashcard();
+    }
+
+    function prevCard() {
+      if (flashcards.length <= 1) return;
+      currentCardIdx = (currentCardIdx - 1 + flashcards.length) % flashcards.length;
+      renderFlashcard();
+    }
+
+    function saveNewCard() {
+      const q = document.getElementById('cardFrontInput').value.trim();
+      const a = document.getElementById('cardBackInput').value.trim();
+      if (!q || !a) return;
+
+      flashcards.push({ q, a });
+      localStorage.setItem('sh_cards', JSON.stringify(flashcards));
+      document.getElementById('cardFrontInput').value = '';
+      document.getElementById('cardBackInput').value = '';
+      currentCardIdx = flashcards.length - 1;
+      renderFlashcard();
+      closeModal('cardModal');
+    }
+
+    // 7. Auto-Saving Scratchpad
+    function saveNotes() {
+      const val = document.getElementById('scratchArea').value;
+      localStorage.setItem('sh_notes_text', val);
+      const s = document.getElementById('noteSavedStatus');
+      s.style.display = 'inline';
+      setTimeout(() => { s.style.display = 'none'; }, 1000);
+    }
+
+    // 8. Pomodoro & Web Audio Synthesizer (Zero MP3 Assets Needed)
+    let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
+
+    function updateTimerDisplay() {
+      const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+      const s = (secondsLeft % 60).toString().padStart(2, '0');
       document.getElementById('timerDisplay').innerText = `${m}:${s}`;
     }
 
     function toggleTimer() {
-      const btn = document.getElementById('timerStartBtn');
-      if (running) {
-        clearInterval(timer);
-        running = false;
+      const btn = document.getElementById('timerActionBtn');
+      if (timerActive) {
+        clearInterval(timerRef);
+        timerActive = false;
         btn.innerText = "Start";
       } else {
-        running = true;
+        timerActive = true;
         btn.innerText = "Pause";
-        timer = setInterval(() => {
-          if (timeLeft > 0) {
-            timeLeft--;
-            updateTimerUI();
+        timerRef = setInterval(() => {
+          if (secondsLeft > 0) {
+            secondsLeft--;
+            updateTimerDisplay();
           } else {
-            clearInterval(timer);
-            running = false;
-            pomoCount++;
-            localStorage.setItem('sh_pomo', pomoCount);
-            recalculateStats();
-            alert("Focus session complete! 25 minutes logged.");
+            clearInterval(timerRef);
+            timerActive = false;
+            playFinishChime();
+            alert("Pomodoro complete! Great study block.");
             btn.innerText = "Start";
           }
         }, 1000);
@@ -658,23 +927,82 @@
     }
 
     function resetTimer() {
-      clearInterval(timer);
-      running = false;
-      timeLeft = 25 * 60;
-      updateTimerUI();
-      document.getElementById('timerStartBtn').innerText = "Start";
+      clearInterval(timerRef);
+      timerActive = false;
+      secondsLeft = 25 * 60;
+      updateTimerDisplay();
+      document.getElementById('timerActionBtn').innerText = "Start";
     }
 
     function setTimerDuration(mins) {
-      clearInterval(timer);
-      running = false;
-      timeLeft = mins * 60;
-      updateTimerUI();
-      document.getElementById('timerStartBtn').innerText = "Start";
+      clearInterval(timerRef);
+      timerActive = false;
+      secondsLeft = mins * 60;
+      updateTimerDisplay();
+      document.getElementById('timerActionBtn').innerText = "Start";
+    }
+
+    // Native Web Audio Synthesizer
+    let audioCtx = null, noiseNode = null;
+
+    function toggleBrownNoise() {
+      const btn = document.getElementById('audioToggleBtn');
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      if (noiseNode) {
+        noiseNode.stop();
+        noiseNode = null;
+        btn.innerHTML = `<i class="bi bi-soundwave me-1"></i> Focus Brown Noise (40Hz)`;
+        return;
+      }
+
+      const bufferSize = audioCtx.sampleRate * 2;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let lastOut = 0.0;
+      for (let i = 0; i < bufferSize; i++) {
+        let white = Math.random() * 2 - 1;
+        data[i] = (lastOut + (0.02 * white)) / 1.02;
+        lastOut = data[i];
+        data[i] *= 3.5;
+      }
+
+      noiseNode = audioCtx.createBufferSource();
+      noiseNode.buffer = buffer;
+      noiseNode.loop = true;
+      noiseNode.connect(audioCtx.destination);
+      noiseNode.start();
+      btn.innerHTML = `<i class="bi bi-pause-fill me-1"></i> Stop Ambient Audio`;
+    }
+
+    function playFinishChime() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 1.2);
+      } catch (e) {}
+    }
+
+    // 9. Data Backup (Export / Reset)
+    function exportData() {
+      const payload = { config, topics, mistakes, flashcards, notes: localStorage.getItem('sh_notes_text') };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `StudyHub_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
     }
 
     function resetAllData() {
-      if (confirm("Reset all topics and metrics to start fresh?")) {
+      if (confirm("Reset syllabus and metrics back to defaults?")) {
         localStorage.clear();
         location.reload();
       }
