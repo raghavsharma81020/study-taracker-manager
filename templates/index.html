@@ -99,6 +99,38 @@
       gap: 8px;
     }
 
+    /* 7-Day SRS Forecast Row */
+    .srs-forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .srs-forecast-col {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 8px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .srs-forecast-col.has-due {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.06);
+    }
+
+    /* Pareto Error Bar */
+    .pareto-bar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .pareto-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+
     /* Time-Blocking HUD */
     .timeblock-grid {
       display: grid;
@@ -123,7 +155,7 @@
       background: rgba(16, 185, 129, 0.05);
     }
 
-    /* 90-Day Activity Heatmap */
+    /* 90-Day Heatmap */
     .heatmap-scroll-container {
       overflow-x: auto;
       padding-bottom: 4px;
@@ -262,6 +294,24 @@
     }
     .btn-action-primary:hover { background: #0284c7; color: #fff; }
 
+    /* Sound Mixer Faders */
+    .sound-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 5px;
+      background: #1e293b;
+      outline: none;
+    }
+    .sound-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+    }
+
     /* Modals */
     .modal-backdrop-custom {
       position: fixed;
@@ -323,11 +373,11 @@
 
       <!-- Quick Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('blurtModal')">
-          <i class="bi bi-lightning-charge me-1"></i> Blurt Drill
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
+          <i class="bi bi-soundwave me-1"></i> Brainwave Audio
         </button>
         <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('sleepModal')">
-          <i class="bi bi-moon-stars me-1"></i> Sleep & Energy
+          <i class="bi bi-moon-stars me-1"></i> Bio-Metrics
         </button>
         <button class="btn btn-outline-success btn-sm rounded-pill" onclick="exportOfficialAuditCertificate()">
           <i class="bi bi-patch-check me-1"></i> Audit Sheet
@@ -378,12 +428,12 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Study XP Accumulated</span>
-            <i class="bi bi-gem text-warning"></i>
+            <span>Forecast Finish Date</span>
+            <i class="bi bi-graph-up-arrow text-warning"></i>
           </div>
-          <div class="stat-number mono text-warning" id="statTotalXp">0 <span class="fs-6 text-secondary">XP</span></div>
+          <div class="stat-number mono text-warning" id="statFinishDate">--</div>
           <div class="meter-bar">
-            <div id="statXpFill" class="meter-fill" style="width: 0%; background: var(--accent-gold);"></div>
+            <div id="statPaceFill" class="meter-fill bg-warning" style="width: 50%;"></div>
           </div>
         </div>
       </div>
@@ -402,7 +452,21 @@
       </div>
     </div>
 
-    <!-- ================= 3. MCQ ACCURACY COUNTER & BALANCE WHEEL ================= -->
+    <!-- ================= 3. NEXT 7-DAY SPACED REPETITION FORECAST ================= -->
+    <div class="card-panel mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold text-white mb-0"><i class="bi bi-calendar3 text-info me-2"></i>Next 7-Day Spaced Repetition (SRS) Forecast</h6>
+          <small class="text-secondary">Pre-scheduled revision load to eliminate decision fatigue</small>
+        </div>
+        <span class="badge bg-secondary bg-opacity-25 text-info mono" id="srsWeeklyLoadBadge">0 Total Due This Week</span>
+      </div>
+      <div class="srs-forecast-grid" id="srsForecastGrid">
+        <!-- 7 Days Injected Dynamically -->
+      </div>
+    </div>
+
+    <!-- ================= 4. MCQ ACCURACY COUNTER & BALANCE WHEEL ================= -->
     <div class="row g-4 mb-4">
       
       <!-- MCQ / PYQ Live Accuracy Drill -->
@@ -411,7 +475,7 @@
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
               <h6 class="fw-bold text-white mb-0"><i class="bi bi-check2-square text-emerald me-2"></i>Daily PYQ & MCQ Accuracy Counter</h6>
-              <small class="text-secondary">Problem drill (+15 XP per correct solution)</small>
+              <small class="text-secondary">Active problem drill (+15 XP per correct solution)</small>
             </div>
             <button class="btn btn-sm btn-outline-secondary mono" onclick="resetMcqCounter()">Reset Day</button>
           </div>
@@ -471,7 +535,7 @@
 
     </div>
 
-    <!-- ================= 4. DAILY TIME-BLOCKING HUD ================= -->
+    <!-- ================= 5. DAILY TIME-BLOCKING HUD ================= -->
     <div class="card-panel mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div>
@@ -486,7 +550,7 @@
       <div class="timeblock-grid" id="timeblocksContainer"></div>
     </div>
 
-    <!-- ================= 5. 90-DAY ACTIVITY HEATMAP ================= -->
+    <!-- ================= 6. 90-DAY ACTIVITY HEATMAP ================= -->
     <div class="card-panel mb-4">
       <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
         <div>
@@ -508,10 +572,10 @@
       </div>
     </div>
 
-    <!-- ================= 6. WORKSPACE ================= -->
+    <!-- ================= 7. WORKSPACE ================= -->
     <div class="row g-4">
 
-      <!-- LEFT: CURRICULUM + SRS DUE QUEUE + MOCK TEST PREDICTOR -->
+      <!-- LEFT: CURRICULUM + PARETO MISTAKE CHART + MOCK TEST PREDICTOR -->
       <div class="col-12 col-xl-8">
 
         <!-- Automated Spaced Repetition (SRS) Queue -->
@@ -565,6 +629,21 @@
           </div>
 
           <div id="topicsContainer"></div>
+        </div>
+
+        <!-- Mock Test Error Root-Cause Pareto Analyzer -->
+        <div class="card-panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <h6 class="fw-bold text-rose mb-0"><i class="bi bi-bar-chart-line me-2"></i>Mock Test Error Root-Cause Pareto Analyzer</h6>
+              <small class="text-secondary">Identify where marks are bleeding most to fix root habits</small>
+            </div>
+            <span class="badge bg-danger bg-opacity-25 text-danger mono" id="topLeakBadge">No Leaks Logged</span>
+          </div>
+
+          <div class="row g-3 mt-1" id="paretoBarsContainer">
+            <!-- Dynamically Rendered -->
+          </div>
         </div>
 
         <!-- Mock Test Score & Target Cutoff Predictor -->
@@ -624,6 +703,7 @@
                 <option value="Formula Memory Gap">Formula Memory Gap</option>
                 <option value="Misread Question">Misread Question</option>
                 <option value="Conceptual Error">Conceptual Error</option>
+                <option value="Time Pressure">Time Pressure</option>
               </select>
             </div>
           </div>
@@ -702,78 +782,75 @@
     </div>
   </div>
 
-  <!-- ================= 7. MODALS ================= -->
+  <!-- ================= 8. MODALS ================= -->
 
-  <!-- 1. Active Blurt-Recall Timer & Evaluator Modal -->
-  <div id="blurtModal" class="modal-backdrop-custom">
+  <!-- Multi-Track Ambient Soundscape & 4-Stage Binaural Frequency Selector -->
+  <div id="soundMixerModal" class="modal-backdrop-custom">
     <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-lightning-charge me-2"></i>2-Minute Active Recall Blurt Drill</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('blurtModal'); stopBlurtDrill();"><i class="bi bi-x-lg"></i></button>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-sliders2-vertical me-2"></i>Multi-Track Ambient & Binaural Synthesizer</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('soundMixerModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small mb-3">Pick a chapter and type every formula, mechanism, and fact you remember without looking at your notes.</p>
+      <p class="text-secondary small mb-3">Real-time Web Audio synthesizer. Select tuned neural frequencies to match your immediate study task.</p>
 
-      <div class="row g-2 mb-3">
-        <div class="col-8">
-          <select id="blurtTopicSelect" class="form-select hub-input"></select>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-action-primary w-100 py-2" id="blurtActionBtn" onclick="toggleBlurtDrill()">Start 120s Drill</button>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-between align-items-center bg-dark p-2 rounded mb-2 border border-secondary border-opacity-25">
-        <span class="mono small text-secondary">TIME REMAINING:</span>
-        <span class="fs-4 fw-bold mono text-warning" id="blurtTimerDisplay">02:00</span>
-        <span class="mono small text-info" id="blurtWordCount">0 Words</span>
-      </div>
-
-      <textarea id="blurtInputArea" class="form-control hub-input mb-3" rows="6" placeholder="Start typing formulas, derivations, key equations as fast as you can..." disabled oninput="updateBlurtWordCount()"></textarea>
-
-      <div id="blurtResultBox" class="p-3 rounded border border-warning border-opacity-25" style="display: none; background: rgba(245, 158, 11, 0.05);">
-        <div class="fw-bold text-warning mb-1" id="blurtScoreText">Drill Complete</div>
-        <small class="text-light" id="blurtFeedbackText"></small>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. Sleep, Energy & Performance Correlation Modal -->
-  <div id="sleepModal" class="modal-backdrop-custom">
-    <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="fw-bold text-info mb-0"><i class="bi bi-moon-stars me-2"></i>Sleep, Energy & Performance Matrix</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('sleepModal')"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <p class="text-secondary small mb-3">Log daily sleep and energy to track their direct correlation with MCQ accuracy.</p>
-
-      <div class="row g-2 mb-3">
-        <div class="col-6">
-          <label class="small text-secondary mb-1">SLEEP LAST NIGHT (HOURS)</label>
-          <input type="number" step="0.5" id="inSleepHours" class="form-control hub-input" value="7.0" min="3" max="12">
-        </div>
-        <div class="col-6">
-          <label class="small text-secondary mb-1">MORNING ENERGY (1-5)</label>
-          <select id="inEnergyLevel" class="form-select hub-input">
-            <option value="5">5 - Peak Energy</option>
-            <option value="4" selected>4 - Solid / Focused</option>
-            <option value="3">3 - Moderate Fatigue</option>
-            <option value="2">2 - Heavy Brain Fog</option>
-            <option value="1">1 - Exhausted</option>
-          </select>
+      <!-- 4-Stage Binaural Presets -->
+      <div class="mb-4">
+        <label class="small text-secondary fw-bold mono mb-2 d-block">SELECT TARGET NEURAL FREQUENCY</label>
+        <div class="row g-2">
+          <div class="col-6 col-md-3">
+            <button class="btn btn-outline-info btn-sm w-100 py-2 mono active" id="btnWaveTheta" onclick="setBinauralWave(6, 'btnWaveTheta')">
+              <div class="fw-bold">Theta (6Hz)</div>
+              <small style="font-size: 0.65rem;">Deep Insight</small>
+            </button>
+          </div>
+          <div class="col-6 col-md-3">
+            <button class="btn btn-outline-success btn-sm w-100 py-2 mono" id="btnWaveAlpha" onclick="setBinauralWave(10, 'btnWaveAlpha')">
+              <div class="fw-bold">Alpha (10Hz)</div>
+              <small style="font-size: 0.65rem;">Flow Reading</small>
+            </button>
+          </div>
+          <div class="col-6 col-md-3">
+            <button class="btn btn-outline-warning btn-sm w-100 py-2 mono" id="btnWaveBeta" onclick="setBinauralWave(20, 'btnWaveBeta')">
+              <div class="fw-bold">Beta (20Hz)</div>
+              <small style="font-size: 0.65rem;">Rapid MCQs</small>
+            </button>
+          </div>
+          <div class="col-6 col-md-3">
+            <button class="btn btn-outline-danger btn-sm w-100 py-2 mono" id="btnWaveGamma" onclick="setBinauralWave(40, 'btnWaveGamma')">
+              <div class="fw-bold">Gamma (40Hz)</div>
+              <small style="font-size: 0.65rem;">Peak Recall</small>
+            </button>
+          </div>
         </div>
       </div>
-      <button class="btn btn-outline-info w-100 py-2 mb-3" onclick="logSleepEntry()">Save Today's Bio-Metrics</button>
 
-      <div class="p-3 rounded bg-dark border border-secondary border-opacity-25">
-        <h6 class="fw-bold text-white small mb-2">Performance Insight Correlation</h6>
-        <div class="d-flex justify-content-between small text-secondary mb-1">
-          <span>Avg Accuracy on 7h+ Sleep:</span>
-          <strong class="text-success mono" id="corrOptimalAccuracy">--</strong>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="fw-bold text-white">Master Ambient Engine</span>
+        <button class="btn btn-action-primary btn-sm px-3" id="masterAudioBtn" onclick="toggleAudioEngine()">Start Ambient Audio</button>
+      </div>
+
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">Deep Brown Noise (40Hz Baseline)</span>
+          <span class="mono text-secondary" id="volValBrown">50%</span>
         </div>
-        <div class="d-flex justify-content-between small text-secondary">
-          <span>Avg Accuracy on Sub-7h Sleep:</span>
-          <strong class="text-danger mono" id="corrSubOptimalAccuracy">--</strong>
+        <input type="range" class="sound-slider" id="sliderBrown" min="0" max="100" value="50" oninput="updateAudioGains()">
+      </div>
+
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light">Rainfall Stream (Bandpass Pink)</span>
+          <span class="mono text-secondary" id="volValRain">40%</span>
         </div>
+        <input type="range" class="sound-slider" id="sliderRain" min="0" max="100" value="40" oninput="updateAudioGains()">
+      </div>
+
+      <div class="mb-3">
+        <div class="d-flex justify-content-between small mb-1">
+          <span class="text-light" id="binauralLabelText">Active Binaural Beat (Theta 6Hz)</span>
+          <span class="mono text-secondary" id="volValBinaural">30%</span>
+        </div>
+        <input type="range" class="sound-slider" id="sliderBinaural" min="0" max="100" value="30" oninput="updateAudioGains()">
       </div>
     </div>
   </div>
@@ -800,6 +877,33 @@
         </div>
       </div>
       <canvas id="sketchCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Sleep & Bio-Metrics Modal -->
+  <div id="sleepModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-moon-stars me-2"></i>Sleep & Energy Bio-Metrics</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('sleepModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="small text-secondary mb-1">SLEEP LAST NIGHT (HOURS)</label>
+          <input type="number" step="0.5" id="inSleepHours" class="form-control hub-input" value="7.0" min="3" max="12">
+        </div>
+        <div class="col-6">
+          <label class="small text-secondary mb-1">MORNING ENERGY (1-5)</label>
+          <select id="inEnergyLevel" class="form-select hub-input">
+            <option value="5">5 - Peak Energy</option>
+            <option value="4" selected>4 - Solid / Focused</option>
+            <option value="3">3 - Moderate Fatigue</option>
+            <option value="2">2 - Heavy Brain Fog</option>
+            <option value="1">1 - Exhausted</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-outline-info w-100 py-2 mb-3" onclick="logSleepEntry()">Save Today's Bio-Metrics</button>
     </div>
   </div>
 
@@ -846,7 +950,7 @@
     </div>
   </div>
 
-  <!-- Flashcard Creation Modal -->
+  <!-- Flashcard Modal -->
   <div id="cardModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -865,7 +969,7 @@
     </div>
   </div>
 
-  <!-- ================= 8. JAVASCRIPT ENGINE ================= -->
+  <!-- ================= 9. JAVASCRIPT ENGINE ================= -->
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -941,13 +1045,14 @@
       renderSubjectsFilter();
       renderTopics();
       renderSrsQueue();
+      renderSrsForecast();
+      renderParetoMistakes();
+      calculateBurndownForecast();
       renderMistakes();
       renderFlashcard();
       renderMocks();
       renderHeatmap();
       updateFatigueMeter();
-      populateBlurtTopicSelect();
-      calculateSleepCorrelation();
       recalculateRealMetrics();
 
       const savedNotes = localStorage.getItem('sh_notes_text');
@@ -987,7 +1092,232 @@
       }
     }
 
-    // 1. Gamified XP & Rank Engine
+    // 1. Syllabus Burn-Down & Exam Deadline Forecaster
+    function calculateBurndownForecast() {
+      const remainingTopics = topics.filter(t => !t.done).length;
+      const targetDate = new Date(config.date);
+      const today = new Date();
+      const daysUntilExam = Math.max(1, Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24)));
+
+      // Rolling velocity: completed chapters in past 14 days or fallback 1.2/day
+      const completedCount = topics.filter(t => t.done).length;
+      const velocity = Math.max(0.6, completedCount > 0 ? (completedCount / 7) : 1.0);
+
+      const daysNeeded = Math.ceil(remainingTopics / velocity);
+      const estFinishDate = new Date();
+      estFinishDate.setDate(today.getDate() + daysNeeded);
+
+      const finishStr = remainingTopics === 0 ? "DONE" : estFinishDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      document.getElementById('statFinishDate').innerText = finishStr;
+
+      const paceRatio = Math.min(100, Math.round((daysUntilExam / Math.max(1, daysNeeded)) * 100));
+      document.getElementById('statPaceFill').style.width = `${paceRatio}%`;
+    }
+
+    // 2. Next 7-Day Spaced Repetition (SRS) Forecast
+    function renderSrsForecast() {
+      const grid = document.getElementById('srsForecastGrid');
+      grid.innerHTML = '';
+      const today = new Date();
+      let totalDueWeek = 0;
+
+      for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
+        const targetDay = new Date();
+        targetDay.setDate(today.getDate() + dayOffset);
+        let dueOnDay = 0;
+
+        topics.forEach(t => {
+          if (!t.done || !t.doneDate) return;
+          const compDate = new Date(t.doneDate);
+          const diffDays = Math.floor((targetDay - compDate) / (1000 * 60 * 60 * 24));
+
+          if (!t.r1 && diffDays === 3) dueOnDay++;
+          else if (t.r1 && !t.r2 && diffDays === 7) dueOnDay++;
+          else if (t.r2 && !t.r3 && diffDays === 21) dueOnDay++;
+        });
+
+        totalDueWeek += dueOnDay;
+        const dayLabel = targetDay.toLocaleDateString(undefined, { weekday: 'short' });
+        const dateNum = targetDay.getDate();
+
+        const col = document.createElement('div');
+        col.className = `srs-forecast-col ${dueOnDay > 0 ? 'has-due' : ''}`;
+        col.innerHTML = `
+          <div class="text-secondary mono" style="font-size: 0.65rem;">${dayLabel} ${dateNum}</div>
+          <div class="fw-bold fs-5 my-1 mono ${dueOnDay > 0 ? 'text-warning' : 'text-secondary'}">${dueOnDay}</div>
+          <small style="font-size: 0.65rem;" class="text-secondary">Due</small>
+        `;
+        grid.appendChild(col);
+      }
+
+      document.getElementById('srsWeeklyLoadBadge').innerText = `${totalDueWeek} Due Over Next 7 Days`;
+    }
+
+    // 3. Mock Test Error Root-Cause Pareto Analyzer
+    function renderParetoMistakes() {
+      const container = document.getElementById('paretoBarsContainer');
+      const badge = document.getElementById('topLeakBadge');
+      container.innerHTML = '';
+
+      const counts = {
+        "Calculation Slip": 0,
+        "Formula Memory Gap": 0,
+        "Misread Question": 0,
+        "Conceptual Error": 0,
+        "Time Pressure": 0
+      };
+
+      mistakes.forEach(m => {
+        const type = m.type || "Conceptual Error";
+        counts[type] = (counts[type] || 0) + 1;
+      });
+
+      const total = mistakes.length;
+      if (total === 0) {
+        container.innerHTML = `<div class="col-12 text-secondary small">No errors recorded yet. Log your mistakes to see your Pareto breakdown.</div>`;
+        badge.innerText = "No Errors Logged";
+        return;
+      }
+
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      badge.innerText = `Top Leak: ${sorted[0][0]} (${Math.round((sorted[0][1]/total)*100)}%)`;
+
+      const colors = ["#f43f5e", "#f59e0b", "#38bdf8", "#818cf8", "#10b981"];
+
+      sorted.forEach(([type, count], i) => {
+        const pct = Math.round((count / total) * 100);
+        const col = document.createElement('div');
+        col.className = "col-12 col-md-6";
+        col.innerHTML = `
+          <div class="d-flex justify-content-between small mono mb-1">
+            <span class="text-light">${type}</span>
+            <span class="text-secondary">${count} (${pct}%)</span>
+          </div>
+          <div class="pareto-bar-track">
+            <div class="pareto-bar-fill" style="width: ${pct}%; background: ${colors[i % colors.length]};"></div>
+          </div>
+        `;
+        container.appendChild(col);
+      });
+    }
+
+    // 4. 4-Stage Binaural Web Audio Synthesizer
+    let audioCtx = null;
+    let brownNode = null, brownGain = null;
+    let rainNode = null, rainGain = null, rainFilter = null;
+    let oscLeft = null, oscRight = null, binauralGain = null;
+    let isMixerRunning = false;
+    let activeBeatFreq = 6;
+
+    function setBinauralWave(freq, btnId) {
+      activeBeatFreq = freq;
+      document.querySelectorAll('#soundMixerModal .row .btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(btnId).classList.add('active');
+
+      const labels = { 6: "Theta 6Hz (Deep Insight)", 10: "Alpha 10Hz (Flow Reading)", 20: "Beta 20Hz (Rapid MCQs)", 40: "Gamma 40Hz (Peak Recall)" };
+      document.getElementById('binauralLabelText').innerText = `Active Binaural Beat (${labels[freq]})`;
+
+      if (oscRight && audioCtx) {
+        oscRight.frequency.setValueAtTime(200 + freq, audioCtx.currentTime);
+      }
+    }
+
+    function initAudioMixer() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Track 1: Deep Brown Noise
+      const bufSize = audioCtx.sampleRate * 2;
+      const bBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const bData = bBuf.getChannelData(0);
+      let lastB = 0.0;
+      for (let i = 0; i < bufSize; i++) {
+        let white = Math.random() * 2 - 1;
+        bData[i] = (lastB + (0.02 * white)) / 1.02;
+        lastB = bData[i];
+        bData[i] *= 3.5;
+      }
+      brownNode = audioCtx.createBufferSource();
+      brownNode.buffer = bBuf;
+      brownNode.loop = true;
+      brownGain = audioCtx.createGain();
+      brownNode.connect(brownGain);
+      brownGain.connect(audioCtx.destination);
+
+      // Track 2: Filtered Rainfall Pink Noise
+      const rBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const rData = rBuf.getChannelData(0);
+      let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+      for (let i = 0; i < bufSize; i++) {
+        let white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        rData[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
+        b6 = white * 0.115926;
+      }
+      rainNode = audioCtx.createBufferSource();
+      rainNode.buffer = rBuf;
+      rainNode.loop = true;
+      rainFilter = audioCtx.createBiquadFilter();
+      rainFilter.type = "bandpass";
+      rainFilter.frequency.value = 1000;
+      rainGain = audioCtx.createGain();
+      rainNode.connect(rainFilter);
+      rainFilter.connect(rainGain);
+      rainGain.connect(audioCtx.destination);
+
+      // Track 3: Binaural Beat (Left = 200Hz, Right = 200 + activeBeatFreq)
+      oscLeft = audioCtx.createOscillator();
+      oscRight = audioCtx.createOscillator();
+      oscLeft.frequency.value = 200;
+      oscRight.frequency.value = 200 + activeBeatFreq;
+      binauralGain = audioCtx.createGain();
+      oscLeft.connect(binauralGain);
+      oscRight.connect(binauralGain);
+      binauralGain.connect(audioCtx.destination);
+
+      updateAudioGains();
+    }
+
+    function toggleAudioEngine() {
+      const btn = document.getElementById('masterAudioBtn');
+      if (!isMixerRunning) {
+        if (!audioCtx) initAudioMixer();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        brownNode.start();
+        rainNode.start();
+        oscLeft.start();
+        oscRight.start();
+        isMixerRunning = true;
+        btn.innerText = "Stop Ambient Audio";
+        btn.classList.replace("btn-action-primary", "btn-outline-danger");
+      } else {
+        audioCtx.close();
+        audioCtx = null;
+        isMixerRunning = false;
+        btn.innerText = "Start Ambient Audio";
+        btn.classList.replace("btn-outline-danger", "btn-action-primary");
+      }
+    }
+
+    function updateAudioGains() {
+      const bVal = document.getElementById('sliderBrown').value / 100;
+      const rVal = document.getElementById('sliderRain').value / 100;
+      const binVal = (document.getElementById('sliderBinaural').value / 100) * 0.08;
+
+      document.getElementById('volValBrown').innerText = `${Math.round(bVal * 100)}%`;
+      document.getElementById('volValRain').innerText = `${Math.round(rVal * 100)}%`;
+      document.getElementById('volValBinaural').innerText = `${document.getElementById('sliderBinaural').value}%`;
+
+      if (brownGain && audioCtx) brownGain.gain.setValueAtTime(bVal * 0.4, audioCtx.currentTime);
+      if (rainGain && audioCtx) rainGain.gain.setValueAtTime(rVal * 0.35, audioCtx.currentTime);
+      if (binauralGain && audioCtx) binauralGain.gain.setValueAtTime(binVal, audioCtx.currentTime);
+    }
+
+    // 5. Gamified XP & Rank Engine
     function addXp(amount) {
       const oldLevel = Math.floor(totalXp / 400) + 1;
       totalXp += amount;
@@ -1021,73 +1351,7 @@
       document.getElementById('statXpFill').style.width = `${pct}%`;
     }
 
-    // 2. Active Blurt-Recall Timer & Evaluator Engine
-    let blurtTimer = null, blurtSeconds = 120, blurtRunning = false;
-
-    function populateBlurtTopicSelect() {
-      const select = document.getElementById('blurtTopicSelect');
-      select.innerHTML = topics.map(t => `<option value="${t.chapter}">${t.subject}: ${t.chapter}</option>`).join('');
-    }
-
-    function toggleBlurtDrill() {
-      const btn = document.getElementById('blurtActionBtn');
-      const area = document.getElementById('blurtInputArea');
-
-      if (blurtRunning) {
-        stopBlurtDrill();
-      } else {
-        blurtRunning = true;
-        blurtSeconds = 120;
-        area.disabled = false;
-        area.value = '';
-        area.focus();
-        btn.innerText = "Finish Early";
-        btn.classList.replace("btn-action-primary", "btn-warning");
-        document.getElementById('blurtResultBox').style.display = 'none';
-
-        blurtTimer = setInterval(() => {
-          if (blurtSeconds > 0) {
-            blurtSeconds--;
-            const m = Math.floor(blurtSeconds / 60).toString().padStart(2, '0');
-            const s = (blurtSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('blurtTimerDisplay').innerText = `${m}:${s}`;
-          } else {
-            finishBlurtDrill();
-          }
-        }, 1000);
-      }
-    }
-
-    function updateBlurtWordCount() {
-      const words = document.getElementById('blurtInputArea').value.trim().split(/\s+/).filter(w => w).length;
-      document.getElementById('blurtWordCount').innerText = `${words} Words`;
-    }
-
-    function stopBlurtDrill() {
-      if (blurtRunning) finishBlurtDrill();
-    }
-
-    function finishBlurtDrill() {
-      clearInterval(blurtTimer);
-      blurtRunning = false;
-      const btn = document.getElementById('blurtActionBtn');
-      const area = document.getElementById('blurtInputArea');
-      area.disabled = true;
-
-      btn.innerText = "Start 120s Drill";
-      btn.classList.replace("btn-warning", "btn-action-primary");
-
-      const words = area.value.trim().split(/\s+/).filter(w => w).length;
-      const topic = document.getElementById('blurtTopicSelect').value;
-
-      document.getElementById('blurtScoreText').innerText = `Recall Score: ${Math.min(100, Math.round(words * 1.8))}% Density`;
-      document.getElementById('blurtFeedbackText').innerText = `You retrieved ${words} key items from raw memory for "${topic}". Great active synthesis!`;
-      document.getElementById('blurtResultBox').style.display = 'block';
-
-      addXp(75);
-    }
-
-    // 3. Sleep & Energy Tracker with Correlation Engine
+    // 6. Bio-Metrics
     function logSleepEntry() {
       const hrs = parseFloat(document.getElementById('inSleepHours').value) || 7.0;
       const energy = parseInt(document.getElementById('inEnergyLevel').value) || 4;
@@ -1096,27 +1360,12 @@
 
       sleepLogs.unshift({ date: new Date().toISOString().slice(0, 10), hrs, energy, acc });
       localStorage.setItem('sh_sleep', JSON.stringify(sleepLogs.slice(0, 14)));
-      calculateSleepCorrelation();
       triggerCloudSync();
-      alert("Bio-metrics logged. Correlation insight updated!");
+      alert("Bio-metrics logged!");
       closeModal('sleepModal');
     }
 
-    function calculateSleepCorrelation() {
-      const optimal = sleepLogs.filter(s => s.hrs >= 7.0);
-      const sub = sleepLogs.filter(s => s.hrs < 7.0);
-
-      if (optimal.length) {
-        const avgOpt = (optimal.reduce((a, b) => a + b.acc, 0) / optimal.length).toFixed(1);
-        document.getElementById('corrOptimalAccuracy').innerText = `${avgOpt}%`;
-      }
-      if (sub.length) {
-        const avgSub = (sub.reduce((a, b) => a + b.acc, 0) / sub.length).toFixed(1);
-        document.getElementById('corrSubOptimalAccuracy').innerText = `${avgSub}%`;
-      }
-    }
-
-    // 4. Official Syllabus Completion Audit Exporter
+    // 7. Official Audit Certificate
     function exportOfficialAuditCertificate() {
       const printWin = window.open('', '_blank');
       const completedTopics = topics.filter(t => t.done).length;
@@ -1187,7 +1436,7 @@
       printWin.document.close();
     }
 
-    // 5. Daily PYQ & MCQ Accuracy Counter
+    // 8. Daily PYQ & MCQ Accuracy Counter
     function renderMcqCounter() {
       document.getElementById('mcqCorrectCount').innerText = mcqState.correct;
       document.getElementById('mcqWrongCount').innerText = mcqState.wrong;
@@ -1226,7 +1475,7 @@
       }
     }
 
-    // 6. Pure SVG Subject Balance Wheel
+    // 9. Pure SVG Subject Balance Wheel
     function renderSubjectBalanceWheel() {
       const svg = document.getElementById('balanceSvgWheel');
       const legend = document.getElementById('balanceLegendContainer');
@@ -1281,7 +1530,7 @@
       warningBadge.style.display = hasImbalance ? 'inline-block' : 'none';
     }
 
-    // 7. Rough Work Scratch Canvas
+    // 10. Rough Work Scratch Canvas
     let canvas, ctx, drawing = false, brushColor = '#38bdf8', brushSize = 2;
 
     function openCanvasModal() {
@@ -1337,7 +1586,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    // 8. Fatigue Reset & Box-Breathing
+    // 11. Fatigue Meter
     function updateFatigueMeter() {
       const idx = Math.min(100, Math.round((studyMinutesToday / 180) * 100));
       let label = "Low (Fresh)";
@@ -1348,7 +1597,7 @@
       document.getElementById('statFatigueFill').style.width = `${idx}%`;
     }
 
-    // 9. CSV Syllabus File Importer
+    // 12. CSV Syllabus File Importer
     function importSyllabusCsv(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1382,7 +1631,8 @@
         renderTopics();
         renderSubjectBalanceWheel();
         renderSrsQueue();
-        populateBlurtTopicSelect();
+        renderSrsForecast();
+        calculateBurndownForecast();
         recalculateRealMetrics();
         triggerCloudSync();
         alert(`Successfully imported ${importedCount} topics from CSV!`);
@@ -1390,7 +1640,7 @@
       reader.readAsText(file);
     }
 
-    // 10. Leitner Box System
+    // 13. Leitner Box System
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -1455,7 +1705,7 @@
       triggerCloudSync();
     }
 
-    // 11. Time-Blocking HUD
+    // 14. Time-Blocking HUD
     function renderTimeblocks() {
       const container = document.getElementById('timeblocksContainer');
       container.innerHTML = '';
@@ -1497,7 +1747,7 @@
       triggerCloudSync();
     }
 
-    // 12. 90-Day Activity Heatmap
+    // 15. 90-Day Activity Heatmap
     function renderHeatmap() {
       const grid = document.getElementById('heatmapGrid');
       grid.innerHTML = '';
@@ -1534,7 +1784,7 @@
       renderHeatmap();
     }
 
-    // 13. Automated Spaced Repetition (SRS)
+    // 16. Spaced Repetition (SRS)
     function renderSrsQueue() {
       const container = document.getElementById('srsQueueList');
       const badge = document.getElementById('srsQueueBadge');
@@ -1581,11 +1831,12 @@
       addXp(75);
       renderTopics();
       renderSrsQueue();
+      renderSrsForecast();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // 14. Topics Matrix
+    // 17. Topics Matrix
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
@@ -1648,7 +1899,8 @@
       renderTopics();
       renderSubjectBalanceWheel();
       renderSrsQueue();
-      populateBlurtTopicSelect();
+      renderSrsForecast();
+      calculateBurndownForecast();
       recalculateRealMetrics();
       triggerCloudSync();
     }
@@ -1667,6 +1919,8 @@
       renderTopics();
       renderSubjectBalanceWheel();
       renderSrsQueue();
+      renderSrsForecast();
+      calculateBurndownForecast();
       recalculateRealMetrics();
       triggerCloudSync();
     }
@@ -1676,6 +1930,7 @@
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
       renderSrsQueue();
+      renderSrsForecast();
       recalculateRealMetrics();
       triggerCloudSync();
     }
@@ -1687,12 +1942,13 @@
       renderTopics();
       renderSubjectBalanceWheel();
       renderSrsQueue();
-      populateBlurtTopicSelect();
+      renderSrsForecast();
+      calculateBurndownForecast();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // 15. Mock Tests
+    // 18. Mock Tests
     function addMockTest() {
       const name = document.getElementById('mockNameInput').value.trim();
       const scored = parseFloat(document.getElementById('mockScoredInput').value);
@@ -1756,7 +2012,7 @@
       triggerCloudSync();
     }
 
-    // 16. Metrics
+    // 19. Metrics
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -1766,7 +2022,7 @@
       document.getElementById('statSyllabusFill').style.width = `${pct}%`;
     }
 
-    // 17. Mistakes
+    // 20. Mistakes
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -1776,6 +2032,7 @@
       localStorage.setItem('sh_mis', JSON.stringify(mistakes));
       document.getElementById('mistakeDescInput').value = '';
       renderMistakes();
+      renderParetoMistakes();
       triggerCloudSync();
     }
 
@@ -1808,10 +2065,11 @@
       mistakes.splice(i, 1);
       localStorage.setItem('sh_mis', JSON.stringify(mistakes));
       renderMistakes();
+      renderParetoMistakes();
       triggerCloudSync();
     }
 
-    // 18. Scratchpad
+    // 21. Scratchpad
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
@@ -1821,7 +2079,7 @@
       triggerCloudSync();
     }
 
-    // 19. Focus Timer
+    // 22. Focus Timer
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
@@ -1874,7 +2132,7 @@
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    // 20. Tab Auditor
+    // 23. Tab Auditor
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && timerActive) {
         tabBreachesCount++;
@@ -1883,7 +2141,7 @@
       }
     });
 
-    // 21. Profile Settings
+    // 24. Profile Settings
     function renderHUD() {
       document.getElementById('navExamBadge').innerText = config.exam;
       document.getElementById('cfgUsername').value = config.username;
@@ -1911,6 +2169,7 @@
 
       localStorage.setItem('sh_cfg', JSON.stringify(config));
       renderHUD();
+      calculateBurndownForecast();
       recalculateRealMetrics();
       renderMocks();
       triggerCloudSync();
