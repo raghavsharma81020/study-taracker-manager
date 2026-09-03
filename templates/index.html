@@ -215,24 +215,6 @@
     }
     .btn-action-primary:hover { background: #0284c7; color: #fff; }
 
-    /* Sound Mixer Faders */
-    .sound-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 4px;
-      border-radius: 5px;
-      background: #1e293b;
-      outline: none;
-    }
-    .sound-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--accent-cyan);
-      cursor: pointer;
-    }
-
     /* Modals */
     .modal-backdrop-custom {
       position: fixed;
@@ -255,6 +237,24 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
       max-height: 90vh;
       overflow-y: auto;
+    }
+
+    /* Sound Mixer Faders */
+    .sound-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 5px;
+      background: #1e293b;
+      outline: none;
+    }
+    .sound-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
     }
   </style>
 </head>
@@ -280,14 +280,20 @@
 
       <!-- Quick Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('pacerModal')">
+          <i class="bi bi-speedometer2 me-1"></i> Exam Pacer
+        </button>
+        <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="openModal('feynmanModal')">
+          <i class="bi bi-mic-fill me-1"></i> Feynman Lab
+        </button>
         <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('vaultModal')">
           <i class="bi bi-search me-1"></i> Formula Vault
         </button>
         <button class="btn btn-outline-success btn-sm rounded-pill" onclick="openPerformanceReport()">
           <i class="bi bi-file-earmark-person me-1"></i> Mentor Report
         </button>
-        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
-          <i class="bi bi-sliders2-vertical me-1"></i> Sound Mixer
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
+          <i class="bi bi-sliders2-vertical me-1"></i> Audio
         </button>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('profileModal')">
           <i class="bi bi-sliders me-1"></i> Targets
@@ -319,12 +325,12 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Today's Hours</span>
-            <i class="bi bi-clock text-emerald"></i>
+            <span>MCQ Practice Accuracy</span>
+            <i class="bi bi-bullseye text-emerald"></i>
           </div>
-          <div class="stat-number text-white mono" id="statHours">0.0 <span class="fs-6 text-secondary">/ 6.0h</span></div>
+          <div class="stat-number text-white mono" id="statMcqAccuracy">0% <span class="fs-6 text-secondary" id="statMcqTotal">0/50</span></div>
           <div class="meter-bar">
-            <div id="statHoursFill" class="meter-fill" style="width: 0%; background: var(--accent-emerald);"></div>
+            <div id="statMcqFill" class="meter-fill" style="width: 0%; background: var(--accent-emerald);"></div>
           </div>
         </div>
       </div>
@@ -356,7 +362,83 @@
       </div>
     </div>
 
-    <!-- ================= 3. DAILY TIME-BLOCKING HUD ================= -->
+    <!-- ================= 3. MCQ ACCURACY COUNTER & BALANCE WHEEL ================= -->
+    <div class="row g-4 mb-4">
+      
+      <!-- MCQ / PYQ Live Accuracy Drill -->
+      <div class="col-12 col-lg-6">
+        <div class="card-panel h-100">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <h6 class="fw-bold text-white mb-0"><i class="bi bi-check2-square text-emerald me-2"></i>Daily PYQ & MCQ Accuracy Counter</h6>
+              <small class="text-secondary">Log problem solving to stop passive reading</small>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary mono" onclick="resetMcqCounter()">Reset Day</button>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center bg-dark p-3 rounded mb-3 border border-secondary border-opacity-25">
+            <div class="text-center">
+              <span class="d-block small text-secondary">CORRECT</span>
+              <span class="fs-4 fw-bold text-success mono" id="mcqCorrectCount">0</span>
+            </div>
+            <div class="text-center">
+              <span class="d-block small text-secondary">INCORRECT</span>
+              <span class="fs-4 fw-bold text-danger mono" id="mcqWrongCount">0</span>
+            </div>
+            <div class="text-center">
+              <span class="d-block small text-secondary">SKIPPED</span>
+              <span class="fs-4 fw-bold text-secondary mono" id="mcqSkipCount">0</span>
+            </div>
+            <div class="text-center border-start border-secondary ps-3">
+              <span class="d-block small text-secondary">ACCURACY</span>
+              <span class="fs-4 fw-bold text-info mono" id="mcqAccuracyPct">0.0%</span>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-success w-100 py-2 fw-bold" onclick="recordMcq('correct')">+ Correct (C)</button>
+            <button class="btn btn-outline-danger w-100 py-2 fw-bold" onclick="recordMcq('wrong')">+ Wrong (W)</button>
+            <button class="btn btn-outline-secondary w-100 py-2 fw-bold" onclick="recordMcq('skip')">+ Skip (S)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pure SVG Subject Balance Wheel -->
+      <div class="col-12 col-lg-6">
+        <div class="card-panel h-100">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <h6 class="fw-bold text-white mb-0"><i class="bi bi-pie-chart-fill text-info me-2"></i>Subject Balance Visualizer</h6>
+              <small class="text-secondary">Prevents subject neglect and ensures even prep</small>
+            </div>
+            <span class="badge bg-warning bg-opacity-15 text-warning mono" id="subjectWarningBadge" style="display: none;">
+              <i class="bi bi-exclamation-triangle me-1"></i> Imbalance Detected
+            </span>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-around flex-wrap gap-3 py-1">
+            <!-- Dynamic SVG Donut Wheel -->
+            <div style="width: 140px; height: 140px; position: relative;">
+              <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);" id="balanceSvgWheel">
+                <!-- SVG Circles injected dynamically -->
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle text-center mono" style="line-height: 1;">
+                <small class="text-secondary" style="font-size: 0.65rem;">HOURS</small>
+                <div class="fw-bold text-white small" id="balanceTotalHours">0.0h</div>
+              </div>
+            </div>
+
+            <!-- Subject Legend Breakdown -->
+            <div id="balanceLegendContainer" class="small mono" style="min-width: 160px;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= 4. DAILY TIME-BLOCKING HUD ================= -->
     <div class="card-panel mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div>
@@ -368,12 +450,10 @@
         </button>
       </div>
 
-      <div class="timeblock-grid" id="timeblocksContainer">
-        <!-- Generated Dynamically -->
-      </div>
+      <div class="timeblock-grid" id="timeblocksContainer"></div>
     </div>
 
-    <!-- ================= 4. 90-DAY ACTIVITY HEATMAP ================= -->
+    <!-- ================= 5. 90-DAY ACTIVITY HEATMAP ================= -->
     <div class="card-panel mb-4">
       <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
         <div>
@@ -395,7 +475,7 @@
       </div>
     </div>
 
-    <!-- ================= 5. WORKSPACE ================= -->
+    <!-- ================= 6. WORKSPACE ================= -->
     <div class="row g-4">
 
       <!-- LEFT: CURRICULUM + SRS DUE QUEUE + MOCK TEST PREDICTOR -->
@@ -571,7 +651,70 @@
     </div>
   </div>
 
-  <!-- ================= 6. MODALS ================= -->
+  <!-- ================= 7. MODALS ================= -->
+
+  <!-- Speed Exam Pacing Simulator Modal -->
+  <div id="pacerModal" class="modal-backdrop-custom">
+    <div class="modal-frame text-center">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-speedometer2 me-2"></i>Speed Exam Pacing Simulator</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('pacerModal'); stopPacer();"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="d-flex justify-content-center gap-2 mb-3">
+        <button class="btn btn-sm btn-outline-secondary active" id="pace60" onclick="setPaceInterval(60)">60s (NEET / Rapid)</button>
+        <button class="btn btn-sm btn-outline-secondary" id="pace90" onclick="setPaceInterval(90)">90s (Standard)</button>
+        <button class="btn btn-sm btn-outline-secondary" id="pace120" onclick="setPaceInterval(120)">120s (JEE Advanced)</button>
+      </div>
+
+      <div class="stat-title mb-1" id="pacerQuestionNum">QUESTION #1</div>
+      <div id="pacerTimerDisplay" class="display-2 fw-bold text-warning mono my-3" style="font-size: 5.5rem;">90</div>
+
+      <div class="d-flex justify-content-center gap-2 mb-3">
+        <button class="btn btn-action-primary px-4 py-2" id="pacerToggleBtn" onclick="togglePacer()">Start Drill</button>
+        <button class="btn btn-success px-4 py-2" onclick="nextPacerQuestion(true)">Solved &rarr;</button>
+        <button class="btn btn-outline-danger px-3 py-2" onclick="nextPacerQuestion(false)">Skip</button>
+      </div>
+
+      <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 small mono d-flex justify-content-around">
+        <span>Completed: <strong id="pacerTotalSolved" class="text-white">0</strong></span>
+        <span>Avg Time: <strong id="pacerAvgTime" class="text-info">0s</strong></span>
+        <span>On-Pace: <strong id="pacerOnPacePct" class="text-success">100%</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feynman Concept Voice Lab Modal -->
+  <div id="feynmanModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-danger mb-0"><i class="bi bi-mic-fill me-2"></i>Feynman Concept Voice Lab</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('feynmanModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Record 60-second audio summaries explaining tough formulas or derivations in plain English. If you can't explain it simply, you don't understand it.</p>
+
+      <div class="mb-3">
+        <input type="text" id="feynmanTopicInput" class="form-control hub-input" placeholder="Concept Title (e.g., Why Lenz's law conserves energy)...">
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center bg-dark p-3 rounded mb-3 border border-secondary border-opacity-25">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-danger rounded-circle p-2" id="feynmanRecordBtn" onclick="toggleFeynmanRecord()" style="width: 44px; height: 44px;">
+            <i class="bi bi-record-circle fs-5"></i>
+          </button>
+          <div>
+            <span class="fw-bold text-white d-block small" id="feynmanStatusText">Ready to Record</span>
+            <small class="text-secondary mono" id="feynmanTimer">00:00 / 01:00</small>
+          </div>
+        </div>
+      </div>
+
+      <h6 class="fw-bold text-white small mb-2">Saved Explanations</h6>
+      <div id="feynmanRecordingsList" style="max-height: 200px; overflow-y: auto;">
+        <small class="text-secondary">No audio recordings saved yet.</small>
+      </div>
+    </div>
+  </div>
 
   <!-- Searchable Quick-Formula Vault Modal -->
   <div id="vaultModal" class="modal-backdrop-custom">
@@ -580,14 +723,10 @@
         <h5 class="fw-bold text-info mb-0"><i class="bi bi-search me-2"></i>Searchable Quick-Formula Vault</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('vaultModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-
       <div class="mb-3">
         <input type="text" id="vaultSearchInput" class="form-control hub-input" placeholder="Search equations (e.g. Carnot, Optics, Calculus, Gas Law)..." oninput="filterVault()">
       </div>
-
-      <div id="vaultFormulaList" style="max-height: 420px; overflow-y: auto;">
-        <!-- Dynamically rendered -->
-      </div>
+      <div id="vaultFormulaList" style="max-height: 420px; overflow-y: auto;"></div>
     </div>
   </div>
 
@@ -693,7 +832,7 @@
     </div>
   </div>
 
-  <!-- ================= 7. JAVASCRIPT ENGINE ================= -->
+  <!-- ================= 8. JAVASCRIPT ENGINE ================= -->
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -713,6 +852,10 @@
       { subject: "Maths", chapter: "Definite Integration & Area", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
       { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
     ]));
+
+    let mcqState = JSON.parse(localStorage.getItem('sh_mcq') || JSON.stringify({
+      correct: 0, wrong: 0, skip: 0, target: 50
+    }));
 
     let timeblocks = JSON.parse(localStorage.getItem('sh_blocks') || JSON.stringify([
       { id: 1, label: "Slot 1: Deep Theory Block", startHour: 6, endHour: 9, completed: false },
@@ -762,10 +905,13 @@
           if (result.data.mockTests) mockTests = result.data.mockTests;
           if (result.data.heatmapData) heatmapData = result.data.heatmapData;
           if (result.data.timeblocks) timeblocks = result.data.timeblocks;
+          if (result.data.mcqState) mcqState = result.data.mcqState;
         }
       } catch (err) {}
 
       renderHUD();
+      renderMcqCounter();
+      renderSubjectBalanceWheel();
       renderTimeblocks();
       renderSubjectsFilter();
       renderTopics();
@@ -796,6 +942,7 @@
         heatmapData,
         timeblocks,
         tabBreachesCount,
+        mcqState,
         notes: document.getElementById('scratchArea').value
       };
 
@@ -848,7 +995,255 @@
       closeModal('profileModal');
     }
 
-    // 2. Interactive Daily Time-Blocking HUD
+    // 2. Daily PYQ & MCQ Accuracy Counter
+    function renderMcqCounter() {
+      document.getElementById('mcqCorrectCount').innerText = mcqState.correct;
+      document.getElementById('mcqWrongCount').innerText = mcqState.wrong;
+      document.getElementById('mcqSkipCount').innerText = mcqState.skip;
+
+      const totalAttempted = mcqState.correct + mcqState.wrong;
+      const totalAll = totalAttempted + mcqState.skip;
+      const acc = totalAttempted > 0 ? ((mcqState.correct / totalAttempted) * 100).toFixed(1) : "0.0";
+
+      document.getElementById('mcqAccuracyPct').innerText = `${acc}%`;
+      document.getElementById('statMcqAccuracy').innerHTML = `${acc}% <span class="fs-6 text-secondary">${totalAll}/${mcqState.target}</span>`;
+      document.getElementById('statMcqFill').style.width = `${Math.min(100, Math.round((totalAll / mcqState.target) * 100))}%`;
+    }
+
+    function recordMcq(type) {
+      if (type === 'correct') mcqState.correct++;
+      if (type === 'wrong') mcqState.wrong++;
+      if (type === 'skip') mcqState.skip++;
+
+      localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
+      renderMcqCounter();
+      triggerCloudSync();
+    }
+
+    function resetMcqCounter() {
+      if (confirm("Reset today's MCQ counts?")) {
+        mcqState.correct = 0;
+        mcqState.wrong = 0;
+        mcqState.skip = 0;
+        localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
+        renderMcqCounter();
+        triggerCloudSync();
+      }
+    }
+
+    // 3. Pure SVG Subject Balance Wheel
+    function renderSubjectBalanceWheel() {
+      const svg = document.getElementById('balanceSvgWheel');
+      const legend = document.getElementById('balanceLegendContainer');
+      const warningBadge = document.getElementById('subjectWarningBadge');
+
+      const subjectMap = {};
+      topics.forEach(t => {
+        const sub = t.subject.toUpperCase();
+        subjectMap[sub] = (subjectMap[sub] || 0) + (parseFloat(t.hours) || 2.5);
+      });
+
+      const totalHours = Object.values(subjectMap).reduce((a, b) => a + b, 0);
+      document.getElementById('balanceTotalHours').innerText = `${totalHours.toFixed(1)}h`;
+
+      const palette = ["#38bdf8", "#10b981", "#f59e0b", "#818cf8", "#f43f5e", "#06b6d4"];
+      let accumulatedPercent = 0;
+      svg.innerHTML = `<circle cx="18" cy="18" r="15.915" fill="none" stroke="#161b26" stroke-width="3.5"></circle>`;
+      legend.innerHTML = '';
+      let hasImbalance = false;
+
+      Object.entries(subjectMap).forEach(([sub, hrs], i) => {
+        const pct = (hrs / (totalHours || 1)) * 100;
+        const strokeColor = palette[i % palette.length];
+
+        if (pct < 20 && totalHours > 5) hasImbalance = true;
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", "18");
+        circle.setAttribute("cy", "18");
+        circle.setAttribute("r", "15.915");
+        circle.setAttribute("fill", "none");
+        circle.setAttribute("stroke", strokeColor);
+        circle.setAttribute("stroke-width", "3.5");
+        circle.setAttribute("stroke-dasharray", `${pct} ${100 - pct}`);
+        circle.setAttribute("stroke-dashoffset", `-${accumulatedPercent}`);
+        svg.appendChild(circle);
+
+        accumulatedPercent += pct;
+
+        const legItem = document.createElement('div');
+        legItem.className = "d-flex justify-content-between align-items-center mb-1";
+        legItem.innerHTML = `
+          <div class="d-flex align-items-center gap-1">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: ${strokeColor}; display: inline-block;"></span>
+            <span class="text-white">${sub}</span>
+          </div>
+          <span class="text-secondary">${hrs.toFixed(1)}h (${Math.round(pct)}%)</span>
+        `;
+        legend.appendChild(legItem);
+      });
+
+      warningBadge.style.display = hasImbalance ? 'inline-block' : 'none';
+    }
+
+    // 4. Speed Exam Pacing Simulator
+    let pacerIntervalSecs = 90;
+    let pacerTimeLeft = 90;
+    let pacerTimerRef = null;
+    let pacerActive = false;
+    let pacerStats = { count: 0, totalTime: 0, onPaceCount: 0 };
+
+    function setPaceInterval(sec) {
+      if (pacerActive) stopPacer();
+      pacerIntervalSecs = sec;
+      pacerTimeLeft = sec;
+      document.querySelectorAll('#pacerModal .btn-outline-secondary').forEach(b => b.classList.remove('active'));
+      if (sec === 60) document.getElementById('pace60').classList.add('active');
+      if (sec === 90) document.getElementById('pace90').classList.add('active');
+      if (sec === 120) document.getElementById('pace120').classList.add('active');
+      document.getElementById('pacerTimerDisplay').innerText = sec;
+    }
+
+    function togglePacer() {
+      const btn = document.getElementById('pacerToggleBtn');
+      if (pacerActive) {
+        stopPacer();
+      } else {
+        pacerActive = true;
+        btn.innerText = "Pause";
+        btn.classList.replace("btn-action-primary", "btn-warning");
+        pacerTimerRef = setInterval(() => {
+          if (pacerTimeLeft > 0) {
+            pacerTimeLeft--;
+            document.getElementById('pacerTimerDisplay').innerText = pacerTimeLeft;
+            if (pacerTimeLeft === 10) playWarningBeep();
+          } else {
+            playWarningBeep(880, 0.4);
+            nextPacerQuestion(false);
+          }
+        }, 1000);
+      }
+    }
+
+    function stopPacer() {
+      clearInterval(pacerTimerRef);
+      pacerActive = false;
+      const btn = document.getElementById('pacerToggleBtn');
+      if (btn) {
+        btn.innerText = "Start Drill";
+        btn.classList.replace("btn-warning", "btn-action-primary");
+      }
+    }
+
+    function nextPacerQuestion(onTime) {
+      const timeSpent = pacerIntervalSecs - pacerTimeLeft;
+      pacerStats.count++;
+      pacerStats.totalTime += timeSpent;
+      if (onTime) pacerStats.onPaceCount++;
+
+      document.getElementById('pacerTotalSolved').innerText = pacerStats.count;
+      const avg = Math.round(pacerStats.totalTime / pacerStats.count);
+      document.getElementById('pacerAvgTime').innerText = `${avg}s`;
+      const onPacePct = Math.round((pacerStats.onPaceCount / pacerStats.count) * 100);
+      document.getElementById('pacerOnPacePct').innerText = `${onPacePct}%`;
+
+      pacerTimeLeft = pacerIntervalSecs;
+      document.getElementById('pacerTimerDisplay').innerText = pacerTimeLeft;
+      document.getElementById('pacerQuestionNum').innerText = `QUESTION #${pacerStats.count + 1}`;
+    }
+
+    function playWarningBeep(freq = 440, duration = 0.15) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    // 5. Feynman Concept Voice Lab (Native MediaRecorder)
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordInterval = null;
+    let recordSeconds = 0;
+    let feynmanRecordings = JSON.parse(localStorage.getItem('sh_feynman') || '[]');
+
+    async function toggleFeynmanRecord() {
+      const btn = document.getElementById('feynmanRecordBtn');
+      const status = document.getElementById('feynmanStatusText');
+
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        clearInterval(recordInterval);
+        btn.innerHTML = `<i class="bi bi-record-circle fs-5"></i>`;
+        status.innerText = "Processing Recording...";
+      } else {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          recordSeconds = 0;
+
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+              const base64 = reader.result;
+              const title = document.getElementById('feynmanTopicInput').value.trim() || "Concept Explanation";
+              feynmanRecordings.unshift({ title, data: base64, date: new Date().toLocaleDateString() });
+              localStorage.setItem('sh_feynman', JSON.stringify(feynmanRecordings.slice(0, 6)));
+              renderFeynmanList();
+              status.innerText = "Saved to Lab!";
+              document.getElementById('feynmanTopicInput').value = '';
+            };
+          };
+
+          mediaRecorder.start();
+          btn.innerHTML = `<i class="bi bi-stop-fill fs-5 text-white"></i>`;
+          status.innerText = "Recording Live...";
+          recordInterval = setInterval(() => {
+            recordSeconds++;
+            const m = Math.floor(recordSeconds / 60).toString().padStart(2, '0');
+            const s = (recordSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('feynmanTimer').innerText = `${m}:${s} / 01:00`;
+            if (recordSeconds >= 60) toggleFeynmanRecord();
+          }, 1000);
+        } catch (err) {
+          alert("Microphone permission denied or unsupported in this browser.");
+        }
+      }
+    }
+
+    function renderFeynmanList() {
+      const list = document.getElementById('feynmanRecordingsList');
+      list.innerHTML = '';
+      if (feynmanRecordings.length === 0) {
+        list.innerHTML = `<small class="text-secondary">No audio recordings saved yet.</small>`;
+        return;
+      }
+      feynmanRecordings.forEach((rec, i) => {
+        const div = document.createElement('div');
+        div.className = "p-2 rounded mb-2 bg-dark border border-secondary border-opacity-25";
+        div.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-bold text-white small">${rec.title}</span>
+            <small class="text-secondary mono">${rec.date}</small>
+          </div>
+          <audio controls src="${rec.data}" style="width: 100%; height: 32px;"></audio>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // 6. Interactive Daily Time-Blocking HUD
     function renderTimeblocks() {
       const container = document.getElementById('timeblocksContainer');
       container.innerHTML = '';
@@ -895,16 +1290,14 @@
       triggerCloudSync();
     }
 
-    // 3. Searchable Formula Vault
+    // 7. Searchable Quick-Formula Vault
     function renderFormulaVault(list) {
       const container = document.getElementById('vaultFormulaList');
       container.innerHTML = '';
-
       if (list.length === 0) {
         container.innerHTML = `<div class="text-secondary small py-3 text-center">No matching equations found.</div>`;
         return;
       }
-
       list.forEach(item => {
         const div = document.createElement('div');
         div.className = "p-3 rounded mb-2 bg-dark border border-secondary border-opacity-25 d-flex justify-content-between align-items-center";
@@ -935,7 +1328,7 @@
       setTimeout(() => { btn.innerText = prev; }, 1200);
     }
 
-    // 4. Tab-Switch Accountability Auditor
+    // 8. Tab-Switch Accountability Auditor
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && timerActive) {
         tabBreachesCount++;
@@ -946,13 +1339,11 @@
       }
     });
 
-    // 5. Weekly Parent / Mentor Performance Report
+    // 9. Mentor Performance Report
     function openPerformanceReport() {
       const printWin = window.open('', '_blank');
-      const targetCutoff = parseFloat(config.cutoff) || 75;
       const completedTopics = topics.filter(t => t.done).length;
       const syllabusPct = topics.length ? Math.round((completedTopics / topics.length) * 100) : 0;
-      
       const pcts = mockTests.map(m => parseFloat(m.pct));
       const avgMock = pcts.length ? (pcts.reduce((a, b) => a + b, 0) / pcts.length).toFixed(1) : "0.0";
       const totalHoursWeek = Object.values(heatmapData).slice(-7).reduce((a, b) => a + b, 0);
@@ -982,32 +1373,21 @@
             </div>
             <div style="text-align: right; font-size: 13px; color: #555;">Date: ${new Date().toLocaleDateString()}</div>
           </div>
-
           <div class="metric-box">
             <div class="card"><small>Syllabus Completion</small><div class="val">${syllabusPct}%</div></div>
             <div class="card"><small>7-Day Study Hours</small><div class="val">${totalHoursWeek.toFixed(1)}h</div></div>
             <div class="card"><small>Mock Test Average</small><div class="val">${avgMock}%</div></div>
             <div class="card"><small>Focus Breaches</small><div class="val">${tabBreachesCount}</div></div>
           </div>
-
-          <h3>Recent Mock Test Examinations</h3>
+          <h3>Recent Mock Tests</h3>
           <table>
             <thead><tr><th>Test Name</th><th>Score</th><th>Total Marks</th><th>Accuracy (%)</th></tr></thead>
             <tbody>
               ${mockTests.slice(0, 5).map(m => `<tr><td>${m.name}</td><td>${m.scored}</td><td>${m.total}</td><td><strong>${m.pct}%</strong></td></tr>`).join('') || '<tr><td colspan="4">No tests logged.</td></tr>'}
             </tbody>
           </table>
-
-          <h3>Completed Core Chapters (${completedTopics}/${topics.length})</h3>
-          <table>
-            <thead><tr><th>Subject</th><th>Chapter</th><th>Weightage Tier</th></tr></thead>
-            <tbody>
-              ${topics.filter(t => t.done).slice(0, 8).map(t => `<tr><td>${t.subject}</td><td>${t.chapter}</td><td>${t.tier}</td></tr>`).join('') || '<tr><td colspan="3">No chapters completed yet.</td></tr>'}
-            </tbody>
-          </table>
-
           <div class="footer">
-            Generated automatically via StudyHub Academic Execution Suite. Official Mentor / Parent Verification Copy.
+            Generated via StudyHub Suite. Official Mentor / Parent Verification Copy.
           </div>
           <script>window.onload = function(){ window.print(); };<\/script>
         </body>
@@ -1016,7 +1396,7 @@
       printWin.document.close();
     }
 
-    // 6. 90-Day Activity Heatmap
+    // 10. 90-Day Activity Heatmap
     function renderHeatmap() {
       const grid = document.getElementById('heatmapGrid');
       grid.innerHTML = '';
@@ -1053,7 +1433,7 @@
       renderHeatmap();
     }
 
-    // 7. Automated Spaced Repetition (SRS) Engine
+    // 11. Automated Spaced Repetition (SRS) Engine
     function renderSrsQueue() {
       const container = document.getElementById('srsQueueList');
       const badge = document.getElementById('srsQueueBadge');
@@ -1107,7 +1487,7 @@
       triggerCloudSync();
     }
 
-    // 8. Curriculum Matrix
+    // 12. Curriculum Matrix
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
@@ -1126,7 +1506,6 @@
     function renderTopics() {
       const container = document.getElementById('topicsContainer');
       container.innerHTML = '';
-
       const filtered = activeSubjectFilter === 'ALL' ? topics : topics.filter(t => t.subject.toUpperCase() === activeSubjectFilter);
 
       filtered.forEach((t) => {
@@ -1169,6 +1548,7 @@
       document.getElementById('inChapter').value = '';
       renderSubjectsFilter();
       renderTopics();
+      renderSubjectBalanceWheel();
       renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
@@ -1182,6 +1562,7 @@
       }
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
+      renderSubjectBalanceWheel();
       renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
@@ -1201,12 +1582,13 @@
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderSubjectsFilter();
       renderTopics();
+      renderSubjectBalanceWheel();
       renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // 9. Mock Test Analyzer
+    // 13. Mock Test Analyzer
     function addMockTest() {
       const name = document.getElementById('mockNameInput').value.trim();
       const scored = parseFloat(document.getElementById('mockScoredInput').value);
@@ -1269,7 +1651,7 @@
       triggerCloudSync();
     }
 
-    // 10. Metrics Recalculations
+    // 14. Metrics Recalculations
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -1277,15 +1659,9 @@
 
       document.getElementById('statSyllabus').innerText = `${pct}%`;
       document.getElementById('statSyllabusFill').style.width = `${pct}%`;
-
-      const doneHours = topics.filter(t => t.done).reduce((acc, t) => acc + (parseFloat(t.hours) || 0), 0);
-      const targetHours = parseFloat(config.hours) || 6;
-      document.getElementById('statHours').innerHTML = `${doneHours.toFixed(1)} <span class="fs-6 text-secondary">/ ${targetHours}h</span>`;
-      const hoursPct = Math.min(100, Math.round((doneHours / targetHours) * 100));
-      document.getElementById('statHoursFill').style.width = `${hoursPct}%`;
     }
 
-    // 11. Error Diary
+    // 15. Error Diary
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -1330,7 +1706,7 @@
       triggerCloudSync();
     }
 
-    // 12. Flashcards
+    // 16. Flashcards
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -1377,7 +1753,7 @@
       triggerCloudSync();
     }
 
-    // 13. Auto-Saving Scratchpad
+    // 17. Auto-Saving Scratchpad
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
@@ -1387,7 +1763,7 @@
       triggerCloudSync();
     }
 
-    // 14. Focus Timer
+    // 18. Focus Timer
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
@@ -1436,7 +1812,7 @@
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    // 15. Ambient Soundscape Mixer (Web Audio API)
+    // 19. Ambient Soundscape Mixer (Web Audio API)
     let audioCtx = null;
     let brownNode = null, brownGain = null;
     let rainNode = null, rainGain = null, rainFilter = null;
