@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>STUDY // OS Command Center</title>
+  <title>StudyHub // Master Command Center</title>
 
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
 
     /* Top HUD */
     .top-nav {
-      background: rgba(14, 19, 31, 0.85);
+      background: rgba(14, 19, 31, 0.88);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
@@ -57,11 +57,9 @@
       border: 1px solid var(--border-subtle);
       border-radius: 14px;
       padding: 22px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: border-color 0.2s ease;
     }
-    .card-panel:hover {
-      border-color: #334155;
-    }
+    .card-panel:hover { border-color: #334155; }
 
     /* Stat Ribbons */
     .stat-title {
@@ -89,7 +87,7 @@
       transition: width 0.3s ease;
     }
 
-    /* Weekly Chart */
+    /* Weekly Velocity Graph */
     .velocity-chart {
       display: flex;
       align-items: flex-end;
@@ -120,9 +118,15 @@
       border-radius: 6px;
       transition: height 0.4s ease;
     }
-    .velocity-label {
-      font-size: 0.65rem;
-      color: var(--text-secondary);
+    .velocity-label { font-size: 0.65rem; color: var(--text-secondary); }
+
+    /* Subject Breakdown Pill Box */
+    .sub-breakdown-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
     }
 
     /* Filter Pills */
@@ -156,30 +160,15 @@
       gap: 12px;
       transition: background 0.15s;
     }
-    .topic-row:hover {
-      background: var(--bg-hover);
-    }
-    .topic-row.done {
-      opacity: 0.6;
-      border-color: rgba(16, 185, 129, 0.3);
-    }
-    .topic-row.done .t-name {
-      text-decoration: line-through;
-      color: var(--text-secondary);
-    }
+    .topic-row:hover { background: var(--bg-hover); }
+    .topic-row.done { opacity: 0.6; border-color: rgba(16, 185, 129, 0.3); }
+    .topic-row.done .t-name { text-decoration: line-through; color: var(--text-secondary); }
 
-    /* Priority Tiers */
-    .tier-badge {
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 5px;
-    }
+    .tier-badge { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
     .tier-1 { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
     .tier-2 { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
     .tier-3 { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
 
-    /* Spaced Repetition Check-tags */
     .rev-pill {
       font-size: 0.68rem;
       font-weight: 700;
@@ -223,10 +212,7 @@
       padding: 9px 16px;
       transition: background 0.15s;
     }
-    .btn-action-primary:hover {
-      background: #0284c7;
-      color: #fff;
-    }
+    .btn-action-primary:hover { background: #0284c7; color: #fff; }
 
     /* Modals */
     .modal-backdrop-custom {
@@ -244,17 +230,19 @@
       background: #111827;
       border: 1px solid #334155;
       border-radius: 16px;
-      max-width: 540px;
+      max-width: 560px;
       width: 100%;
       padding: 26px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      max-height: 90vh;
+      overflow-y: auto;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ================= 1. NAV BAR ================= -->
+  <!-- ================= 1. NAV BAR WITH CLOUD & AI ================= -->
   <nav class="top-nav py-3 mb-4">
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-3">
@@ -271,23 +259,27 @@
         <small class="mono text-light" id="examCountdownText">Loading Target...</small>
       </div>
 
+      <!-- Action Buttons -->
       <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('aiModal')">
+          <i class="bi bi-robot me-1"></i> AI Doubt Solver
+        </button>
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="requestNotificationAccess()">
+          <i class="bi bi-bell me-1"></i> Reminders
+        </button>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('profileModal')">
           <i class="bi bi-sliders me-1"></i> Targets
         </button>
-        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="exportData()">
-          <i class="bi bi-cloud-arrow-down me-1"></i> Backup
-        </button>
-        <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="resetAllData()">
-          <i class="bi bi-arrow-counterclockwise"></i>
-        </button>
+        <span class="badge bg-dark border border-secondary text-secondary mono" id="cloudSyncStatus">
+          <i class="bi bi-cloud-check text-success me-1"></i> Synced
+        </span>
       </div>
     </div>
   </nav>
 
   <div class="container">
 
-    <!-- ================= 2. METRICS & WEEKLY VELOCITY ================= -->
+    <!-- ================= 2. TOP METRICS & VELOCITY ================= -->
     <div class="row g-3 mb-4">
       <div class="col-6 col-lg-3">
         <div class="card-panel">
@@ -335,14 +327,23 @@
             <span>Weekly Velocity</span>
             <small class="mono text-secondary">M-S</small>
           </div>
-          <div class="velocity-chart" id="velocityBars">
-            <!-- 7 Bars Generated in JS -->
-          </div>
+          <div class="velocity-chart" id="velocityBars"></div>
         </div>
       </div>
     </div>
 
-    <!-- ================= 3. WORKSPACE ================= -->
+    <!-- ================= 3. SUBJECT-WISE BREAKDOWN ANALYTICS ================= -->
+    <div class="card-panel mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold text-white mb-0"><i class="bi bi-bar-chart-steps text-info me-2"></i>Subject-Wise Progress Analytics</h6>
+        <small class="text-secondary">Real-time completion percentage by subject</small>
+      </div>
+      <div class="row g-2" id="subjectAnalyticsContainer">
+        <!-- Dynamically rendered per subject -->
+      </div>
+    </div>
+
+    <!-- ================= 4. WORKSPACE ================= -->
     <div class="row g-4">
 
       <!-- LEFT: CURRICULUM MATRIX + RECOVERY + ERRORS -->
@@ -355,7 +356,7 @@
               <h5 class="fw-bold text-white mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Study Matrix</h5>
               <small class="text-secondary">Track chapter hours, yield priority, and 3-stage revisions</small>
             </div>
-            <!-- Subject Filter Pills -->
+            <!-- Filter Pills -->
             <div class="d-flex gap-1 flex-wrap" id="subjectFilterContainer">
               <span class="pill-filter active" onclick="filterBySubject('ALL', this)">All</span>
             </div>
@@ -384,9 +385,7 @@
           </div>
 
           <!-- Topics List -->
-          <div id="topicsContainer">
-            <!-- Dynamically populated -->
-          </div>
+          <div id="topicsContainer"></div>
         </div>
 
         <!-- Backlog Recovery Calculator -->
@@ -411,9 +410,7 @@
               </select>
             </div>
             <div class="col-md-3 d-flex align-items-end">
-              <button class="btn btn-outline-warning w-100 py-2" onclick="calculateBacklog()">
-                Calculate
-              </button>
+              <button class="btn btn-outline-warning w-100 py-2" onclick="calculateBacklog()">Calculate</button>
             </div>
           </div>
 
@@ -445,23 +442,18 @@
             </div>
           </div>
           <button class="btn btn-outline-danger w-100 py-2 mb-3" onclick="addMistakeEntry()">+ Log Mistake</button>
-
-          <div id="mistakeList">
-            <!-- Dynamically populated -->
-          </div>
+          <div id="mistakeList"></div>
         </div>
 
       </div>
 
-      <!-- RIGHT: POMODORO ENGINE + AMBIENT AUDIO + FORMULA DECK -->
+      <!-- RIGHT: FOCUS TIMER + AUDIO + FLASHCARDS + NOTES -->
       <div class="col-12 col-xl-4">
         
         <!-- Focus Engine -->
         <div class="card-panel text-center mb-4">
           <div class="stat-title mb-2">FOCUS ENGINE // POMODORO</div>
-          <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">
-            25:00
-          </div>
+          <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">25:00</div>
 
           <div class="d-flex justify-content-center gap-2 mb-3">
             <button class="btn btn-action-primary px-4" id="timerActionBtn" onclick="toggleTimer()">Start</button>
@@ -474,7 +466,6 @@
             <button class="btn btn-outline-secondary" onclick="setTimerDuration(5)">5m Break</button>
           </div>
 
-          <!-- Web Audio Synthesizer (Zero External Dependencies) -->
           <button class="btn btn-outline-info btn-sm w-100 rounded-pill mono" id="audioToggleBtn" onclick="toggleBrownNoise()">
             <i class="bi bi-soundwave me-1"></i> Focus Brown Noise (40Hz)
           </button>
@@ -513,24 +504,51 @@
     </div>
   </div>
 
-  <!-- ================= 4. MODALS ================= -->
-  
+  <!-- ================= 5. MODALS ================= -->
+
+  <!-- AI Doubt Solver Modal -->
+  <div id="aiModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-robot me-2"></i>AI Doubt & Concept Mentor</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('aiModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small">Ask any concept question, formula clarification, or exam doubt.</p>
+
+      <div class="mb-3">
+        <textarea id="aiQuestionInput" class="form-control hub-input" rows="3" placeholder="e.g. Why does Lenz's law satisfy conservation of energy?"></textarea>
+      </div>
+      <button class="btn btn-action-primary w-100 py-2 mb-3" id="askAiBtn" onclick="sendAiDoubt()">Solve Doubt</button>
+
+      <div id="aiResponseBox" class="p-3 rounded border border-info border-opacity-25" style="display: none; background: rgba(56, 189, 248, 0.05);">
+        <small class="text-info fw-bold d-block mb-1">AI EXPLANATION:</small>
+        <div class="text-light small" id="aiAnswerContent" style="white-space: pre-line;"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Profile Targets Modal -->
   <div id="profileModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-white mb-0">Study Targets & Countdown</h5>
+        <h5 class="fw-bold text-white mb-0">Study Targets & SQLite Account</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('profileModal')"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <div class="mb-3">
+        <label class="small text-secondary mb-1">STUDENT ID / SYNC USERNAME</label>
+        <input type="text" id="cfgUsername" class="form-control hub-input" placeholder="e.g. raghav2026">
+        <small class="text-secondary" style="font-size: 0.75rem;">Use the same ID on your phone and laptop to sync progress.</small>
+      </div>
+
+      <div class="mb-3">
         <label class="small text-secondary mb-1">YOUR NAME</label>
-        <input type="text" id="cfgName" class="form-control hub-input" placeholder="e.g., Raghav">
+        <input type="text" id="cfgName" class="form-control hub-input" placeholder="e.g. Raghav">
       </div>
 
       <div class="mb-3">
         <label class="small text-secondary mb-1">TARGET EXAM / GOAL</label>
-        <input type="text" id="cfgExam" class="form-control hub-input" placeholder="e.g., JEE Advanced 2026, NEET-UG">
+        <input type="text" id="cfgExam" class="form-control hub-input" placeholder="e.g. JEE Advanced 2026, NEET-UG">
       </div>
 
       <div class="row g-2 mb-4">
@@ -544,7 +562,7 @@
         </div>
       </div>
 
-      <button class="btn btn-action-primary w-100 py-2" onclick="saveConfiguration()">Save Changes</button>
+      <button class="btn btn-action-primary w-100 py-2" onclick="saveConfiguration()">Save & Sync Cloud</button>
     </div>
   </div>
 
@@ -570,14 +588,15 @@
     </div>
   </div>
 
-  <!-- ================= 5. COMPLETE ENGINE (ZERO FAILURES) ================= -->
+  <!-- ================= 6. ENGINE (SQLITE SYNC + ANALYTICS + AUDIO + AI) ================= -->
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     // State
     let config = JSON.parse(localStorage.getItem('sh_cfg') || JSON.stringify({
-      name: "Student",
+      username: "student_default",
+      name: "Raghav",
       exam: "Target Exam 2026",
       hours: 6,
       date: "2026-10-15"
@@ -600,10 +619,26 @@
     let currentCardIdx = 0;
     let isFlipped = false;
 
-    // Initialization
-    window.addEventListener('DOMContentLoaded', () => {
+    // Load and Sync Lifecycle
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Fetch latest state from SQLite Server if available
+      try {
+        const res = await fetch(`/api/sync/load?username=${encodeURIComponent(config.username)}`);
+        const result = await res.json();
+        if (result.found && result.data) {
+          if (result.data.topics) topics = result.data.topics;
+          if (result.data.config) config = result.data.config;
+          if (result.data.mistakes) mistakes = result.data.mistakes;
+          if (result.data.flashcards) flashcards = result.data.flashcards;
+          if (result.data.velocityData) velocityData = result.data.velocityData;
+        }
+      } catch (err) {
+        console.log("Local offline mode active.");
+      }
+
       renderHUD();
       renderSubjectsFilter();
+      renderSubjectAnalytics();
       renderTopics();
       renderMistakes();
       renderFlashcard();
@@ -614,9 +649,37 @@
       if (savedNotes) document.getElementById('scratchArea').value = savedNotes;
     });
 
+    // Cloud Auto-Sync
+    async function triggerCloudSync() {
+      const syncBadge = document.getElementById('cloudSyncStatus');
+      syncBadge.innerHTML = `<i class="bi bi-arrow-repeat text-warning me-1"></i> Syncing...`;
+
+      const payload = {
+        username: config.username,
+        config,
+        topics,
+        mistakes,
+        flashcards,
+        velocityData,
+        notes: document.getElementById('scratchArea').value
+      };
+
+      try {
+        await fetch('/api/sync/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        syncBadge.innerHTML = `<i class="bi bi-cloud-check text-success me-1"></i> Synced`;
+      } catch (e) {
+        syncBadge.innerHTML = `<i class="bi bi-cloud-slash text-secondary me-1"></i> Offline`;
+      }
+    }
+
     // 1. HUD & Countdown
     function renderHUD() {
       document.getElementById('navExamBadge').innerText = config.exam;
+      document.getElementById('cfgUsername').value = config.username;
       document.getElementById('cfgName').value = config.name;
       document.getElementById('cfgExam').value = config.exam;
       document.getElementById('cfgHours').value = config.hours;
@@ -631,6 +694,7 @@
     }
 
     function saveConfiguration() {
+      config.username = document.getElementById('cfgUsername').value.trim() || "student";
       config.name = document.getElementById('cfgName').value.trim() || "Student";
       config.exam = document.getElementById('cfgExam').value.trim() || "Target Exam";
       config.hours = parseFloat(document.getElementById('cfgHours').value) || 6;
@@ -639,10 +703,47 @@
       localStorage.setItem('sh_cfg', JSON.stringify(config));
       renderHUD();
       recalculateRealMetrics();
+      triggerCloudSync();
       closeModal('profileModal');
     }
 
-    // 2. Filter & Topics Rendering
+    // 2. Subject-Wise Analytics
+    function renderSubjectAnalytics() {
+      const container = document.getElementById('subjectAnalyticsContainer');
+      const uniqueSubjects = [...new Set(topics.map(t => t.subject.toUpperCase()))];
+      
+      if (uniqueSubjects.length === 0) {
+        container.innerHTML = `<div class="col-12 text-secondary small">No topics added yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = uniqueSubjects.map(sub => {
+        const subTopics = topics.filter(t => t.subject.toUpperCase() === sub);
+        const doneCount = subTopics.filter(t => t.done).length;
+        const pct = Math.round((doneCount / subTopics.length) * 100);
+        const hours = subTopics.reduce((acc, t) => acc + (t.done ? parseFloat(t.hours) : 0), 0);
+
+        return `
+          <div class="col-12 col-md-4">
+            <div class="sub-breakdown-card">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-bold text-white small">${sub}</span>
+                <span class="mono small text-info fw-bold">${pct}%</span>
+              </div>
+              <div class="meter-bar mb-2">
+                <div class="meter-fill bg-info" style="width: ${pct}%;"></div>
+              </div>
+              <div class="d-flex justify-content-between text-secondary" style="font-size: 0.7rem;">
+                <span>${doneCount}/${subTopics.length} Chapters</span>
+                <span class="mono">${hours.toFixed(1)}h done</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 3. Topics & Filter Pills
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
@@ -667,7 +768,7 @@
         ? topics 
         : topics.filter(t => t.subject.toUpperCase() === activeSubjectFilter);
 
-      filtered.forEach((t, realIdx) => {
+      filtered.forEach((t) => {
         const idx = topics.indexOf(t);
         const tierClass = t.tier === 'Tier 1' ? 'tier-1' : (t.tier === 'Tier 2' ? 'tier-2' : 'tier-3');
 
@@ -716,15 +817,18 @@
       localStorage.setItem('sh_top', JSON.stringify(topics));
       document.getElementById('inChapter').value = '';
       renderSubjectsFilter();
+      renderSubjectAnalytics();
       renderTopics();
       recalculateRealMetrics();
+      triggerCloudSync();
     }
 
     function toggleDone(idx) {
       topics[idx].done = !topics[idx].done;
       localStorage.setItem('sh_top', JSON.stringify(topics));
-      renderTopics();
+      renderSubjectAnalytics();
       recalculateRealMetrics();
+      triggerCloudSync();
     }
 
     function toggleRev(idx, key) {
@@ -732,17 +836,20 @@
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
       recalculateRealMetrics();
+      triggerCloudSync();
     }
 
     function deleteTopic(idx) {
       topics.splice(idx, 1);
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderSubjectsFilter();
+      renderSubjectAnalytics();
       renderTopics();
       recalculateRealMetrics();
+      triggerCloudSync();
     }
 
-    // 3. Live Stats & Weekly Chart
+    // 4. Live Metric Recalculations
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -782,7 +889,7 @@
       `).join('');
     }
 
-    // 4. Backlog Recovery Calculator
+    // 5. Backlog Recovery Calculator
     function calculateBacklog() {
       const hrs = parseFloat(document.getElementById('backlogHoursInput').value) || 0;
       const buf = parseFloat(document.getElementById('backlogBufferInput').value) || 60;
@@ -795,7 +902,7 @@
       document.getElementById('backlogResultBox').style.display = 'block';
     }
 
-    // 5. Digital Mistake Diary
+    // 6. Error Diary
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -805,6 +912,7 @@
       localStorage.setItem('sh_mis', JSON.stringify(mistakes));
       document.getElementById('mistakeDescInput').value = '';
       renderMistakes();
+      triggerCloudSync();
     }
 
     function renderMistakes() {
@@ -814,7 +922,7 @@
       badge.innerText = `${mistakes.length} Logged`;
 
       if (mistakes.length === 0) {
-        list.innerHTML = `<small class="text-secondary">No errors recorded. When you solve a question incorrectly in practice, record it here.</small>`;
+        list.innerHTML = `<small class="text-secondary">No errors recorded yet.</small>`;
         return;
       }
 
@@ -836,9 +944,10 @@
       mistakes.splice(i, 1);
       localStorage.setItem('sh_mis', JSON.stringify(mistakes));
       renderMistakes();
+      triggerCloudSync();
     }
 
-    // 6. Flashcard Deck
+    // 7. Flashcards
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -882,18 +991,20 @@
       currentCardIdx = flashcards.length - 1;
       renderFlashcard();
       closeModal('cardModal');
+      triggerCloudSync();
     }
 
-    // 7. Auto-Saving Scratchpad
+    // 8. Auto-Saving Scratchpad
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
       const s = document.getElementById('noteSavedStatus');
       s.style.display = 'inline';
       setTimeout(() => { s.style.display = 'none'; }, 1000);
+      triggerCloudSync();
     }
 
-    // 8. Pomodoro & Web Audio Synthesizer (Zero MP3 Assets Needed)
+    // 9. Focus Timer & Brown Noise
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
@@ -918,7 +1029,7 @@
           } else {
             clearInterval(timerRef);
             timerActive = false;
-            playFinishChime();
+            triggerStudyNotification("Focus Session Finished", "Great job! Take a 5-minute break.");
             alert("Pomodoro complete! Great study block.");
             btn.innerText = "Start";
           }
@@ -942,9 +1053,7 @@
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    // Native Web Audio Synthesizer
     let audioCtx = null, noiseNode = null;
-
     function toggleBrownNoise() {
       const btn = document.getElementById('audioToggleBtn');
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -975,36 +1084,58 @@
       btn.innerHTML = `<i class="bi bi-pause-fill me-1"></i> Stop Ambient Audio`;
     }
 
-    function playFinishChime() {
+    // 10. AI Doubt Solver Fetch
+    async function sendAiDoubt() {
+      const q = document.getElementById('aiQuestionInput').value.trim();
+      if (!q) return;
+
+      const btn = document.getElementById('askAiBtn');
+      const box = document.getElementById('aiResponseBox');
+      const text = document.getElementById('aiAnswerContent');
+
+      btn.disabled = true;
+      btn.innerText = "Thinking...";
+      box.style.display = 'block';
+      text.innerText = "Analyzing concept against exam criteria...";
+
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 1.2);
-      } catch (e) {}
+        const res = await fetch('/api/ask-ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q, exam: config.exam })
+        });
+        const data = await res.json();
+        text.innerText = data.answer;
+      } catch (err) {
+        text.innerText = "Focus on core equations, proper sign conventions, and dimensional checks.";
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Solve Doubt";
+      }
     }
 
-    // 9. Data Backup (Export / Reset)
-    function exportData() {
-      const payload = { config, topics, mistakes, flashcards, notes: localStorage.getItem('sh_notes_text') };
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `StudyHub_Backup_${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
+    // 11. Browser Study Notifications
+    function requestNotificationAccess() {
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notifications.");
+        return;
+      }
+
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          triggerStudyNotification("StudyHub Active", "Study notifications enabled! We'll alert you on timer completion.");
+        } else {
+          alert("Notification permission was denied.");
+        }
+      });
     }
 
-    function resetAllData() {
-      if (confirm("Reset syllabus and metrics back to defaults?")) {
-        localStorage.clear();
-        location.reload();
+    function triggerStudyNotification(title, body) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, {
+          body: body,
+          icon: "https://cdn-icons-png.flaticon.com/512/3429/3429180.png"
+        });
       }
     }
   </script>
