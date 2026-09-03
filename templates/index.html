@@ -87,7 +87,31 @@
       transition: width 0.3s ease;
     }
 
-    /* GitHub-Style 90-Day Heatmap */
+    /* Time-Blocking HUD */
+    .timeblock-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .timeblock-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .timeblock-card.active-slot {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.15);
+      background: #111a2f;
+    }
+    .timeblock-card.completed-slot {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    /* 90-Day Activity Heatmap */
     .heatmap-scroll-container {
       overflow-x: auto;
       padding-bottom: 4px;
@@ -106,7 +130,6 @@
       background: #161b26;
       border: 1px solid rgba(255, 255, 255, 0.04);
       cursor: pointer;
-      position: relative;
     }
     .heatmap-cell.l-1 { background: #0e4429; border-color: #006d32; }
     .heatmap-cell.l-2 { background: #006d32; border-color: #26a641; }
@@ -152,7 +175,7 @@
       color: var(--accent-emerald);
     }
 
-    /* SRS Queue Item */
+    /* SRS Queue */
     .srs-item {
       background: #111a2e;
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -226,7 +249,7 @@
       background: #111827;
       border: 1px solid #334155;
       border-radius: 16px;
-      max-width: 580px;
+      max-width: 620px;
       width: 100%;
       padding: 26px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
@@ -255,10 +278,13 @@
         <small class="mono text-light" id="examCountdownText">Loading Target...</small>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Quick Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('presetModal')">
-          <i class="bi bi-lightning-charge me-1"></i> Presets
+        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('vaultModal')">
+          <i class="bi bi-search me-1"></i> Formula Vault
+        </button>
+        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="openPerformanceReport()">
+          <i class="bi bi-file-earmark-person me-1"></i> Mentor Report
         </button>
         <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
           <i class="bi bi-sliders2-vertical me-1"></i> Sound Mixer
@@ -306,12 +332,12 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>SRS Due Today</span>
-            <i class="bi bi-arrow-repeat text-warning"></i>
+            <span>Schedule Adherence</span>
+            <i class="bi bi-calendar-check text-violet"></i>
           </div>
-          <div class="stat-number text-warning mono" id="statSrsDue">0</div>
+          <div class="stat-number mono" style="color: var(--accent-violet);" id="statAdherence">0%</div>
           <div class="meter-bar">
-            <div id="statSrsFill" class="meter-fill bg-warning" style="width: 0%;"></div>
+            <div id="statAdherenceFill" class="meter-fill" style="width: 0%; background: var(--accent-violet);"></div>
           </div>
         </div>
       </div>
@@ -319,18 +345,35 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Target Cutoff Gap</span>
-            <i class="bi bi-graph-up-arrow text-rose"></i>
+            <span>Focus Breaches</span>
+            <i class="bi bi-eye-slash text-rose"></i>
           </div>
-          <div class="stat-number mono" style="color: var(--accent-rose)" id="statCutoffGap">0.0%</div>
+          <div class="stat-number mono text-rose" id="statBreaches">0 <span class="fs-6 text-secondary">Tabs</span></div>
           <div class="meter-bar">
-            <div id="statCutoffFill" class="meter-fill" style="width: 0%; background: var(--accent-rose);"></div>
+            <div id="statBreachesFill" class="meter-fill" style="width: 0%; background: var(--accent-rose);"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ================= 3. 90-DAY ACTIVITY HEATMAP ================= -->
+    <!-- ================= 3. DAILY TIME-BLOCKING HUD ================= -->
+    <div class="card-panel mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold text-white mb-0"><i class="bi bi-stopwatch text-info me-2"></i>Daily Time-Blocking HUD</h6>
+          <small class="text-secondary">Current active study slot highlighted in real time</small>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm mono rounded-pill" onclick="resetTodayBlocks()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Reset Blocks
+        </button>
+      </div>
+
+      <div class="timeblock-grid" id="timeblocksContainer">
+        <!-- Generated Dynamically -->
+      </div>
+    </div>
+
+    <!-- ================= 4. 90-DAY ACTIVITY HEATMAP ================= -->
     <div class="card-panel mb-4">
       <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
         <div>
@@ -352,7 +395,7 @@
       </div>
     </div>
 
-    <!-- ================= 4. WORKSPACE ================= -->
+    <!-- ================= 5. WORKSPACE ================= -->
     <div class="row g-4">
 
       <!-- LEFT: CURRICULUM + SRS DUE QUEUE + MOCK TEST PREDICTOR -->
@@ -471,13 +514,20 @@
 
       </div>
 
-      <!-- RIGHT: FOCUS TIMER + FLASHCARDS + NOTES -->
+      <!-- RIGHT: FOCUS ENGINE + TAB AUDITOR + FLASHCARDS + NOTES -->
       <div class="col-12 col-xl-4">
         
-        <!-- Focus Timer -->
+        <!-- Focus Engine & Tab Auditor -->
         <div class="card-panel text-center mb-4">
           <div class="stat-title mb-2">POMODORO FOCUS ENGINE</div>
           <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">25:00</div>
+
+          <!-- Accountability Auditor Badge -->
+          <div class="mb-3">
+            <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25 mono px-3 py-1" id="auditorBadge">
+              <i class="bi bi-shield-exclamation me-1"></i> Accountability Auditor Active
+            </span>
+          </div>
 
           <div class="d-flex justify-content-center gap-2 mb-3">
             <button class="btn btn-action-primary px-4" id="timerActionBtn" onclick="toggleTimer()">Start</button>
@@ -521,7 +571,25 @@
     </div>
   </div>
 
-  <!-- ================= 5. MODALS ================= -->
+  <!-- ================= 6. MODALS ================= -->
+
+  <!-- Searchable Quick-Formula Vault Modal -->
+  <div id="vaultModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-search me-2"></i>Searchable Quick-Formula Vault</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('vaultModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="mb-3">
+        <input type="text" id="vaultSearchInput" class="form-control hub-input" placeholder="Search equations (e.g. Carnot, Optics, Calculus, Gas Law)..." oninput="filterVault()">
+      </div>
+
+      <div id="vaultFormulaList" style="max-height: 420px; overflow-y: auto;">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
 
   <!-- Multi-Track Ambient Soundscape Mixer Modal -->
   <div id="soundMixerModal" class="modal-backdrop-custom">
@@ -537,7 +605,6 @@
         <button class="btn btn-action-primary btn-sm px-3" id="masterAudioBtn" onclick="toggleAudioEngine()">Start Ambient Audio</button>
       </div>
 
-      <!-- Brown Noise -->
       <div class="mb-3">
         <div class="d-flex justify-content-between small mb-1">
           <span class="text-light">Deep Brown Noise (40Hz Baseline)</span>
@@ -546,7 +613,6 @@
         <input type="range" class="sound-slider" id="sliderBrown" min="0" max="100" value="50" oninput="updateAudioGains()">
       </div>
 
-      <!-- Rainfall -->
       <div class="mb-3">
         <div class="d-flex justify-content-between small mb-1">
           <span class="text-light">Rainfall / Water Stream (Bandpass Pink)</span>
@@ -555,41 +621,12 @@
         <input type="range" class="sound-slider" id="sliderRain" min="0" max="100" value="40" oninput="updateAudioGains()">
       </div>
 
-      <!-- Binaural Gamma Beat -->
       <div class="mb-3">
         <div class="d-flex justify-content-between small mb-1">
           <span class="text-light">Binaural Beat (200Hz / 240Hz Gamma Focus)</span>
           <span class="mono text-secondary" id="volValBinaural">30%</span>
         </div>
         <input type="range" class="sound-slider" id="sliderBinaural" min="0" max="100" value="30" oninput="updateAudioGains()">
-      </div>
-    </div>
-  </div>
-
-  <!-- Presets Modal -->
-  <div id="presetModal" class="modal-backdrop-custom">
-    <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-info mb-0"><i class="bi bi-lightning-charge me-2"></i>Official Syllabus Presets</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('presetModal')"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <div class="d-grid gap-2">
-        <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('JEE')">
-          <div class="fw-bold text-info">⚡ IIT-JEE (Main & Advanced)</div>
-          <small class="text-secondary">Modern Physics, Calculus, Conics, Coordination Compounds, GOC.</small>
-        </button>
-        <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('NEET')">
-          <div class="fw-bold text-success">🔬 NEET-UG (Medical)</div>
-          <small class="text-secondary">Physiology, Genetics, Hydrocarbons, Optics, Ecology.</small>
-        </button>
-        <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('CBSE12')">
-          <div class="fw-bold text-warning">📚 CBSE Class 12 Boards</div>
-          <small class="text-secondary">NCERT Core chapters with weightage-tiered derivations.</small>
-        </button>
-        <button class="btn btn-outline-light text-start p-3 border-secondary" onclick="loadPreset('CS')">
-          <div class="fw-bold text-violet" style="color: var(--accent-violet);">💻 Full-Stack Computer Science</div>
-          <small class="text-secondary">Data Structures, Algorithms, System Design, SQL, APIs.</small>
-        </button>
       </div>
     </div>
   </div>
@@ -656,7 +693,7 @@
     </div>
   </div>
 
-  <!-- ================= 6. JAVASCRIPT ENGINE ================= -->
+  <!-- ================= 7. JAVASCRIPT ENGINE ================= -->
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -677,6 +714,27 @@
       { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
     ]));
 
+    let timeblocks = JSON.parse(localStorage.getItem('sh_blocks') || JSON.stringify([
+      { id: 1, label: "Slot 1: Deep Theory Block", startHour: 6, endHour: 9, completed: false },
+      { id: 2, label: "Slot 2: Practice & Numericals", startHour: 10, endHour: 13, completed: false },
+      { id: 3, label: "Slot 3: Full Syllabus Drill", startHour: 15, endHour: 18, completed: false },
+      { id: 4, label: "Slot 4: Night Active Recall", startHour: 20, endHour: 23, completed: false }
+    ]));
+
+    let formulaVault = [
+      { subject: "Physics", name: "De Broglie Wavelength", formula: "λ = h / p = h / √(2mE)" },
+      { subject: "Physics", name: "Carnot Engine Efficiency", formula: "η = 1 - (T_cold / T_hot) = W / Q_in" },
+      { subject: "Physics", name: "Lens Maker's Equation", formula: "1/f = (μ - 1)(1/R1 - 1/R2)" },
+      { subject: "Physics", name: "Biot-Savart Law", formula: "dB = (μ₀/4π) · (I dl × r̂) / r²" },
+      { subject: "Maths", name: "Integration by Parts", formula: "∫ u v dx = u ∫ v dx - ∫ (u' ∫ v dx) dx" },
+      { subject: "Maths", name: "Euler's Identity", formula: "e^(iθ) = cos(θ) + i sin(θ)" },
+      { subject: "Maths", name: "Distance from Point to Plane", formula: "d = |Ax₁ + By₁ + Cz₁ + D| / √(A² + B² + C²)" },
+      { subject: "Chemistry", name: "Arrhenius Rate Equation", formula: "k = A · e^(-Ea / RT)" },
+      { subject: "Chemistry", name: "Nernst Equation", formula: "E_cell = E°_cell - (0.0591 / n) log(Q)" },
+      { subject: "Chemistry", name: "Ideal Gas Law", formula: "PV = nRT  (R = 8.314 J/mol·K)" },
+      { subject: "CS", name: "Master Theorem for Recursion", formula: "T(n) = aT(n/b) + Θ(n^k log^p n)" }
+    ];
+
     let mistakes = JSON.parse(localStorage.getItem('sh_mis') || '[]');
     let flashcards = JSON.parse(localStorage.getItem('sh_cards') || JSON.stringify([
       { q: "Work-Energy Theorem", a: "Work Done by all forces = Change in Kinetic Energy (ΔK)" },
@@ -685,51 +743,11 @@
 
     let mockTests = JSON.parse(localStorage.getItem('sh_mocks') || '[]');
     let heatmapData = JSON.parse(localStorage.getItem('sh_heatmap') || '{}');
+    let tabBreachesCount = parseInt(localStorage.getItem('sh_breaches') || '0');
+
     let activeSubjectFilter = "ALL";
     let currentCardIdx = 0;
     let isFlipped = false;
-
-    // Presets
-    const syllabusPresets = {
-      JEE: [
-        { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Work, Energy & Power", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Rotational Dynamics", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Definite Integrals & Diff Eq", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Coordinate Geometry (Conics)", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "General Organic Chemistry (GOC)", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
-      ],
-      NEET: [
-        { subject: "Biology", chapter: "Human Physiology: Neural & Chemical", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Biology", chapter: "Genetics & Molecular Inheritance", tier: "Tier 1", hours: 4.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Organic Reaction Mechanisms", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Physics", chapter: "Ray Optics & Optical Instruments", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
-      ],
-      CBSE12: [
-        { subject: "Physics", chapter: "Electric Charges & Potential", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Maths", chapter: "Calculus: Continuity & Integrals", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Chemistry", chapter: "Aldehydes & Ketones", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
-      ],
-      CS: [
-        { subject: "Algorithms", chapter: "Dynamic Programming & Graphs", tier: "Tier 1", hours: 4.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "Backend", chapter: "Database Indexing & ACID", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
-        { subject: "DevOps", chapter: "Docker & CI/CD Pipelines", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
-      ]
-    };
-
-    function loadPreset(key) {
-      if (confirm(`Load official ${key} syllabus into your matrix?`)) {
-        topics = JSON.parse(JSON.stringify(syllabusPresets[key]));
-        localStorage.setItem('sh_top', JSON.stringify(topics));
-        renderSubjectsFilter();
-        renderTopics();
-        renderSrsQueue();
-        recalculateRealMetrics();
-        triggerCloudSync();
-        closeModal('presetModal');
-      }
-    }
 
     // Lifecycle
     window.addEventListener('DOMContentLoaded', async () => {
@@ -743,10 +761,12 @@
           if (result.data.flashcards) flashcards = result.data.flashcards;
           if (result.data.mockTests) mockTests = result.data.mockTests;
           if (result.data.heatmapData) heatmapData = result.data.heatmapData;
+          if (result.data.timeblocks) timeblocks = result.data.timeblocks;
         }
       } catch (err) {}
 
       renderHUD();
+      renderTimeblocks();
       renderSubjectsFilter();
       renderTopics();
       renderSrsQueue();
@@ -754,6 +774,7 @@
       renderFlashcard();
       renderMocks();
       renderHeatmap();
+      renderFormulaVault(formulaVault);
       recalculateRealMetrics();
 
       const savedNotes = localStorage.getItem('sh_notes_text');
@@ -773,6 +794,8 @@
         flashcards,
         mockTests,
         heatmapData,
+        timeblocks,
+        tabBreachesCount,
         notes: document.getElementById('scratchArea').value
       };
 
@@ -804,6 +827,9 @@
       
       document.getElementById('examCountdownText').innerText = 
         diffDays > 0 ? `${diffDays} DAYS UNTIL ${config.exam.toUpperCase()}` : `${config.exam.toUpperCase()} DAY`;
+
+      document.getElementById('statBreaches').innerHTML = `${tabBreachesCount} <span class="fs-6 text-secondary">Tabs</span>`;
+      document.getElementById('statBreachesFill').style.width = `${Math.min(100, tabBreachesCount * 15)}%`;
     }
 
     function saveConfiguration() {
@@ -822,7 +848,175 @@
       closeModal('profileModal');
     }
 
-    // 2. 90-Day Activity Heatmap
+    // 2. Interactive Daily Time-Blocking HUD
+    function renderTimeblocks() {
+      const container = document.getElementById('timeblocksContainer');
+      container.innerHTML = '';
+      const curHour = new Date().getHours();
+      let completedCount = 0;
+
+      timeblocks.forEach((b, idx) => {
+        const isCurrent = curHour >= b.startHour && curHour < b.endHour;
+        if (b.completed) completedCount++;
+
+        const div = document.createElement('div');
+        div.className = `timeblock-card ${isCurrent ? 'active-slot' : ''} ${b.completed ? 'completed-slot' : ''}`;
+        div.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="mono fw-bold small ${isCurrent ? 'text-info' : 'text-secondary'}">
+              ${b.startHour.toString().padStart(2, '0')}:00 - ${b.endHour.toString().padStart(2, '0')}:00
+            </span>
+            ${isCurrent ? '<span class="badge bg-info text-dark" style="font-size: 0.65rem;">LIVE NOW</span>' : ''}
+          </div>
+          <div class="fw-semibold text-white small mb-2">${b.label}</div>
+          <button class="btn btn-sm w-100 ${b.completed ? 'btn-outline-success' : 'btn-outline-secondary'}" style="font-size: 0.75rem;" onclick="toggleBlockDone(${idx})">
+            ${b.completed ? '<i class="bi bi-check-circle-fill me-1"></i> Adhered' : 'Mark Completed'}
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      const adherencePct = Math.round((completedCount / timeblocks.length) * 100);
+      document.getElementById('statAdherence').innerText = `${adherencePct}%`;
+      document.getElementById('statAdherenceFill').style.width = `${adherencePct}%`;
+    }
+
+    function toggleBlockDone(idx) {
+      timeblocks[idx].completed = !timeblocks[idx].completed;
+      localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
+      renderTimeblocks();
+      triggerCloudSync();
+    }
+
+    function resetTodayBlocks() {
+      timeblocks.forEach(b => b.completed = false);
+      localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
+      renderTimeblocks();
+      triggerCloudSync();
+    }
+
+    // 3. Searchable Formula Vault
+    function renderFormulaVault(list) {
+      const container = document.getElementById('vaultFormulaList');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="text-secondary small py-3 text-center">No matching equations found.</div>`;
+        return;
+      }
+
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "p-3 rounded mb-2 bg-dark border border-secondary border-opacity-25 d-flex justify-content-between align-items-center";
+        div.innerHTML = `
+          <div>
+            <div class="fw-bold text-white small">${item.name}</div>
+            <span class="badge bg-secondary bg-opacity-25 text-info mb-1" style="font-size: 0.65rem;">${item.subject}</span>
+            <div class="mono text-warning small mt-1">${item.formula}</div>
+          </div>
+          <button class="btn btn-sm btn-outline-info mono" style="font-size: 0.75rem;" onclick="copyFormula('${item.formula.replace(/'/g, "\\'")}', this)">
+            Copy
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filterVault() {
+      const q = document.getElementById('vaultSearchInput').value.toLowerCase().trim();
+      const filtered = formulaVault.filter(f => f.name.toLowerCase().includes(q) || f.subject.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q));
+      renderFormulaVault(filtered);
+    }
+
+    function copyFormula(text, btn) {
+      navigator.clipboard.writeText(text);
+      const prev = btn.innerText;
+      btn.innerText = "Copied!";
+      setTimeout(() => { btn.innerText = prev; }, 1200);
+    }
+
+    // 4. Tab-Switch Accountability Auditor
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && timerActive) {
+        tabBreachesCount++;
+        localStorage.setItem('sh_breaches', tabBreachesCount);
+        document.getElementById('auditorBadge').innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1 text-danger"></i> ${tabBreachesCount} Tab Switches Caught!`;
+        document.getElementById('statBreaches').innerHTML = `${tabBreachesCount} <span class="fs-6 text-secondary">Tabs</span>`;
+        document.getElementById('statBreachesFill').style.width = `${Math.min(100, tabBreachesCount * 15)}%`;
+      }
+    });
+
+    // 5. Weekly Parent / Mentor Performance Report
+    function openPerformanceReport() {
+      const printWin = window.open('', '_blank');
+      const targetCutoff = parseFloat(config.cutoff) || 75;
+      const completedTopics = topics.filter(t => t.done).length;
+      const syllabusPct = topics.length ? Math.round((completedTopics / topics.length) * 100) : 0;
+      
+      const pcts = mockTests.map(m => parseFloat(m.pct));
+      const avgMock = pcts.length ? (pcts.reduce((a, b) => a + b, 0) / pcts.length).toFixed(1) : "0.0";
+      const totalHoursWeek = Object.values(heatmapData).slice(-7).reduce((a, b) => a + b, 0);
+
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${config.name} // Academic Performance Card</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #111; max-width: 800px; margin: auto; }
+            .header { border-bottom: 3px solid #111; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+            .metric-box { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+            .card { border: 1px solid #ccc; padding: 14px; border-radius: 6px; }
+            .card .val { font-size: 24px; font-weight: bold; margin-top: 4px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 14px; margin-bottom: 24px; }
+            th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+            th { background: #f7f7f7; }
+            .footer { font-size: 12px; color: #666; margin-top: 40px; border-top: 1px solid #ddd; padding-top: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h2 style="margin: 0;">STUDY COMMAND // WEEKLY PERFORMANCE CARD</h2>
+              <div style="margin-top: 4px; color: #555;">Student: <strong>${config.name}</strong> | Target: <strong>${config.exam}</strong></div>
+            </div>
+            <div style="text-align: right; font-size: 13px; color: #555;">Date: ${new Date().toLocaleDateString()}</div>
+          </div>
+
+          <div class="metric-box">
+            <div class="card"><small>Syllabus Completion</small><div class="val">${syllabusPct}%</div></div>
+            <div class="card"><small>7-Day Study Hours</small><div class="val">${totalHoursWeek.toFixed(1)}h</div></div>
+            <div class="card"><small>Mock Test Average</small><div class="val">${avgMock}%</div></div>
+            <div class="card"><small>Focus Breaches</small><div class="val">${tabBreachesCount}</div></div>
+          </div>
+
+          <h3>Recent Mock Test Examinations</h3>
+          <table>
+            <thead><tr><th>Test Name</th><th>Score</th><th>Total Marks</th><th>Accuracy (%)</th></tr></thead>
+            <tbody>
+              ${mockTests.slice(0, 5).map(m => `<tr><td>${m.name}</td><td>${m.scored}</td><td>${m.total}</td><td><strong>${m.pct}%</strong></td></tr>`).join('') || '<tr><td colspan="4">No tests logged.</td></tr>'}
+            </tbody>
+          </table>
+
+          <h3>Completed Core Chapters (${completedTopics}/${topics.length})</h3>
+          <table>
+            <thead><tr><th>Subject</th><th>Chapter</th><th>Weightage Tier</th></tr></thead>
+            <tbody>
+              ${topics.filter(t => t.done).slice(0, 8).map(t => `<tr><td>${t.subject}</td><td>${t.chapter}</td><td>${t.tier}</td></tr>`).join('') || '<tr><td colspan="3">No chapters completed yet.</td></tr>'}
+            </tbody>
+          </table>
+
+          <div class="footer">
+            Generated automatically via StudyHub Academic Execution Suite. Official Mentor / Parent Verification Copy.
+          </div>
+          <script>window.onload = function(){ window.print(); };<\/script>
+        </body>
+        </html>
+      `);
+      printWin.document.close();
+    }
+
+    // 6. 90-Day Activity Heatmap
     function renderHeatmap() {
       const grid = document.getElementById('heatmapGrid');
       grid.innerHTML = '';
@@ -859,13 +1053,12 @@
       renderHeatmap();
     }
 
-    // 3. Automated Spaced Repetition (SRS) Engine
+    // 7. Automated Spaced Repetition (SRS) Engine
     function renderSrsQueue() {
       const container = document.getElementById('srsQueueList');
       const badge = document.getElementById('srsQueueBadge');
       const today = new Date();
       container.innerHTML = '';
-
       const dueTopics = [];
 
       topics.forEach((t, idx) => {
@@ -883,8 +1076,6 @@
       });
 
       badge.innerText = `${dueTopics.length} Pending`;
-      document.getElementById('statSrsDue').innerText = dueTopics.length;
-      document.getElementById('statSrsFill').style.width = `${Math.min(100, dueTopics.length * 25)}%`;
 
       if (dueTopics.length === 0) {
         container.innerHTML = `<small class="text-secondary">No topics scheduled for revision today. All retention schedules are up to date!</small>`;
@@ -916,7 +1107,7 @@
       triggerCloudSync();
     }
 
-    // 4. Topics Checklist Matrix
+    // 8. Curriculum Matrix
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
@@ -1015,7 +1206,7 @@
       triggerCloudSync();
     }
 
-    // 5. Mock Test & Cutoff Predictor
+    // 9. Mock Test Analyzer
     function addMockTest() {
       const name = document.getElementById('mockNameInput').value.trim();
       const scored = parseFloat(document.getElementById('mockScoredInput').value);
@@ -1043,7 +1234,6 @@
         list.innerHTML = `<small class="text-secondary">No mock tests logged yet.</small>`;
         document.getElementById('dispAvgScore').innerText = "0.0%";
         document.getElementById('dispEstPercentile').innerText = "--";
-        document.getElementById('statCutoffGap').innerText = `-${targetCutoff.toFixed(1)}%`;
         return;
       }
 
@@ -1051,15 +1241,8 @@
       const avg = (pcts.reduce((a, b) => a + b, 0) / pcts.length).toFixed(1);
       document.getElementById('dispAvgScore').innerText = `${avg}%`;
 
-      // Percentile Predictor curve estimation
       const estPercentile = Math.min(99.9, Math.max(10, (parseFloat(avg) * 1.15) - 5)).toFixed(1);
       document.getElementById('dispEstPercentile').innerText = `${estPercentile}%ile`;
-
-      // Cutoff Gap
-      const diff = (parseFloat(avg) - targetCutoff).toFixed(1);
-      const gapText = diff >= 0 ? `+${diff}%` : `${diff}%`;
-      document.getElementById('statCutoffGap').innerText = gapText;
-      document.getElementById('statCutoffFill').style.width = `${Math.min(100, Math.max(10, parseFloat(avg)))}%`;
 
       mockTests.slice(0, 4).forEach((m, idx) => {
         const item = document.createElement('div');
@@ -1086,7 +1269,7 @@
       triggerCloudSync();
     }
 
-    // 6. Metrics Recalculations
+    // 10. Metrics Recalculations
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -1102,7 +1285,7 @@
       document.getElementById('statHoursFill').style.width = `${hoursPct}%`;
     }
 
-    // 7. Error Diary
+    // 11. Error Diary
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -1147,7 +1330,7 @@
       triggerCloudSync();
     }
 
-    // 8. Flashcards
+    // 12. Flashcards
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -1194,7 +1377,7 @@
       triggerCloudSync();
     }
 
-    // 9. Scratchpad Auto-saving
+    // 13. Auto-Saving Scratchpad
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
@@ -1204,7 +1387,7 @@
       triggerCloudSync();
     }
 
-    // 10. Focus Timer
+    // 14. Focus Timer
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
@@ -1253,7 +1436,7 @@
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    // 11. Multi-Track Ambient Soundscape Mixer (Web Audio API Synthesizer)
+    // 15. Ambient Soundscape Mixer (Web Audio API)
     let audioCtx = null;
     let brownNode = null, brownGain = null;
     let rainNode = null, rainGain = null, rainFilter = null;
@@ -1263,7 +1446,7 @@
     function initAudioMixer() {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-      // Track 1: Brown Noise Generator
+      // Brown Noise
       const bufSize = audioCtx.sampleRate * 2;
       const bBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
       const bData = bBuf.getChannelData(0);
@@ -1281,7 +1464,7 @@
       brownNode.connect(brownGain);
       brownGain.connect(audioCtx.destination);
 
-      // Track 2: Filtered Rainfall Pink Noise Generator
+      // Rainfall Pink Noise
       const rBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
       const rData = rBuf.getChannelData(0);
       let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
@@ -1307,7 +1490,7 @@
       rainFilter.connect(rainGain);
       rainGain.connect(audioCtx.destination);
 
-      // Track 3: Binaural Beat (200Hz + 240Hz Gamma Focus)
+      // Binaural Beat
       oscLeft = audioCtx.createOscillator();
       oscRight = audioCtx.createOscillator();
       oscLeft.frequency.value = 200;
