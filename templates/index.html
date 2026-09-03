@@ -243,29 +243,6 @@
       height: 380px;
     }
 
-    /* Guided Breathing Sanctuary */
-    .breathing-orb {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(14, 19, 31, 0.1) 70%);
-      border: 2px solid var(--accent-cyan);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 25px auto;
-      transition: transform 4s ease-in-out, box-shadow 4s ease-in-out;
-    }
-    .breathing-orb.inhale {
-      transform: scale(1.6);
-      box-shadow: 0 0 45px rgba(56, 189, 248, 0.7);
-    }
-    .breathing-orb.exhale {
-      transform: scale(0.9);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-    }
-
     /* Inputs & Buttons */
     .hub-input {
       background: #07090e;
@@ -294,24 +271,6 @@
     }
     .btn-action-primary:hover { background: #0284c7; color: #fff; }
 
-    /* Sound Mixer Faders */
-    .sound-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 4px;
-      border-radius: 5px;
-      background: #1e293b;
-      outline: none;
-    }
-    .sound-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--accent-cyan);
-      cursor: pointer;
-    }
-
     /* Modals */
     .modal-backdrop-custom {
       position: fixed;
@@ -334,6 +293,24 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
       max-height: 90vh;
       overflow-y: auto;
+    }
+
+    /* Sound Mixer Faders */
+    .sound-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 5px;
+      background: #1e293b;
+      outline: none;
+    }
+    .sound-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
     }
   </style>
 </head>
@@ -373,17 +350,17 @@
 
       <!-- Quick Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
-          <i class="bi bi-soundwave me-1"></i> Brainwave Audio
+        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('vaultModal')">
+          <i class="bi bi-search me-1"></i> Formula Vault
         </button>
-        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('sleepModal')">
-          <i class="bi bi-moon-stars me-1"></i> Bio-Metrics
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('negMarkModal')">
+          <i class="bi bi-calculator me-1"></i> Negative Grading
         </button>
-        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="exportOfficialAuditCertificate()">
-          <i class="bi bi-patch-check me-1"></i> Audit Sheet
+        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="openModal('migratorModal')">
+          <i class="bi bi-arrow-left-right me-1"></i> Cloud Migrator
         </button>
-        <button class="btn btn-outline-light btn-sm rounded-pill" onclick="openCanvasModal()">
-          <i class="bi bi-pen me-1"></i> Canvas
+        <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
+          <i class="bi bi-soundwave me-1"></i> Audio
         </button>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('profileModal')">
           <i class="bi bi-sliders me-1"></i> Targets
@@ -441,12 +418,12 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Cognitive Fatigue Index</span>
-            <i class="bi bi-battery-charging text-amber"></i>
+            <span>Subject Balance Guard</span>
+            <i class="bi bi-compass text-violet"></i>
           </div>
-          <div class="stat-number mono text-warning" id="statFatigueIndex">Low (10%)</div>
+          <div class="stat-number mono" style="color: var(--accent-violet);" id="statMomentumStatus">Balanced</div>
           <div class="meter-bar">
-            <div id="statFatigueFill" class="meter-fill bg-warning" style="width: 10%;"></div>
+            <div id="statMomentumFill" class="meter-fill" style="width: 100%; background: var(--accent-violet);"></div>
           </div>
         </div>
       </div>
@@ -457,13 +434,11 @@
       <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
         <div>
           <h6 class="fw-bold text-white mb-0"><i class="bi bi-calendar3 text-info me-2"></i>Next 7-Day Spaced Repetition (SRS) Forecast</h6>
-          <small class="text-secondary">Pre-scheduled revision load to eliminate decision fatigue</small>
+          <small class="text-secondary">Pre-scheduled revision workload to eliminate decision fatigue</small>
         </div>
         <span class="badge bg-secondary bg-opacity-25 text-info mono" id="srsWeeklyLoadBadge">0 Total Due This Week</span>
       </div>
-      <div class="srs-forecast-grid" id="srsForecastGrid">
-        <!-- 7 Days Injected Dynamically -->
-      </div>
+      <div class="srs-forecast-grid" id="srsForecastGrid"></div>
     </div>
 
     <!-- ================= 4. MCQ ACCURACY COUNTER & BALANCE WHEEL ================= -->
@@ -640,10 +615,7 @@
             </div>
             <span class="badge bg-danger bg-opacity-25 text-danger mono" id="topLeakBadge">No Leaks Logged</span>
           </div>
-
-          <div class="row g-3 mt-1" id="paretoBarsContainer">
-            <!-- Dynamically Rendered -->
-          </div>
+          <div class="row g-3 mt-1" id="paretoBarsContainer"></div>
         </div>
 
         <!-- Mock Test Score & Target Cutoff Predictor -->
@@ -721,7 +693,6 @@
           <div class="stat-title mb-2">POMODORO FOCUS ENGINE</div>
           <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">25:00</div>
 
-          <!-- Accountability Auditor Badge -->
           <div class="mb-3">
             <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25 mono px-3 py-1" id="auditorBadge">
               <i class="bi bi-shield-exclamation me-1"></i> Accountability Auditor Active
@@ -784,16 +755,97 @@
 
   <!-- ================= 8. MODALS ================= -->
 
-  <!-- Multi-Track Ambient Soundscape & 4-Stage Binaural Frequency Selector -->
+  <!-- 1. Searchable Quick-Formula Vault Modal -->
+  <div id="vaultModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-search me-2"></i>Searchable Quick-Formula Vault</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('vaultModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="mb-3">
+        <input type="text" id="vaultSearchInput" class="form-control hub-input" placeholder="Search equations (e.g. Carnot, Optics, Calculus, Nernst, Gas Law)..." oninput="filterVault()">
+      </div>
+      <div id="vaultFormulaList" style="max-height: 420px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- 2. Negative Marking Penalty Calculator Modal -->
+  <div id="negMarkModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-calculator me-2"></i>Exam Negative Marking Deduction Calculator</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('negMarkModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Separate your gross score from negative penalty loss to see the true impact of guesswork.</p>
+
+      <div class="row g-2 mb-3">
+        <div class="col-4">
+          <label class="small text-secondary mb-1">CORRECT</label>
+          <input type="number" id="calcCorrect" class="form-control hub-input" value="45" min="0" oninput="runNegativeGrading()">
+        </div>
+        <div class="col-4">
+          <label class="small text-secondary mb-1">INCORRECT</label>
+          <input type="number" id="calcIncorrect" class="form-control hub-input" value="12" min="0" oninput="runNegativeGrading()">
+        </div>
+        <div class="col-4">
+          <label class="small text-secondary mb-1">MARKING SCHEME</label>
+          <select id="calcScheme" class="form-select hub-input" onchange="runNegativeGrading()">
+            <option value="4,-1" selected>+4 / -1 (JEE / NEET)</option>
+            <option value="3,-1">+3 / -1 (Standard)</option>
+            <option value="2,-0.66">+2 / -0.66 (Civil)</option>
+            <option value="1,-0.25">+1 / -0.25 (Banking)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="p-3 rounded bg-dark border border-secondary border-opacity-25 mono">
+        <div class="d-flex justify-content-between mb-1">
+          <span class="text-secondary">Gross Score Earned:</span>
+          <strong class="text-success" id="calcGrossScore">+180 Marks</strong>
+        </div>
+        <div class="d-flex justify-content-between mb-1">
+          <span class="text-secondary">Negative Penalty Loss:</span>
+          <strong class="text-danger" id="calcPenaltyLoss">-12 Marks</strong>
+        </div>
+        <hr class="border-secondary my-2">
+        <div class="d-flex justify-content-between fs-5 fw-bold">
+          <span class="text-white">Net Official Score:</span>
+          <span class="text-info" id="calcNetScore">168 Marks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. One-Click Full-State JSON Cloud Migrator Modal -->
+  <div id="migratorModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-success mb-0"><i class="bi bi-arrow-left-right me-2"></i>Full-State JSON Cloud Migrator</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('migratorModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Seamlessly transfer your entire profile, syllabus matrix, Leitner flashcards, mistake logs, and XP data between browsers or devices.</p>
+
+      <div class="mb-3">
+        <button class="btn btn-action-primary w-100 py-2 mb-2" onclick="exportFullJsonState()">
+          <i class="bi bi-download me-1"></i> Download Complete Backup (.json)
+        </button>
+        <label class="btn btn-outline-light w-100 py-2 mono" style="cursor: pointer;">
+          <i class="bi bi-upload me-1"></i> Restore from JSON File
+          <input type="file" id="stateFileInput" accept=".json" style="display: none;" onchange="importFullJsonState(event)">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Multi-Track Ambient Soundscape & Binaural Modal -->
   <div id="soundMixerModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-sliders2-vertical me-2"></i>Multi-Track Ambient & Binaural Synthesizer</h5>
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-sliders2-vertical me-2"></i>Ambient & Binaural Synthesizer</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('soundMixerModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small mb-3">Real-time Web Audio synthesizer. Select tuned neural frequencies to match your immediate study task.</p>
+      <p class="text-secondary small mb-3">Synthesized live via the Web Audio API. Match your immediate study task to neural frequency presets.</p>
 
-      <!-- 4-Stage Binaural Presets -->
       <div class="mb-4">
         <label class="small text-secondary fw-bold mono mb-2 d-block">SELECT TARGET NEURAL FREQUENCY</label>
         <div class="row g-2">
@@ -880,33 +932,6 @@
     </div>
   </div>
 
-  <!-- Sleep & Bio-Metrics Modal -->
-  <div id="sleepModal" class="modal-backdrop-custom">
-    <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="fw-bold text-info mb-0"><i class="bi bi-moon-stars me-2"></i>Sleep & Energy Bio-Metrics</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('sleepModal')"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <div class="row g-2 mb-3">
-        <div class="col-6">
-          <label class="small text-secondary mb-1">SLEEP LAST NIGHT (HOURS)</label>
-          <input type="number" step="0.5" id="inSleepHours" class="form-control hub-input" value="7.0" min="3" max="12">
-        </div>
-        <div class="col-6">
-          <label class="small text-secondary mb-1">MORNING ENERGY (1-5)</label>
-          <select id="inEnergyLevel" class="form-select hub-input">
-            <option value="5">5 - Peak Energy</option>
-            <option value="4" selected>4 - Solid / Focused</option>
-            <option value="3">3 - Moderate Fatigue</option>
-            <option value="2">2 - Heavy Brain Fog</option>
-            <option value="1">1 - Exhausted</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn btn-outline-info w-100 py-2 mb-3" onclick="logSleepEntry()">Save Today's Bio-Metrics</button>
-    </div>
-  </div>
-
   <!-- Profile & Cutoff Target Modal -->
   <div id="profileModal" class="modal-backdrop-custom">
     <div class="modal-frame">
@@ -990,6 +1015,20 @@
       { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
     ]));
 
+    let formulaVault = [
+      { subject: "Physics", name: "De Broglie Wavelength", formula: "λ = h / p = h / √(2mE)" },
+      { subject: "Physics", name: "Carnot Engine Efficiency", formula: "η = 1 - (T_cold / T_hot) = W / Q_in" },
+      { subject: "Physics", name: "Lens Maker's Equation", formula: "1/f = (μ - 1)(1/R1 - 1/R2)" },
+      { subject: "Physics", name: "Biot-Savart Law", formula: "dB = (μ₀/4π) · (I dl × r̂) / r²" },
+      { subject: "Maths", name: "Integration by Parts", formula: "∫ u v dx = u ∫ v dx - ∫ (u' ∫ v dx) dx" },
+      { subject: "Maths", name: "Euler's Identity", formula: "e^(iθ) = cos(θ) + i sin(θ)" },
+      { subject: "Maths", name: "Distance from Point to Plane", formula: "d = |Ax₁ + By₁ + Cz₁ + D| / √(A² + B² + C²)" },
+      { subject: "Chemistry", name: "Arrhenius Rate Equation", formula: "k = A · e^(-Ea / RT)" },
+      { subject: "Chemistry", name: "Nernst Equation", formula: "E_cell = E°_cell - (0.0591 / n) log(Q)" },
+      { subject: "Chemistry", name: "Ideal Gas Law", formula: "PV = nRT  (R = 8.314 J/mol·K)" },
+      { subject: "CS", name: "Master Theorem for Recursion", formula: "T(n) = aT(n/b) + Θ(n^k log^p n)" }
+    ];
+
     let mcqState = JSON.parse(localStorage.getItem('sh_mcq') || JSON.stringify({
       correct: 0, wrong: 0, skip: 0, target: 50
     }));
@@ -1012,7 +1051,6 @@
     let tabBreachesCount = parseInt(localStorage.getItem('sh_breaches') || '0');
     let studyMinutesToday = parseInt(localStorage.getItem('sh_study_mins') || '45');
     let totalXp = parseInt(localStorage.getItem('sh_xp') || '350');
-    let sleepLogs = JSON.parse(localStorage.getItem('sh_sleep') || '[]');
 
     let activeSubjectFilter = "ALL";
     let currentCardIdx = 0;
@@ -1033,14 +1071,15 @@
           if (result.data.timeblocks) timeblocks = result.data.timeblocks;
           if (result.data.mcqState) mcqState = result.data.mcqState;
           if (result.data.totalXp) totalXp = result.data.totalXp;
-          if (result.data.sleepLogs) sleepLogs = result.data.sleepLogs;
         }
       } catch (err) {}
 
       renderHUD();
       renderXpEngine();
+      renderFormulaVault(formulaVault);
       renderMcqCounter();
       renderSubjectBalanceWheel();
+      checkRollingMomentumDrift();
       renderTimeblocks();
       renderSubjectsFilter();
       renderTopics();
@@ -1052,7 +1091,7 @@
       renderFlashcard();
       renderMocks();
       renderHeatmap();
-      updateFatigueMeter();
+      runNegativeGrading();
       recalculateRealMetrics();
 
       const savedNotes = localStorage.getItem('sh_notes_text');
@@ -1076,7 +1115,6 @@
         tabBreachesCount,
         mcqState,
         totalXp,
-        sleepLogs,
         notes: document.getElementById('scratchArea').value
       };
 
@@ -1092,14 +1130,156 @@
       }
     }
 
-    // 1. Syllabus Burn-Down & Exam Deadline Forecaster
+    // 1. Searchable Quick-Formula Vault
+    function renderFormulaVault(list) {
+      const container = document.getElementById('vaultFormulaList');
+      container.innerHTML = '';
+      if (list.length === 0) {
+        container.innerHTML = `<div class="text-secondary small py-3 text-center">No matching equations found.</div>`;
+        return;
+      }
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "p-3 rounded mb-2 bg-dark border border-secondary border-opacity-25 d-flex justify-content-between align-items-center";
+        div.innerHTML = `
+          <div>
+            <div class="fw-bold text-white small">${item.name}</div>
+            <span class="badge bg-secondary bg-opacity-25 text-info mb-1" style="font-size: 0.65rem;">${item.subject}</span>
+            <div class="mono text-warning small mt-1">${item.formula}</div>
+          </div>
+          <button class="btn btn-sm btn-outline-info mono" style="font-size: 0.75rem;" onclick="copyFormula('${item.formula.replace(/'/g, "\\'")}', this)">
+            Copy
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filterVault() {
+      const q = document.getElementById('vaultSearchInput').value.toLowerCase().trim();
+      const filtered = formulaVault.filter(f => f.name.toLowerCase().includes(q) || f.subject.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q));
+      renderFormulaVault(filtered);
+    }
+
+    function copyFormula(text, btn) {
+      navigator.clipboard.writeText(text);
+      const prev = btn.innerText;
+      btn.innerText = "Copied!";
+      setTimeout(() => { btn.innerText = prev; }, 1200);
+    }
+
+    // 2. Rolling Momentum & Drift Guard
+    function checkRollingMomentumDrift() {
+      const doneList = topics.filter(t => t.done && t.doneDate);
+      const statusEl = document.getElementById('statMomentumStatus');
+      const fillEl = document.getElementById('statMomentumFill');
+
+      if (doneList.length < 4) {
+        statusEl.innerText = "Balanced";
+        fillEl.style.width = "100%";
+        return;
+      }
+
+      const recent4 = doneList.slice(-4).map(t => t.subject.toUpperCase());
+      const allSame = recent4.every(s => s === recent4[0]);
+
+      if (allSame) {
+        statusEl.innerText = `Drift: ${recent4[0]}`;
+        statusEl.style.color = "var(--accent-rose)";
+        fillEl.style.width = "30%";
+        fillEl.style.background = "var(--accent-rose)";
+      } else {
+        statusEl.innerText = "Balanced";
+        statusEl.style.color = "var(--accent-violet)";
+        fillEl.style.width = "100%";
+        fillEl.style.background = "var(--accent-violet)";
+      }
+    }
+
+    // 3. Negative Marking Grading Calculator
+    function runNegativeGrading() {
+      const correct = parseInt(document.getElementById('calcCorrect').value) || 0;
+      const incorrect = parseInt(document.getElementById('calcIncorrect').value) || 0;
+      const scheme = document.getElementById('calcScheme').value.split(',').map(Number);
+      const plusMark = scheme[0];
+      const minusMark = Math.abs(scheme[1]);
+
+      const gross = correct * plusMark;
+      const penalty = incorrect * minusMark;
+      const net = (gross - penalty).toFixed(1);
+
+      document.getElementById('calcGrossScore').innerText = `+${gross} Marks`;
+      document.getElementById('calcPenaltyLoss').innerText = `-${penalty} Marks`;
+      document.getElementById('calcNetScore').innerText = `${net} Marks`;
+    }
+
+    // 4. One-Click Full-State JSON Migrator
+    function exportFullJsonState() {
+      const fullState = {
+        config,
+        topics,
+        mistakes,
+        flashcards,
+        mockTests,
+        heatmapData,
+        timeblocks,
+        tabBreachesCount,
+        mcqState,
+        totalXp,
+        notes: document.getElementById('scratchArea').value,
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(fullState, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `StudyHub_FullState_${config.username}_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    }
+
+    function importFullJsonState(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.topics) topics = data.topics;
+          if (data.config) config = data.config;
+          if (data.mistakes) mistakes = data.mistakes;
+          if (data.flashcards) flashcards = data.flashcards;
+          if (data.mockTests) mockTests = data.mockTests;
+          if (data.heatmapData) heatmapData = data.heatmapData;
+          if (data.timeblocks) timeblocks = data.timeblocks;
+          if (data.mcqState) mcqState = data.mcqState;
+          if (data.totalXp) totalXp = data.totalXp;
+
+          localStorage.setItem('sh_cfg', JSON.stringify(config));
+          localStorage.setItem('sh_top', JSON.stringify(topics));
+          localStorage.setItem('sh_mis', JSON.stringify(mistakes));
+          localStorage.setItem('sh_cards', JSON.stringify(flashcards));
+          localStorage.setItem('sh_mocks', JSON.stringify(mockTests));
+          localStorage.setItem('sh_heatmap', JSON.stringify(heatmapData));
+          localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
+          localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
+          localStorage.setItem('sh_xp', totalXp);
+
+          triggerCloudSync();
+          location.reload();
+        } catch (err) {
+          alert("Invalid JSON state backup file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // 5. Syllabus Burn-Down & Exam Deadline Forecaster
     function calculateBurndownForecast() {
       const remainingTopics = topics.filter(t => !t.done).length;
       const targetDate = new Date(config.date);
       const today = new Date();
       const daysUntilExam = Math.max(1, Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24)));
 
-      // Rolling velocity: completed chapters in past 14 days or fallback 1.2/day
       const completedCount = topics.filter(t => t.done).length;
       const velocity = Math.max(0.6, completedCount > 0 ? (completedCount / 7) : 1.0);
 
@@ -1114,7 +1294,7 @@
       document.getElementById('statPaceFill').style.width = `${paceRatio}%`;
     }
 
-    // 2. Next 7-Day Spaced Repetition (SRS) Forecast
+    // 6. Next 7-Day Spaced Repetition (SRS) Forecast
     function renderSrsForecast() {
       const grid = document.getElementById('srsForecastGrid');
       grid.innerHTML = '';
@@ -1153,7 +1333,7 @@
       document.getElementById('srsWeeklyLoadBadge').innerText = `${totalDueWeek} Due Over Next 7 Days`;
     }
 
-    // 3. Mock Test Error Root-Cause Pareto Analyzer
+    // 7. Mock Test Error Root-Cause Pareto Analyzer
     function renderParetoMistakes() {
       const container = document.getElementById('paretoBarsContainer');
       const badge = document.getElementById('topLeakBadge');
@@ -1201,7 +1381,7 @@
       });
     }
 
-    // 4. 4-Stage Binaural Web Audio Synthesizer
+    // 8. 4-Stage Binaural Web Audio Synthesizer
     let audioCtx = null;
     let brownNode = null, brownGain = null;
     let rainNode = null, rainGain = null, rainFilter = null;
@@ -1317,7 +1497,7 @@
       if (binauralGain && audioCtx) binauralGain.gain.setValueAtTime(binVal, audioCtx.currentTime);
     }
 
-    // 5. Gamified XP & Rank Engine
+    // 9. Gamified XP & Rank Engine
     function addXp(amount) {
       const oldLevel = Math.floor(totalXp / 400) + 1;
       totalXp += amount;
@@ -1346,97 +1526,9 @@
       document.getElementById('hudRankTitle').innerText = rankTitle;
       document.getElementById('hudLevelBadge').innerText = `LVL ${level}`;
       document.getElementById('hudXpFill').style.width = `${pct}%`;
-
-      document.getElementById('statTotalXp').innerHTML = `${totalXp} <span class="fs-6 text-secondary">XP</span>`;
-      document.getElementById('statXpFill').style.width = `${pct}%`;
     }
 
-    // 6. Bio-Metrics
-    function logSleepEntry() {
-      const hrs = parseFloat(document.getElementById('inSleepHours').value) || 7.0;
-      const energy = parseInt(document.getElementById('inEnergyLevel').value) || 4;
-      const totalAttempted = mcqState.correct + mcqState.wrong;
-      const acc = totalAttempted > 0 ? (mcqState.correct / totalAttempted) * 100 : 75;
-
-      sleepLogs.unshift({ date: new Date().toISOString().slice(0, 10), hrs, energy, acc });
-      localStorage.setItem('sh_sleep', JSON.stringify(sleepLogs.slice(0, 14)));
-      triggerCloudSync();
-      alert("Bio-metrics logged!");
-      closeModal('sleepModal');
-    }
-
-    // 7. Official Audit Certificate
-    function exportOfficialAuditCertificate() {
-      const printWin = window.open('', '_blank');
-      const completedTopics = topics.filter(t => t.done).length;
-      const pct = topics.length ? Math.round((completedTopics / topics.length) * 100) : 0;
-      const totalHours = topics.reduce((a, b) => a + (b.done ? parseFloat(b.hours) : 0), 0);
-      const authHash = "SH-" + Math.random().toString(36).substring(2, 9).toUpperCase() + "-" + new Date().getFullYear();
-
-      printWin.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${config.name} // Official Syllabus Audit</title>
-          <style>
-            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #111; max-width: 840px; margin: auto; }
-            .header { border-bottom: 3px solid #111; padding-bottom: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
-            .cert-box { border: 2px solid #111; padding: 20px; border-radius: 8px; margin-bottom: 24px; background: #fafafa; }
-            table { width: 100%; border-collapse: collapse; margin-top: 14px; margin-bottom: 28px; }
-            th, td { border: 1px solid #ccc; padding: 9px; text-align: left; font-size: 13px; }
-            th { background: #eee; }
-            .signatures { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 60px; }
-            .sign-line { border-top: 1px solid #111; padding-top: 8px; text-align: center; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div>
-              <h2 style="margin: 0; letter-spacing: 1px;">OFFICIAL SYLLABUS AUDIT CERTIFICATE</h2>
-              <div style="margin-top: 4px; color: #444;">Verification Suite // StudyHub Command Center</div>
-            </div>
-            <div style="text-align: right; font-family: monospace; font-size: 12px;">ID: ${authHash}</div>
-          </div>
-
-          <div class="cert-box">
-            <p style="margin: 0 0 10px; font-size: 15px;">This document certifies that <strong>${config.name}</strong> has logged the following verified academic benchmarks for <strong>${config.exam}</strong>:</p>
-            <div style="display: flex; justify-content: space-between; font-family: monospace; font-size: 14px;">
-              <span>Syllabus Covered: <strong>${pct}%</strong></span>
-              <span>Logged Hours: <strong>${totalHours.toFixed(1)} hrs</strong></span>
-              <span>Chapters Completed: <strong>${completedTopics}/${topics.length}</strong></span>
-              <span>Date: <strong>${new Date().toLocaleDateString()}</strong></span>
-            </div>
-          </div>
-
-          <h4 style="margin-bottom: 8px;">Curriculum Completion Matrix</h4>
-          <table>
-            <thead><tr><th>Subject</th><th>Chapter</th><th>Weightage Tier</th><th>Status</th><th>R1 / R2 / R3</th></tr></thead>
-            <tbody>
-              ${topics.map(t => `
-                <tr>
-                  <td>${t.subject}</td>
-                  <td>${t.chapter}</td>
-                  <td>${t.tier}</td>
-                  <td><strong>${t.done ? 'Completed' : 'Pending'}</strong></td>
-                  <td>${t.r1 ? '✓' : '-'} / ${t.r2 ? '✓' : '-'} / ${t.r3 ? '✓' : '-'}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          <div class="signatures">
-            <div class="sign-line">Candidate Verification & Integrity Oath</div>
-            <div class="sign-line">Mentor / Academic Guardian Signature</div>
-          </div>
-
-          <script>window.onload = function(){ window.print(); };<\/script>
-        </body>
-        </html>
-      `);
-      printWin.document.close();
-    }
-
-    // 8. Daily PYQ & MCQ Accuracy Counter
+    // 10. Daily PYQ & MCQ Accuracy Counter
     function renderMcqCounter() {
       document.getElementById('mcqCorrectCount').innerText = mcqState.correct;
       document.getElementById('mcqWrongCount').innerText = mcqState.wrong;
@@ -1475,7 +1567,7 @@
       }
     }
 
-    // 9. Pure SVG Subject Balance Wheel
+    // 11. Pure SVG Subject Balance Wheel
     function renderSubjectBalanceWheel() {
       const svg = document.getElementById('balanceSvgWheel');
       const legend = document.getElementById('balanceLegendContainer');
@@ -1530,7 +1622,7 @@
       warningBadge.style.display = hasImbalance ? 'inline-block' : 'none';
     }
 
-    // 10. Rough Work Scratch Canvas
+    // 12. Rough Work Scratch Canvas
     let canvas, ctx, drawing = false, brushColor = '#38bdf8', brushSize = 2;
 
     function openCanvasModal() {
@@ -1586,18 +1678,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    // 11. Fatigue Meter
-    function updateFatigueMeter() {
-      const idx = Math.min(100, Math.round((studyMinutesToday / 180) * 100));
-      let label = "Low (Fresh)";
-      if (idx > 40 && idx <= 75) label = `Medium (${idx}%)`;
-      else if (idx > 75) label = `High Strain (${idx}%)`;
-
-      document.getElementById('statFatigueIndex').innerText = label;
-      document.getElementById('statFatigueFill').style.width = `${idx}%`;
-    }
-
-    // 12. CSV Syllabus File Importer
+    // 13. CSV Syllabus File Importer
     function importSyllabusCsv(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1630,6 +1711,7 @@
         renderSubjectsFilter();
         renderTopics();
         renderSubjectBalanceWheel();
+        checkRollingMomentumDrift();
         renderSrsQueue();
         renderSrsForecast();
         calculateBurndownForecast();
@@ -1640,7 +1722,7 @@
       reader.readAsText(file);
     }
 
-    // 13. Leitner Box System
+    // 14. Leitner Box System
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -1705,7 +1787,7 @@
       triggerCloudSync();
     }
 
-    // 14. Time-Blocking HUD
+    // 15. Time-Blocking HUD
     function renderTimeblocks() {
       const container = document.getElementById('timeblocksContainer');
       container.innerHTML = '';
@@ -1747,7 +1829,7 @@
       triggerCloudSync();
     }
 
-    // 15. 90-Day Activity Heatmap
+    // 16. 90-Day Activity Heatmap
     function renderHeatmap() {
       const grid = document.getElementById('heatmapGrid');
       grid.innerHTML = '';
@@ -1784,7 +1866,7 @@
       renderHeatmap();
     }
 
-    // 16. Spaced Repetition (SRS)
+    // 17. Spaced Repetition (SRS)
     function renderSrsQueue() {
       const container = document.getElementById('srsQueueList');
       const badge = document.getElementById('srsQueueBadge');
@@ -1836,7 +1918,7 @@
       triggerCloudSync();
     }
 
-    // 17. Topics Matrix
+    // 18. Topics Matrix
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
@@ -1898,6 +1980,7 @@
       renderSubjectsFilter();
       renderTopics();
       renderSubjectBalanceWheel();
+      checkRollingMomentumDrift();
       renderSrsQueue();
       renderSrsForecast();
       calculateBurndownForecast();
@@ -1913,11 +1996,11 @@
         studyMinutesToday += (parseFloat(topics[idx].hours) || 2.0) * 60;
         localStorage.setItem('sh_study_mins', studyMinutesToday);
         addXp(250);
-        updateFatigueMeter();
       }
       localStorage.setItem('sh_top', JSON.stringify(topics));
       renderTopics();
       renderSubjectBalanceWheel();
+      checkRollingMomentumDrift();
       renderSrsQueue();
       renderSrsForecast();
       calculateBurndownForecast();
@@ -1941,6 +2024,7 @@
       renderSubjectsFilter();
       renderTopics();
       renderSubjectBalanceWheel();
+      checkRollingMomentumDrift();
       renderSrsQueue();
       renderSrsForecast();
       calculateBurndownForecast();
@@ -1948,7 +2032,7 @@
       triggerCloudSync();
     }
 
-    // 18. Mock Tests
+    // 19. Mock Tests
     function addMockTest() {
       const name = document.getElementById('mockNameInput').value.trim();
       const scored = parseFloat(document.getElementById('mockScoredInput').value);
@@ -2012,7 +2096,7 @@
       triggerCloudSync();
     }
 
-    // 19. Metrics
+    // 20. Metrics
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -2022,7 +2106,7 @@
       document.getElementById('statSyllabusFill').style.width = `${pct}%`;
     }
 
-    // 20. Mistakes
+    // 21. Mistakes
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -2069,7 +2153,7 @@
       triggerCloudSync();
     }
 
-    // 21. Scratchpad
+    // 22. Scratchpad
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
@@ -2079,7 +2163,7 @@
       triggerCloudSync();
     }
 
-    // 22. Focus Timer
+    // 23. Focus Timer
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
@@ -2108,7 +2192,6 @@
             studyMinutesToday += 25;
             localStorage.setItem('sh_study_mins', studyMinutesToday);
             addXp(100);
-            updateFatigueMeter();
             alert("Pomodoro complete! +100 XP gained.");
             btn.innerText = "Start";
           }
@@ -2132,7 +2215,7 @@
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    // 23. Tab Auditor
+    // 24. Tab Auditor
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && timerActive) {
         tabBreachesCount++;
@@ -2141,7 +2224,7 @@
       }
     });
 
-    // 24. Profile Settings
+    // 25. Profile Settings
     function renderHUD() {
       document.getElementById('navExamBadge').innerText = config.exam;
       document.getElementById('cfgUsername').value = config.username;
@@ -2170,6 +2253,7 @@
       localStorage.setItem('sh_cfg', JSON.stringify(config));
       renderHUD();
       calculateBurndownForecast();
+      checkRollingMomentumDrift();
       recalculateRealMetrics();
       renderMocks();
       triggerCloudSync();
