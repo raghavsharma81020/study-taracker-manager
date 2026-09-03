@@ -27,6 +27,7 @@
       --accent-amber: #f59e0b;
       --accent-rose: #f43f5e;
       --accent-violet: #818cf8;
+      --accent-gold: #fbbf24;
     }
 
     * { box-sizing: border-box; }
@@ -43,7 +44,7 @@
 
     /* Navigation */
     .top-nav {
-      background: rgba(14, 19, 31, 0.9);
+      background: rgba(14, 19, 31, 0.92);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
@@ -85,6 +86,17 @@
       height: 100%;
       border-radius: 99px;
       transition: width 0.3s ease;
+    }
+
+    /* Gamified XP Pill */
+    .xp-pill-badge {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     /* Time-Blocking HUD */
@@ -266,30 +278,12 @@
       background: #111827;
       border: 1px solid #334155;
       border-radius: 16px;
-      max-width: 660px;
+      max-width: 680px;
       width: 100%;
       padding: 26px;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
       max-height: 90vh;
       overflow-y: auto;
-    }
-
-    /* Sound Mixer Faders */
-    .sound-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 4px;
-      border-radius: 5px;
-      background: #1e293b;
-      outline: none;
-    }
-    .sound-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--accent-cyan);
-      cursor: pointer;
     }
   </style>
 </head>
@@ -307,6 +301,20 @@
         </div>
       </div>
 
+      <!-- Gamified XP Rank HUD -->
+      <div class="xp-pill-badge">
+        <i class="bi bi-trophy-fill text-warning"></i>
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="mono fw-bold text-warning small" id="hudRankTitle">Bronze Aspirant</span>
+            <span class="badge bg-dark border border-warning border-opacity-25 text-warning mono" style="font-size: 0.65rem;" id="hudLevelBadge">LVL 1</span>
+          </div>
+          <div class="meter-bar mt-1" style="width: 130px; height: 4px; background: rgba(255,255,255,0.08);">
+            <div id="hudXpFill" class="meter-fill" style="width: 0%; background: var(--accent-gold);"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Live Exam Countdown -->
       <div class="d-flex align-items-center gap-2 bg-dark px-3 py-1 rounded-pill border border-secondary border-opacity-25">
         <i class="bi bi-hourglass-split text-warning"></i>
@@ -315,20 +323,17 @@
 
       <!-- Quick Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('blurtModal')">
+          <i class="bi bi-lightning-charge me-1"></i> Blurt Drill
+        </button>
+        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('sleepModal')">
+          <i class="bi bi-moon-stars me-1"></i> Sleep & Energy
+        </button>
+        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="exportOfficialAuditCertificate()">
+          <i class="bi bi-patch-check me-1"></i> Audit Sheet
+        </button>
         <button class="btn btn-outline-light btn-sm rounded-pill" onclick="openCanvasModal()">
-          <i class="bi bi-pen me-1"></i> Scratchpad Canvas
-        </button>
-        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('breathingModal')">
-          <i class="bi bi-wind me-1"></i> Fatigue Reset
-        </button>
-        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('pacerModal')">
-          <i class="bi bi-speedometer2 me-1"></i> Pacer
-        </button>
-        <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="openModal('feynmanModal')">
-          <i class="bi bi-mic-fill me-1"></i> Feynman Lab
-        </button>
-        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="openPerformanceReport()">
-          <i class="bi bi-file-earmark-person me-1"></i> Mentor Report
+          <i class="bi bi-pen me-1"></i> Canvas
         </button>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('profileModal')">
           <i class="bi bi-sliders me-1"></i> Targets
@@ -373,12 +378,12 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Schedule Adherence</span>
-            <i class="bi bi-calendar-check text-violet"></i>
+            <span>Study XP Accumulated</span>
+            <i class="bi bi-gem text-warning"></i>
           </div>
-          <div class="stat-number mono" style="color: var(--accent-violet);" id="statAdherence">0%</div>
+          <div class="stat-number mono text-warning" id="statTotalXp">0 <span class="fs-6 text-secondary">XP</span></div>
           <div class="meter-bar">
-            <div id="statAdherenceFill" class="meter-fill" style="width: 0%; background: var(--accent-violet);"></div>
+            <div id="statXpFill" class="meter-fill" style="width: 0%; background: var(--accent-gold);"></div>
           </div>
         </div>
       </div>
@@ -386,7 +391,7 @@
       <div class="col-6 col-lg-3">
         <div class="card-panel">
           <div class="stat-title d-flex justify-content-between">
-            <span>Fatigue Risk Index</span>
+            <span>Cognitive Fatigue Index</span>
             <i class="bi bi-battery-charging text-amber"></i>
           </div>
           <div class="stat-number mono text-warning" id="statFatigueIndex">Low (10%)</div>
@@ -406,7 +411,7 @@
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
               <h6 class="fw-bold text-white mb-0"><i class="bi bi-check2-square text-emerald me-2"></i>Daily PYQ & MCQ Accuracy Counter</h6>
-              <small class="text-secondary">Log problem solving to stop passive reading</small>
+              <small class="text-secondary">Problem drill (+15 XP per correct solution)</small>
             </div>
             <button class="btn btn-sm btn-outline-secondary mono" onclick="resetMcqCounter()">Reset Day</button>
           </div>
@@ -444,7 +449,7 @@
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
               <h6 class="fw-bold text-white mb-0"><i class="bi bi-pie-chart-fill text-info me-2"></i>Subject Balance Visualizer</h6>
-              <small class="text-secondary">Prevents subject neglect and ensures even prep</small>
+              <small class="text-secondary">Distribution across all logged topics</small>
             </div>
             <span class="badge bg-warning bg-opacity-15 text-warning mono" id="subjectWarningBadge" style="display: none;">
               <i class="bi bi-exclamation-triangle me-1"></i> Imbalance Detected
@@ -515,9 +520,9 @@
             <h6 class="fw-bold text-warning mb-0"><i class="bi bi-alarm me-2"></i>Due for Active Revision Today</h6>
             <span class="badge bg-warning bg-opacity-25 text-warning" id="srsQueueBadge">0 Pending</span>
           </div>
-          <p class="text-secondary small mb-3">Chapters automatically queued by the SRS algorithm based on Day 3 (R1), Day 7 (R2), and Day 21 (R3) retention curves.</p>
+          <p class="text-secondary small mb-3">Automated review intervals: R1 (Day 3), R2 (Day 7), and R3 (Day 21).</p>
           <div id="srsQueueList">
-            <small class="text-secondary">No topics scheduled for revision today. Great retention pace!</small>
+            <small class="text-secondary">No topics scheduled for revision today. All retention schedules are up to date!</small>
           </div>
         </div>
 
@@ -526,7 +531,7 @@
           <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
               <h5 class="fw-bold text-white mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Study Curriculum Matrix</h5>
-              <small class="text-secondary">Track chapter completion, weightage tiers, and imports</small>
+              <small class="text-secondary">Complete chapters to earn +250 XP each</small>
             </div>
             <div class="d-flex gap-2 align-items-center">
               <label class="btn btn-outline-info btn-sm rounded-pill mono mb-0" style="cursor: pointer;">
@@ -567,7 +572,7 @@
           <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
             <div>
               <h6 class="fw-bold text-info mb-0"><i class="bi bi-bullseye me-2"></i>Cutoff Predictor & Mock Test Analyzer</h6>
-              <small class="text-secondary">Track scores against target cutoff and predict percentile tiers</small>
+              <small class="text-secondary">Score trajectory toward target cutoff</small>
             </div>
             <div class="d-flex gap-3 text-end">
               <div>
@@ -670,7 +675,6 @@
             <div class="fw-bold text-white fs-6 mt-2" id="cardContent">Click to flip card</div>
           </div>
 
-          <!-- Leitner Graduation Controls -->
           <div class="d-flex gap-1 mb-2">
             <button class="btn btn-sm btn-outline-danger w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner(1)">Again (Box 1)</button>
             <button class="btn btn-sm btn-outline-warning w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner('hard')">Hard</button>
@@ -700,6 +704,80 @@
 
   <!-- ================= 7. MODALS ================= -->
 
+  <!-- 1. Active Blurt-Recall Timer & Evaluator Modal -->
+  <div id="blurtModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-lightning-charge me-2"></i>2-Minute Active Recall Blurt Drill</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('blurtModal'); stopBlurtDrill();"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Pick a chapter and type every formula, mechanism, and fact you remember without looking at your notes.</p>
+
+      <div class="row g-2 mb-3">
+        <div class="col-8">
+          <select id="blurtTopicSelect" class="form-select hub-input"></select>
+        </div>
+        <div class="col-4">
+          <button class="btn btn-action-primary w-100 py-2" id="blurtActionBtn" onclick="toggleBlurtDrill()">Start 120s Drill</button>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center bg-dark p-2 rounded mb-2 border border-secondary border-opacity-25">
+        <span class="mono small text-secondary">TIME REMAINING:</span>
+        <span class="fs-4 fw-bold mono text-warning" id="blurtTimerDisplay">02:00</span>
+        <span class="mono small text-info" id="blurtWordCount">0 Words</span>
+      </div>
+
+      <textarea id="blurtInputArea" class="form-control hub-input mb-3" rows="6" placeholder="Start typing formulas, derivations, key equations as fast as you can..." disabled oninput="updateBlurtWordCount()"></textarea>
+
+      <div id="blurtResultBox" class="p-3 rounded border border-warning border-opacity-25" style="display: none; background: rgba(245, 158, 11, 0.05);">
+        <div class="fw-bold text-warning mb-1" id="blurtScoreText">Drill Complete</div>
+        <small class="text-light" id="blurtFeedbackText"></small>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Sleep, Energy & Performance Correlation Modal -->
+  <div id="sleepModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-moon-stars me-2"></i>Sleep, Energy & Performance Matrix</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('sleepModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Log daily sleep and energy to track their direct correlation with MCQ accuracy.</p>
+
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="small text-secondary mb-1">SLEEP LAST NIGHT (HOURS)</label>
+          <input type="number" step="0.5" id="inSleepHours" class="form-control hub-input" value="7.0" min="3" max="12">
+        </div>
+        <div class="col-6">
+          <label class="small text-secondary mb-1">MORNING ENERGY (1-5)</label>
+          <select id="inEnergyLevel" class="form-select hub-input">
+            <option value="5">5 - Peak Energy</option>
+            <option value="4" selected>4 - Solid / Focused</option>
+            <option value="3">3 - Moderate Fatigue</option>
+            <option value="2">2 - Heavy Brain Fog</option>
+            <option value="1">1 - Exhausted</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-outline-info w-100 py-2 mb-3" onclick="logSleepEntry()">Save Today's Bio-Metrics</button>
+
+      <div class="p-3 rounded bg-dark border border-secondary border-opacity-25">
+        <h6 class="fw-bold text-white small mb-2">Performance Insight Correlation</h6>
+        <div class="d-flex justify-content-between small text-secondary mb-1">
+          <span>Avg Accuracy on 7h+ Sleep:</span>
+          <strong class="text-success mono" id="corrOptimalAccuracy">--</strong>
+        </div>
+        <div class="d-flex justify-content-between small text-secondary">
+          <span>Avg Accuracy on Sub-7h Sleep:</span>
+          <strong class="text-danger mono" id="corrSubOptimalAccuracy">--</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- In-App Rough Work Scratch Canvas Modal -->
   <div id="canvasModal" class="modal-backdrop-custom">
     <div class="modal-frame" style="max-width: 740px;">
@@ -707,8 +785,6 @@
         <h5 class="fw-bold text-white mb-0"><i class="bi bi-pen me-2 text-info"></i>Rough Work Scratch Canvas</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('canvasModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small mb-2">Solve derivations, sketch circuit diagrams, or do rough scratchpad arithmetic without physical paper.</p>
-
       <div class="d-flex justify-content-between align-items-center gap-2 mb-2 flex-wrap">
         <div class="d-flex align-items-center gap-1">
           <button class="btn btn-sm btn-outline-info active" onclick="setCanvasColor('#38bdf8', this)">Cyan</button>
@@ -723,89 +799,7 @@
           <button class="btn btn-sm btn-outline-danger" onclick="clearCanvas()">Clear Canvas</button>
         </div>
       </div>
-
       <canvas id="sketchCanvas"></canvas>
-    </div>
-  </div>
-
-  <!-- Cognitive Fatigue & Guided Box-Breathing Sanctuary Modal -->
-  <div id="breathingModal" class="modal-backdrop-custom">
-    <div class="modal-frame text-center" style="max-width: 480px;">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="fw-bold text-info mb-0"><i class="bi bi-wind me-2"></i>Fatigue Reset & Box Breathing</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('breathingModal'); stopBreathing();"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <p class="text-secondary small">4-4-4-4 Box Breathing lowers cortisol, removes mental fatigue, and restores sharp problem-solving focus.</p>
-
-      <div class="breathing-orb" id="breathingOrb">
-        <span class="fs-4 fw-bold mono text-white" id="breathingActionText">Ready</span>
-      </div>
-      <div class="fs-3 fw-bold mono text-info mb-3" id="breathingCount">4</div>
-
-      <button class="btn btn-action-primary w-100 py-2" id="startBreathingBtn" onclick="toggleBreathing()">Start 2-Minute Reset</button>
-    </div>
-  </div>
-
-  <!-- Speed Exam Pacing Simulator Modal -->
-  <div id="pacerModal" class="modal-backdrop-custom">
-    <div class="modal-frame text-center">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-speedometer2 me-2"></i>Speed Exam Pacing Simulator</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('pacerModal'); stopPacer();"><i class="bi bi-x-lg"></i></button>
-      </div>
-
-      <div class="d-flex justify-content-center gap-2 mb-3">
-        <button class="btn btn-sm btn-outline-secondary active" id="pace60" onclick="setPaceInterval(60)">60s (NEET / Rapid)</button>
-        <button class="btn btn-sm btn-outline-secondary" id="pace90" onclick="setPaceInterval(90)">90s (Standard)</button>
-        <button class="btn btn-sm btn-outline-secondary" id="pace120" onclick="setPaceInterval(120)">120s (JEE Advanced)</button>
-      </div>
-
-      <div class="stat-title mb-1" id="pacerQuestionNum">QUESTION #1</div>
-      <div id="pacerTimerDisplay" class="display-2 fw-bold text-warning mono my-3" style="font-size: 5.5rem;">90</div>
-
-      <div class="d-flex justify-content-center gap-2 mb-3">
-        <button class="btn btn-action-primary px-4 py-2" id="pacerToggleBtn" onclick="togglePacer()">Start Drill</button>
-        <button class="btn btn-success px-4 py-2" onclick="nextPacerQuestion(true)">Solved &rarr;</button>
-        <button class="btn btn-outline-danger px-3 py-2" onclick="nextPacerQuestion(false)">Skip</button>
-      </div>
-
-      <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 small mono d-flex justify-content-around">
-        <span>Completed: <strong id="pacerTotalSolved" class="text-white">0</strong></span>
-        <span>Avg Time: <strong id="pacerAvgTime" class="text-info">0s</strong></span>
-        <span>On-Pace: <strong id="pacerOnPacePct" class="text-success">100%</strong></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Feynman Concept Voice Lab Modal -->
-  <div id="feynmanModal" class="modal-backdrop-custom">
-    <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-danger mb-0"><i class="bi bi-mic-fill me-2"></i>Feynman Concept Voice Lab</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('feynmanModal')"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <p class="text-secondary small mb-3">Record 60-second audio summaries explaining tough formulas or derivations in plain English. If you can't explain it simply, you don't understand it.</p>
-
-      <div class="mb-3">
-        <input type="text" id="feynmanTopicInput" class="form-control hub-input" placeholder="Concept Title (e.g., Why Lenz's law conserves energy)...">
-      </div>
-
-      <div class="d-flex justify-content-between align-items-center bg-dark p-3 rounded mb-3 border border-secondary border-opacity-25">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-danger rounded-circle p-2" id="feynmanRecordBtn" onclick="toggleFeynmanRecord()" style="width: 44px; height: 44px;">
-            <i class="bi bi-record-circle fs-5"></i>
-          </button>
-          <div>
-            <span class="fw-bold text-white d-block small" id="feynmanStatusText">Ready to Record</span>
-            <small class="text-secondary mono" id="feynmanTimer">00:00 / 01:00</small>
-          </div>
-        </div>
-      </div>
-
-      <h6 class="fw-bold text-white small mb-2">Saved Explanations</h6>
-      <div id="feynmanRecordingsList" style="max-height: 200px; overflow-y: auto;">
-        <small class="text-secondary">No audio recordings saved yet.</small>
-      </div>
     </div>
   </div>
 
@@ -913,6 +907,8 @@
     let heatmapData = JSON.parse(localStorage.getItem('sh_heatmap') || '{}');
     let tabBreachesCount = parseInt(localStorage.getItem('sh_breaches') || '0');
     let studyMinutesToday = parseInt(localStorage.getItem('sh_study_mins') || '45');
+    let totalXp = parseInt(localStorage.getItem('sh_xp') || '350');
+    let sleepLogs = JSON.parse(localStorage.getItem('sh_sleep') || '[]');
 
     let activeSubjectFilter = "ALL";
     let currentCardIdx = 0;
@@ -932,10 +928,13 @@
           if (result.data.heatmapData) heatmapData = result.data.heatmapData;
           if (result.data.timeblocks) timeblocks = result.data.timeblocks;
           if (result.data.mcqState) mcqState = result.data.mcqState;
+          if (result.data.totalXp) totalXp = result.data.totalXp;
+          if (result.data.sleepLogs) sleepLogs = result.data.sleepLogs;
         }
       } catch (err) {}
 
       renderHUD();
+      renderXpEngine();
       renderMcqCounter();
       renderSubjectBalanceWheel();
       renderTimeblocks();
@@ -947,6 +946,8 @@
       renderMocks();
       renderHeatmap();
       updateFatigueMeter();
+      populateBlurtTopicSelect();
+      calculateSleepCorrelation();
       recalculateRealMetrics();
 
       const savedNotes = localStorage.getItem('sh_notes_text');
@@ -969,6 +970,8 @@
         timeblocks,
         tabBreachesCount,
         mcqState,
+        totalXp,
+        sleepLogs,
         notes: document.getElementById('scratchArea').value
       };
 
@@ -984,41 +987,207 @@
       }
     }
 
-    // 1. HUD & Target Settings
-    function renderHUD() {
-      document.getElementById('navExamBadge').innerText = config.exam;
-      document.getElementById('cfgUsername').value = config.username;
-      document.getElementById('cfgName').value = config.name;
-      document.getElementById('cfgExam').value = config.exam;
-      document.getElementById('cfgHours').value = config.hours;
-      document.getElementById('cfgCutoff').value = config.cutoff || 75;
-      document.getElementById('cfgDate').value = config.date;
+    // 1. Gamified XP & Rank Engine
+    function addXp(amount) {
+      const oldLevel = Math.floor(totalXp / 400) + 1;
+      totalXp += amount;
+      localStorage.setItem('sh_xp', totalXp);
+      const newLevel = Math.floor(totalXp / 400) + 1;
 
-      const target = new Date(config.date);
-      const now = new Date();
-      const diffDays = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
-      
-      document.getElementById('examCountdownText').innerText = 
-        diffDays > 0 ? `${diffDays} DAYS UNTIL ${config.exam.toUpperCase()}` : `${config.exam.toUpperCase()} DAY`;
-    }
-
-    function saveConfiguration() {
-      config.username = document.getElementById('cfgUsername').value.trim() || "student";
-      config.name = document.getElementById('cfgName').value.trim() || "Student";
-      config.exam = document.getElementById('cfgExam').value.trim() || "Target Exam";
-      config.hours = parseFloat(document.getElementById('cfgHours').value) || 6;
-      config.cutoff = parseFloat(document.getElementById('cfgCutoff').value) || 75;
-      config.date = document.getElementById('cfgDate').value || "2026-10-15";
-
-      localStorage.setItem('sh_cfg', JSON.stringify(config));
-      renderHUD();
-      recalculateRealMetrics();
-      renderMocks();
+      renderXpEngine();
       triggerCloudSync();
-      closeModal('profileModal');
+
+      if (newLevel > oldLevel) {
+        alert(`LEVEL UP! You reached Level ${newLevel}! Keep pushing your limits.`);
+      }
     }
 
-    // 2. Daily PYQ & MCQ Accuracy Counter
+    function renderXpEngine() {
+      const level = Math.floor(totalXp / 400) + 1;
+      const xpInCurrentLevel = totalXp % 400;
+      const pct = Math.round((xpInCurrentLevel / 400) * 100);
+
+      let rankTitle = "Bronze Aspirant";
+      if (level >= 5 && level < 10) rankTitle = "Silver Contender";
+      else if (level >= 10 && level < 20) rankTitle = "Gold Scholar";
+      else if (level >= 20 && level < 35) rankTitle = "Diamond Ranker";
+      else if (level >= 35) rankTitle = "Top 0.1% Contender";
+
+      document.getElementById('hudRankTitle').innerText = rankTitle;
+      document.getElementById('hudLevelBadge').innerText = `LVL ${level}`;
+      document.getElementById('hudXpFill').style.width = `${pct}%`;
+
+      document.getElementById('statTotalXp').innerHTML = `${totalXp} <span class="fs-6 text-secondary">XP</span>`;
+      document.getElementById('statXpFill').style.width = `${pct}%`;
+    }
+
+    // 2. Active Blurt-Recall Timer & Evaluator Engine
+    let blurtTimer = null, blurtSeconds = 120, blurtRunning = false;
+
+    function populateBlurtTopicSelect() {
+      const select = document.getElementById('blurtTopicSelect');
+      select.innerHTML = topics.map(t => `<option value="${t.chapter}">${t.subject}: ${t.chapter}</option>`).join('');
+    }
+
+    function toggleBlurtDrill() {
+      const btn = document.getElementById('blurtActionBtn');
+      const area = document.getElementById('blurtInputArea');
+
+      if (blurtRunning) {
+        stopBlurtDrill();
+      } else {
+        blurtRunning = true;
+        blurtSeconds = 120;
+        area.disabled = false;
+        area.value = '';
+        area.focus();
+        btn.innerText = "Finish Early";
+        btn.classList.replace("btn-action-primary", "btn-warning");
+        document.getElementById('blurtResultBox').style.display = 'none';
+
+        blurtTimer = setInterval(() => {
+          if (blurtSeconds > 0) {
+            blurtSeconds--;
+            const m = Math.floor(blurtSeconds / 60).toString().padStart(2, '0');
+            const s = (blurtSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('blurtTimerDisplay').innerText = `${m}:${s}`;
+          } else {
+            finishBlurtDrill();
+          }
+        }, 1000);
+      }
+    }
+
+    function updateBlurtWordCount() {
+      const words = document.getElementById('blurtInputArea').value.trim().split(/\s+/).filter(w => w).length;
+      document.getElementById('blurtWordCount').innerText = `${words} Words`;
+    }
+
+    function stopBlurtDrill() {
+      if (blurtRunning) finishBlurtDrill();
+    }
+
+    function finishBlurtDrill() {
+      clearInterval(blurtTimer);
+      blurtRunning = false;
+      const btn = document.getElementById('blurtActionBtn');
+      const area = document.getElementById('blurtInputArea');
+      area.disabled = true;
+
+      btn.innerText = "Start 120s Drill";
+      btn.classList.replace("btn-warning", "btn-action-primary");
+
+      const words = area.value.trim().split(/\s+/).filter(w => w).length;
+      const topic = document.getElementById('blurtTopicSelect').value;
+
+      document.getElementById('blurtScoreText').innerText = `Recall Score: ${Math.min(100, Math.round(words * 1.8))}% Density`;
+      document.getElementById('blurtFeedbackText').innerText = `You retrieved ${words} key items from raw memory for "${topic}". Great active synthesis!`;
+      document.getElementById('blurtResultBox').style.display = 'block';
+
+      addXp(75);
+    }
+
+    // 3. Sleep & Energy Tracker with Correlation Engine
+    function logSleepEntry() {
+      const hrs = parseFloat(document.getElementById('inSleepHours').value) || 7.0;
+      const energy = parseInt(document.getElementById('inEnergyLevel').value) || 4;
+      const totalAttempted = mcqState.correct + mcqState.wrong;
+      const acc = totalAttempted > 0 ? (mcqState.correct / totalAttempted) * 100 : 75;
+
+      sleepLogs.unshift({ date: new Date().toISOString().slice(0, 10), hrs, energy, acc });
+      localStorage.setItem('sh_sleep', JSON.stringify(sleepLogs.slice(0, 14)));
+      calculateSleepCorrelation();
+      triggerCloudSync();
+      alert("Bio-metrics logged. Correlation insight updated!");
+      closeModal('sleepModal');
+    }
+
+    function calculateSleepCorrelation() {
+      const optimal = sleepLogs.filter(s => s.hrs >= 7.0);
+      const sub = sleepLogs.filter(s => s.hrs < 7.0);
+
+      if (optimal.length) {
+        const avgOpt = (optimal.reduce((a, b) => a + b.acc, 0) / optimal.length).toFixed(1);
+        document.getElementById('corrOptimalAccuracy').innerText = `${avgOpt}%`;
+      }
+      if (sub.length) {
+        const avgSub = (sub.reduce((a, b) => a + b.acc, 0) / sub.length).toFixed(1);
+        document.getElementById('corrSubOptimalAccuracy').innerText = `${avgSub}%`;
+      }
+    }
+
+    // 4. Official Syllabus Completion Audit Exporter
+    function exportOfficialAuditCertificate() {
+      const printWin = window.open('', '_blank');
+      const completedTopics = topics.filter(t => t.done).length;
+      const pct = topics.length ? Math.round((completedTopics / topics.length) * 100) : 0;
+      const totalHours = topics.reduce((a, b) => a + (b.done ? parseFloat(b.hours) : 0), 0);
+      const authHash = "SH-" + Math.random().toString(36).substring(2, 9).toUpperCase() + "-" + new Date().getFullYear();
+
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${config.name} // Official Syllabus Audit</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #111; max-width: 840px; margin: auto; }
+            .header { border-bottom: 3px solid #111; padding-bottom: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+            .cert-box { border: 2px solid #111; padding: 20px; border-radius: 8px; margin-bottom: 24px; background: #fafafa; }
+            table { width: 100%; border-collapse: collapse; margin-top: 14px; margin-bottom: 28px; }
+            th, td { border: 1px solid #ccc; padding: 9px; text-align: left; font-size: 13px; }
+            th { background: #eee; }
+            .signatures { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 60px; }
+            .sign-line { border-top: 1px solid #111; padding-top: 8px; text-align: center; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h2 style="margin: 0; letter-spacing: 1px;">OFFICIAL SYLLABUS AUDIT CERTIFICATE</h2>
+              <div style="margin-top: 4px; color: #444;">Verification Suite // StudyHub Command Center</div>
+            </div>
+            <div style="text-align: right; font-family: monospace; font-size: 12px;">ID: ${authHash}</div>
+          </div>
+
+          <div class="cert-box">
+            <p style="margin: 0 0 10px; font-size: 15px;">This document certifies that <strong>${config.name}</strong> has logged the following verified academic benchmarks for <strong>${config.exam}</strong>:</p>
+            <div style="display: flex; justify-content: space-between; font-family: monospace; font-size: 14px;">
+              <span>Syllabus Covered: <strong>${pct}%</strong></span>
+              <span>Logged Hours: <strong>${totalHours.toFixed(1)} hrs</strong></span>
+              <span>Chapters Completed: <strong>${completedTopics}/${topics.length}</strong></span>
+              <span>Date: <strong>${new Date().toLocaleDateString()}</strong></span>
+            </div>
+          </div>
+
+          <h4 style="margin-bottom: 8px;">Curriculum Completion Matrix</h4>
+          <table>
+            <thead><tr><th>Subject</th><th>Chapter</th><th>Weightage Tier</th><th>Status</th><th>R1 / R2 / R3</th></tr></thead>
+            <tbody>
+              ${topics.map(t => `
+                <tr>
+                  <td>${t.subject}</td>
+                  <td>${t.chapter}</td>
+                  <td>${t.tier}</td>
+                  <td><strong>${t.done ? 'Completed' : 'Pending'}</strong></td>
+                  <td>${t.r1 ? '✓' : '-'} / ${t.r2 ? '✓' : '-'} / ${t.r3 ? '✓' : '-'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="signatures">
+            <div class="sign-line">Candidate Verification & Integrity Oath</div>
+            <div class="sign-line">Mentor / Academic Guardian Signature</div>
+          </div>
+
+          <script>window.onload = function(){ window.print(); };<\/script>
+        </body>
+        </html>
+      `);
+      printWin.document.close();
+    }
+
+    // 5. Daily PYQ & MCQ Accuracy Counter
     function renderMcqCounter() {
       document.getElementById('mcqCorrectCount').innerText = mcqState.correct;
       document.getElementById('mcqWrongCount').innerText = mcqState.wrong;
@@ -1034,7 +1203,10 @@
     }
 
     function recordMcq(type) {
-      if (type === 'correct') mcqState.correct++;
+      if (type === 'correct') {
+        mcqState.correct++;
+        addXp(15);
+      }
       if (type === 'wrong') mcqState.wrong++;
       if (type === 'skip') mcqState.skip++;
 
@@ -1054,7 +1226,7 @@
       }
     }
 
-    // 3. Pure SVG Subject Balance Wheel
+    // 6. Pure SVG Subject Balance Wheel
     function renderSubjectBalanceWheel() {
       const svg = document.getElementById('balanceSvgWheel');
       const legend = document.getElementById('balanceLegendContainer');
@@ -1109,7 +1281,7 @@
       warningBadge.style.display = hasImbalance ? 'inline-block' : 'none';
     }
 
-    // 4. In-App Rough Work Scratch Canvas (HTML5 Canvas Engine)
+    // 7. Rough Work Scratch Canvas
     let canvas, ctx, drawing = false, brushColor = '#38bdf8', brushSize = 2;
 
     function openCanvasModal() {
@@ -1120,7 +1292,6 @@
     function initCanvas() {
       canvas = document.getElementById('sketchCanvas');
       ctx = canvas.getContext('2d');
-
       canvas.width = canvas.parentElement.clientWidth - 52;
       canvas.height = 380;
       ctx.fillStyle = "#090d16";
@@ -1166,15 +1337,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    // 5. Cognitive Fatigue & Guided Box-Breathing Sanctuary
-    let breathingTimer = null, breathingSeconds = 4, phaseIdx = 0;
-    const phases = [
-      { text: "Inhale", class: "inhale" },
-      { text: "Hold", class: "inhale" },
-      { text: "Exhale", class: "exhale" },
-      { text: "Hold", class: "exhale" }
-    ];
-
+    // 8. Fatigue Reset & Box-Breathing
     function updateFatigueMeter() {
       const idx = Math.min(100, Math.round((studyMinutesToday / 180) * 100));
       let label = "Low (Fresh)";
@@ -1185,50 +1348,7 @@
       document.getElementById('statFatigueFill').style.width = `${idx}%`;
     }
 
-    function toggleBreathing() {
-      const btn = document.getElementById('startBreathingBtn');
-      if (breathingTimer) {
-        stopBreathing();
-      } else {
-        btn.innerText = "Stop Session";
-        btn.classList.replace("btn-action-primary", "btn-outline-danger");
-        runBreathingPhase();
-        breathingTimer = setInterval(runBreathingPhase, 1000);
-      }
-    }
-
-    function runBreathingPhase() {
-      const orb = document.getElementById('breathingOrb');
-      const actionText = document.getElementById('breathingActionText');
-      const countEl = document.getElementById('breathingCount');
-
-      countEl.innerText = breathingSeconds;
-      actionText.innerText = phases[phaseIdx].text;
-      orb.className = `breathing-orb ${phases[phaseIdx].class}`;
-
-      breathingSeconds--;
-      if (breathingSeconds < 1) {
-        breathingSeconds = 4;
-        phaseIdx = (phaseIdx + 1) % 4;
-      }
-    }
-
-    function stopBreathing() {
-      clearInterval(breathingTimer);
-      breathingTimer = null;
-      breathingSeconds = 4;
-      phaseIdx = 0;
-      const btn = document.getElementById('startBreathingBtn');
-      if (btn) {
-        btn.innerText = "Start 2-Minute Reset";
-        btn.classList.replace("btn-outline-danger", "btn-action-primary");
-      }
-      document.getElementById('breathingActionText').innerText = "Ready";
-      document.getElementById('breathingOrb').className = "breathing-orb";
-      document.getElementById('breathingCount').innerText = "4";
-    }
-
-    // 6. CSV Syllabus File Importer
+    // 9. CSV Syllabus File Importer
     function importSyllabusCsv(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1239,7 +1359,7 @@
         let importedCount = 0;
 
         rows.forEach((row, i) => {
-          if (i === 0 && row.toLowerCase().includes("subject")) return; // skip header
+          if (i === 0 && row.toLowerCase().includes("subject")) return;
           const cols = row.split(",").map(c => c.trim().replace(/^["']|["']$/g, ''));
           if (cols.length >= 2) {
             topics.push({
@@ -1262,6 +1382,7 @@
         renderTopics();
         renderSubjectBalanceWheel();
         renderSrsQueue();
+        populateBlurtTopicSelect();
         recalculateRealMetrics();
         triggerCloudSync();
         alert(`Successfully imported ${importedCount} topics from CSV!`);
@@ -1269,7 +1390,7 @@
       reader.readAsText(file);
     }
 
-    // 7. Leitner Box System (Boxes 1-5)
+    // 10. Leitner Box System
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
@@ -1299,8 +1420,8 @@
 
       if (grade === 1) c.box = 1;
       else if (grade === 'hard') c.box = Math.max(1, c.box);
-      else if (grade === 'good') c.box = Math.min(5, c.box + 1);
-      else if (grade === 'easy') c.box = Math.min(5, c.box + 2);
+      else if (grade === 'good') { c.box = Math.min(5, c.box + 1); addXp(20); }
+      else if (grade === 'easy') { c.box = Math.min(5, c.box + 2); addXp(40); }
 
       localStorage.setItem('sh_cards', JSON.stringify(flashcards));
       nextCard();
@@ -1334,167 +1455,14 @@
       triggerCloudSync();
     }
 
-    // 8. Speed Exam Pacing Simulator
-    let pacerIntervalSecs = 90, pacerTimeLeft = 90, pacerTimerRef = null, pacerActive = false;
-    let pacerStats = { count: 0, totalTime: 0, onPaceCount: 0 };
-
-    function setPaceInterval(sec) {
-      if (pacerActive) stopPacer();
-      pacerIntervalSecs = sec;
-      pacerTimeLeft = sec;
-      document.querySelectorAll('#pacerModal .btn-outline-secondary').forEach(b => b.classList.remove('active'));
-      if (sec === 60) document.getElementById('pace60').classList.add('active');
-      if (sec === 90) document.getElementById('pace90').classList.add('active');
-      if (sec === 120) document.getElementById('pace120').classList.add('active');
-      document.getElementById('pacerTimerDisplay').innerText = sec;
-    }
-
-    function togglePacer() {
-      const btn = document.getElementById('pacerToggleBtn');
-      if (pacerActive) {
-        stopPacer();
-      } else {
-        pacerActive = true;
-        btn.innerText = "Pause";
-        btn.classList.replace("btn-action-primary", "btn-warning");
-        pacerTimerRef = setInterval(() => {
-          if (pacerTimeLeft > 0) {
-            pacerTimeLeft--;
-            document.getElementById('pacerTimerDisplay').innerText = pacerTimeLeft;
-            if (pacerTimeLeft === 10) playWarningBeep();
-          } else {
-            playWarningBeep(880, 0.4);
-            nextPacerQuestion(false);
-          }
-        }, 1000);
-      }
-    }
-
-    function stopPacer() {
-      clearInterval(pacerTimerRef);
-      pacerActive = false;
-      const btn = document.getElementById('pacerToggleBtn');
-      if (btn) {
-        btn.innerText = "Start Drill";
-        btn.classList.replace("btn-warning", "btn-action-primary");
-      }
-    }
-
-    function nextPacerQuestion(onTime) {
-      const timeSpent = pacerIntervalSecs - pacerTimeLeft;
-      pacerStats.count++;
-      pacerStats.totalTime += timeSpent;
-      if (onTime) pacerStats.onPaceCount++;
-
-      document.getElementById('pacerTotalSolved').innerText = pacerStats.count;
-      const avg = Math.round(pacerStats.totalTime / pacerStats.count);
-      document.getElementById('pacerAvgTime').innerText = `${avg}s`;
-      const onPacePct = Math.round((pacerStats.onPaceCount / pacerStats.count) * 100);
-      document.getElementById('pacerOnPacePct').innerText = `${onPacePct}%`;
-
-      pacerTimeLeft = pacerIntervalSecs;
-      document.getElementById('pacerTimerDisplay').innerText = pacerTimeLeft;
-      document.getElementById('pacerQuestionNum').innerText = `QUESTION #${pacerStats.count + 1}`;
-    }
-
-    function playWarningBeep(freq = 440, duration = 0.15) {
-      try {
-        const ctxA = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctxA.createOscillator();
-        const gain = ctxA.createGain();
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.15, ctxA.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctxA.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(ctxA.destination);
-        osc.start();
-        osc.stop(ctxA.currentTime + duration);
-      } catch (e) {}
-    }
-
-    // 9. Feynman Concept Voice Lab (Native MediaRecorder)
-    let mediaRecorder = null, audioChunks = [], recordInterval = null, recordSeconds = 0;
-    let feynmanRecordings = JSON.parse(localStorage.getItem('sh_feynman') || '[]');
-
-    async function toggleFeynmanRecord() {
-      const btn = document.getElementById('feynmanRecordBtn');
-      const status = document.getElementById('feynmanStatusText');
-
-      if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-        clearInterval(recordInterval);
-        btn.innerHTML = `<i class="bi bi-record-circle fs-5"></i>`;
-        status.innerText = "Processing Recording...";
-      } else {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-          recordSeconds = 0;
-
-          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-          mediaRecorder.onstop = () => {
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onloadend = () => {
-              const base64 = reader.result;
-              const title = document.getElementById('feynmanTopicInput').value.trim() || "Concept Explanation";
-              feynmanRecordings.unshift({ title, data: base64, date: new Date().toLocaleDateString() });
-              localStorage.setItem('sh_feynman', JSON.stringify(feynmanRecordings.slice(0, 6)));
-              renderFeynmanList();
-              status.innerText = "Saved to Lab!";
-              document.getElementById('feynmanTopicInput').value = '';
-            };
-          };
-
-          mediaRecorder.start();
-          btn.innerHTML = `<i class="bi bi-stop-fill fs-5 text-white"></i>`;
-          status.innerText = "Recording Live...";
-          recordInterval = setInterval(() => {
-            recordSeconds++;
-            const m = Math.floor(recordSeconds / 60).toString().padStart(2, '0');
-            const s = (recordSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('feynmanTimer').innerText = `${m}:${s} / 01:00`;
-            if (recordSeconds >= 60) toggleFeynmanRecord();
-          }, 1000);
-        } catch (err) {
-          alert("Microphone permission denied or unsupported in this browser.");
-        }
-      }
-    }
-
-    function renderFeynmanList() {
-      const list = document.getElementById('feynmanRecordingsList');
-      list.innerHTML = '';
-      if (feynmanRecordings.length === 0) {
-        list.innerHTML = `<small class="text-secondary">No audio recordings saved yet.</small>`;
-        return;
-      }
-      feynmanRecordings.forEach((rec) => {
-        const div = document.createElement('div');
-        div.className = "p-2 rounded mb-2 bg-dark border border-secondary border-opacity-25";
-        div.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="fw-bold text-white small">${rec.title}</span>
-            <small class="text-secondary mono">${rec.date}</small>
-          </div>
-          <audio controls src="${rec.data}" style="width: 100%; height: 32px;"></audio>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    // 10. Interactive Daily Time-Blocking HUD
+    // 11. Time-Blocking HUD
     function renderTimeblocks() {
       const container = document.getElementById('timeblocksContainer');
       container.innerHTML = '';
       const curHour = new Date().getHours();
-      let completedCount = 0;
 
       timeblocks.forEach((b, idx) => {
         const isCurrent = curHour >= b.startHour && curHour < b.endHour;
-        if (b.completed) completedCount++;
 
         const div = document.createElement('div');
         div.className = `timeblock-card ${isCurrent ? 'active-slot' : ''} ${b.completed ? 'completed-slot' : ''}`;
@@ -1512,14 +1480,11 @@
         `;
         container.appendChild(div);
       });
-
-      const adherencePct = Math.round((completedCount / timeblocks.length) * 100);
-      document.getElementById('statAdherence').innerText = `${adherencePct}%`;
-      document.getElementById('statAdherenceFill').style.width = `${adherencePct}%`;
     }
 
     function toggleBlockDone(idx) {
       timeblocks[idx].completed = !timeblocks[idx].completed;
+      if (timeblocks[idx].completed) addXp(50);
       localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
       renderTimeblocks();
       triggerCloudSync();
@@ -1532,73 +1497,7 @@
       triggerCloudSync();
     }
 
-    // 11. Tab-Switch Accountability Auditor
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden && timerActive) {
-        tabBreachesCount++;
-        localStorage.setItem('sh_breaches', tabBreachesCount);
-        document.getElementById('auditorBadge').innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1 text-danger"></i> ${tabBreachesCount} Tab Switches Caught!`;
-      }
-    });
-
-    // 12. Mentor Performance Report
-    function openPerformanceReport() {
-      const printWin = window.open('', '_blank');
-      const completedTopics = topics.filter(t => t.done).length;
-      const syllabusPct = topics.length ? Math.round((completedTopics / topics.length) * 100) : 0;
-      const pcts = mockTests.map(m => parseFloat(m.pct));
-      const avgMock = pcts.length ? (pcts.reduce((a, b) => a + b, 0) / pcts.length).toFixed(1) : "0.0";
-      const totalHoursWeek = Object.values(heatmapData).slice(-7).reduce((a, b) => a + b, 0);
-
-      printWin.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${config.name} // Academic Performance Card</title>
-          <style>
-            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #111; max-width: 800px; margin: auto; }
-            .header { border-bottom: 3px solid #111; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
-            .metric-box { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
-            .card { border: 1px solid #ccc; padding: 14px; border-radius: 6px; }
-            .card .val { font-size: 24px; font-weight: bold; margin-top: 4px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 14px; margin-bottom: 24px; }
-            th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-            th { background: #f7f7f7; }
-            .footer { font-size: 12px; color: #666; margin-top: 40px; border-top: 1px solid #ddd; padding-top: 10px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div>
-              <h2 style="margin: 0;">STUDY COMMAND // WEEKLY PERFORMANCE CARD</h2>
-              <div style="margin-top: 4px; color: #555;">Student: <strong>${config.name}</strong> | Target: <strong>${config.exam}</strong></div>
-            </div>
-            <div style="text-align: right; font-size: 13px; color: #555;">Date: ${new Date().toLocaleDateString()}</div>
-          </div>
-          <div class="metric-box">
-            <div class="card"><small>Syllabus Completion</small><div class="val">${syllabusPct}%</div></div>
-            <div class="card"><small>7-Day Study Hours</small><div class="val">${totalHoursWeek.toFixed(1)}h</div></div>
-            <div class="card"><small>Mock Test Average</small><div class="val">${avgMock}%</div></div>
-            <div class="card"><small>Focus Breaches</small><div class="val">${tabBreachesCount}</div></div>
-          </div>
-          <h3>Recent Mock Tests</h3>
-          <table>
-            <thead><tr><th>Test Name</th><th>Score</th><th>Total Marks</th><th>Accuracy (%)</th></tr></thead>
-            <tbody>
-              ${mockTests.slice(0, 5).map(m => `<tr><td>${m.name}</td><td>${m.scored}</td><td>${m.total}</td><td><strong>${m.pct}%</strong></td></tr>`).join('') || '<tr><td colspan="4">No tests logged.</td></tr>'}
-            </tbody>
-          </table>
-          <div class="footer">
-            Generated via StudyHub Suite. Official Mentor / Parent Verification Copy.
-          </div>
-          <script>window.onload = function(){ window.print(); };<\/script>
-        </body>
-        </html>
-      `);
-      printWin.document.close();
-    }
-
-    // 13. 90-Day Activity Heatmap
+    // 12. 90-Day Activity Heatmap
     function renderHeatmap() {
       const grid = document.getElementById('heatmapGrid');
       grid.innerHTML = '';
@@ -1635,7 +1534,7 @@
       renderHeatmap();
     }
 
-    // 14. Automated Spaced Repetition (SRS) Engine
+    // 13. Automated Spaced Repetition (SRS)
     function renderSrsQueue() {
       const container = document.getElementById('srsQueueList');
       const badge = document.getElementById('srsQueueBadge');
@@ -1648,19 +1547,15 @@
         const compDate = new Date(t.doneDate);
         const diffDays = Math.floor((today - compDate) / (1000 * 60 * 60 * 24));
 
-        if (!t.r1 && diffDays >= 3) {
-          dueTopics.push({ topic: t, index: idx, stage: 'R1 (Day 3 Retention)', key: 'r1' });
-        } else if (t.r1 && !t.r2 && diffDays >= 7) {
-          dueTopics.push({ topic: t, index: idx, stage: 'R2 (Day 7 Consolidation)', key: 'r2' });
-        } else if (t.r2 && !t.r3 && diffDays >= 21) {
-          dueTopics.push({ topic: t, index: idx, stage: 'R3 (Day 21 Long-Term)', key: 'r3' });
-        }
+        if (!t.r1 && diffDays >= 3) dueTopics.push({ topic: t, index: idx, stage: 'R1 (Day 3)', key: 'r1' });
+        else if (t.r1 && !t.r2 && diffDays >= 7) dueTopics.push({ topic: t, index: idx, stage: 'R2 (Day 7)', key: 'r2' });
+        else if (t.r2 && !t.r3 && diffDays >= 21) dueTopics.push({ topic: t, index: idx, stage: 'R3 (Day 21)', key: 'r3' });
       });
 
       badge.innerText = `${dueTopics.length} Pending`;
 
       if (dueTopics.length === 0) {
-        container.innerHTML = `<small class="text-secondary">No topics scheduled for revision today. All retention schedules are up to date!</small>`;
+        container.innerHTML = `<small class="text-secondary">No topics scheduled for revision today.</small>`;
         return;
       }
 
@@ -1683,13 +1578,14 @@
     function completeSrsRevision(idx, key) {
       topics[idx][key] = true;
       localStorage.setItem('sh_top', JSON.stringify(topics));
+      addXp(75);
       renderTopics();
       renderSrsQueue();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // 15. Curriculum Matrix
+    // 14. Topics Matrix
     function renderSubjectsFilter() {
       const container = document.getElementById('subjectFilterContainer');
       const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
@@ -1752,6 +1648,7 @@
       renderTopics();
       renderSubjectBalanceWheel();
       renderSrsQueue();
+      populateBlurtTopicSelect();
       recalculateRealMetrics();
       triggerCloudSync();
     }
@@ -1763,6 +1660,7 @@
         logStudyHoursToToday(parseFloat(topics[idx].hours) || 2.0);
         studyMinutesToday += (parseFloat(topics[idx].hours) || 2.0) * 60;
         localStorage.setItem('sh_study_mins', studyMinutesToday);
+        addXp(250);
         updateFatigueMeter();
       }
       localStorage.setItem('sh_top', JSON.stringify(topics));
@@ -1789,11 +1687,12 @@
       renderTopics();
       renderSubjectBalanceWheel();
       renderSrsQueue();
+      populateBlurtTopicSelect();
       recalculateRealMetrics();
       triggerCloudSync();
     }
 
-    // 16. Mock Test Analyzer
+    // 15. Mock Tests
     function addMockTest() {
       const name = document.getElementById('mockNameInput').value.trim();
       const scored = parseFloat(document.getElementById('mockScoredInput').value);
@@ -1804,6 +1703,7 @@
       mockTests.unshift({ name, scored, total, pct, date: new Date().toLocaleDateString() });
       localStorage.setItem('sh_mocks', JSON.stringify(mockTests));
 
+      addXp(150);
       document.getElementById('mockNameInput').value = '';
       document.getElementById('mockScoredInput').value = '';
       renderMocks();
@@ -1856,7 +1756,7 @@
       triggerCloudSync();
     }
 
-    // 17. Metrics Recalculations
+    // 16. Metrics
     function recalculateRealMetrics() {
       const total = topics.length;
       const completed = topics.filter(t => t.done).length;
@@ -1866,7 +1766,7 @@
       document.getElementById('statSyllabusFill').style.width = `${pct}%`;
     }
 
-    // 18. Error Diary
+    // 17. Mistakes
     function addMistakeEntry() {
       const desc = document.getElementById('mistakeDescInput').value.trim();
       const type = document.getElementById('mistakeTypeInput').value;
@@ -1911,7 +1811,7 @@
       triggerCloudSync();
     }
 
-    // 19. Auto-Saving Scratchpad
+    // 18. Scratchpad
     function saveNotes() {
       const val = document.getElementById('scratchArea').value;
       localStorage.setItem('sh_notes_text', val);
@@ -1921,7 +1821,7 @@
       triggerCloudSync();
     }
 
-    // 20. Focus Timer
+    // 19. Focus Timer
     let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
 
     function updateTimerDisplay() {
@@ -1949,8 +1849,9 @@
             logStudyHoursToToday(0.4);
             studyMinutesToday += 25;
             localStorage.setItem('sh_study_mins', studyMinutesToday);
+            addXp(100);
             updateFatigueMeter();
-            alert("Pomodoro complete! Great study block.");
+            alert("Pomodoro complete! +100 XP gained.");
             btn.innerText = "Start";
           }
         }, 1000);
@@ -1971,6 +1872,49 @@
       secondsLeft = mins * 60;
       updateTimerDisplay();
       document.getElementById('timerActionBtn').innerText = "Start";
+    }
+
+    // 20. Tab Auditor
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && timerActive) {
+        tabBreachesCount++;
+        localStorage.setItem('sh_breaches', tabBreachesCount);
+        document.getElementById('auditorBadge').innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1 text-danger"></i> ${tabBreachesCount} Tab Switches Caught!`;
+      }
+    });
+
+    // 21. Profile Settings
+    function renderHUD() {
+      document.getElementById('navExamBadge').innerText = config.exam;
+      document.getElementById('cfgUsername').value = config.username;
+      document.getElementById('cfgName').value = config.name;
+      document.getElementById('cfgExam').value = config.exam;
+      document.getElementById('cfgHours').value = config.hours;
+      document.getElementById('cfgCutoff').value = config.cutoff || 75;
+      document.getElementById('cfgDate').value = config.date;
+
+      const target = new Date(config.date);
+      const now = new Date();
+      const diffDays = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+      
+      document.getElementById('examCountdownText').innerText = 
+        diffDays > 0 ? `${diffDays} DAYS UNTIL ${config.exam.toUpperCase()}` : `${config.exam.toUpperCase()} DAY`;
+    }
+
+    function saveConfiguration() {
+      config.username = document.getElementById('cfgUsername').value.trim() || "student";
+      config.name = document.getElementById('cfgName').value.trim() || "Student";
+      config.exam = document.getElementById('cfgExam').value.trim() || "Target Exam";
+      config.hours = parseFloat(document.getElementById('cfgHours').value) || 6;
+      config.cutoff = parseFloat(document.getElementById('cfgCutoff').value) || 75;
+      config.date = document.getElementById('cfgDate').value || "2026-10-15";
+
+      localStorage.setItem('sh_cfg', JSON.stringify(config));
+      renderHUD();
+      recalculateRealMetrics();
+      renderMocks();
+      triggerCloudSync();
+      closeModal('profileModal');
     }
   </script>
 </body>
