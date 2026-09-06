@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudyHub // Clean Command Center</title>
+  <title>StudyHub // Master Command Center</title>
 
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     :root {
-      --bg-canvas: #090d16;
-      --bg-surface: #111827;
-      --bg-card: #162032;
-      --border-subtle: #22304a;
-      --accent-cyan: #38bdf8;
-      --accent-emerald: #10b981;
+      --bg-canvas: #07090e;
+      --bg-surface: #0e131f;
+      --bg-card: #131929;
+      --bg-hover: #182033;
+      --border-subtle: #1e293b;
+      --border-active: #38bdf8;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-violet: #818cf8;
+      --accent-gold: #fbbf24;
     }
 
     * { box-sizing: border-box; }
@@ -31,15 +37,15 @@
       color: var(--text-primary);
       font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
-      padding-bottom: 50px;
+      padding-bottom: 70px;
     }
 
     .mono { font-family: 'JetBrains Mono', monospace; }
 
     /* Top Navigation */
     .top-nav {
-      background: rgba(17, 24, 39, 0.95);
-      backdrop-filter: blur(12px);
+      background: rgba(14, 19, 31, 0.94);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
@@ -50,101 +56,306 @@
     .card-panel {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 20px;
+      transition: border-color 0.2s ease;
       margin-bottom: 20px;
     }
+    .card-panel:hover { border-color: #334155; }
 
-    /* Expandable Menu Drawer */
+    /* Expandable Tools & Settings Drawer */
     .menu-drawer {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
       display: none;
-      padding: 15px 0;
-      margin-bottom: 20px;
+      padding: 20px 0;
+      margin-bottom: 25px;
     }
     .menu-drawer.open { display: block; }
 
+    /* Stat Ribbons */
+    .stat-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+    .stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 4px 0 8px;
+    }
+    .meter-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+
+    /* Gamified XP Pill */
+    .xp-pill-badge {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 7-Day SRS Forecast Row */
+    .srs-forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .srs-forecast-col {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .srs-forecast-col.has-due {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.06);
+    }
+
+    /* Pareto Error Bar */
+    .pareto-bar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .pareto-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+
+    /* 90-Day Heatmap */
+    .heatmap-scroll-container {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .heatmap-grid {
+      display: grid;
+      grid-template-rows: repeat(7, 12px);
+      grid-auto-flow: column;
+      grid-auto-columns: 12px;
+      gap: 3.5px;
+    }
+    .heatmap-cell {
+      width: 12px;
+      height: 12px;
+      border-radius: 2.5px;
+      background: #161b26;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+    }
+    .heatmap-cell.l-1 { background: #0e4429; border-color: #006d32; }
+    .heatmap-cell.l-2 { background: #006d32; border-color: #26a641; }
+    .heatmap-cell.l-3 { background: #26a641; border-color: #39d353; }
+    .heatmap-cell.l-4 { background: #39d353; border-color: #56f06f; }
+
+    /* Topics Matrix */
+    .topic-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .topic-row:hover { background: var(--bg-hover); }
+    .topic-row.done { opacity: 0.6; }
+    .topic-row.done .t-name { text-decoration: line-through; color: var(--text-secondary); }
+
+    .tier-badge { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+    .tier-1 { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .tier-2 { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tier-3 { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+    .rev-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+    }
+    .rev-pill.active { background: rgba(16, 185, 129, 0.2); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+
+    /* SRS Queue & Timetable Rows */
+    .srs-item, .timetable-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Canvas */
+    #sketchCanvas {
+      background: #090d16;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      cursor: crosshair;
+      touch-action: none;
+      display: block;
+      width: 100%;
+      height: 360px;
+    }
+
     /* Inputs & Buttons */
     .hub-input {
-      background: var(--bg-canvas);
+      background: #07090e;
       border: 1px solid var(--border-subtle);
       color: #fff;
       border-radius: 8px;
-      padding: 8px 12px;
+      padding: 9px 12px;
       font-size: 0.9rem;
     }
     .hub-input:focus {
-      background: var(--bg-canvas);
+      background: #07090e;
       border-color: var(--accent-cyan);
       color: #fff;
       box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
       outline: none;
     }
 
-    .btn-action {
+    .btn-action-primary {
       background: var(--accent-cyan);
       color: #07090e;
       font-weight: 700;
       border: none;
       border-radius: 8px;
-      padding: 8px 16px;
+      padding: 9px 16px;
       transition: background 0.15s;
     }
-    .btn-action:hover { background: #0284c7; color: #fff; }
+    .btn-action-primary:hover { background: #0284c7; color: #fff; }
 
-    /* List Rows */
-    .list-item-row {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
+    /* Modals */
+    .modal-backdrop-custom {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1050;
+      display: none;
       align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
-    .list-item-row.done { opacity: 0.6; text-decoration: line-through; }
+    .modal-frame {
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      max-width: 680px;
+      width: 100%;
+      padding: 26px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .sound-slider {
+      -webkit-appearance: none; width: 100%; height: 4px; border-radius: 5px; background: #1e293b; outline: none;
+    }
+    .sound-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent-cyan); cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- ================= CLEAN TOP NAV ================= -->
-  <nav class="top-nav py-3 mb-4">
+  <!-- ================= 1. TOP NAV BAR HUD ================= -->
+  <nav class="top-nav py-3 mb-3">
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <div class="d-flex align-items-center gap-2">
-        <i class="bi bi-compass text-info fs-4"></i>
-        <span class="fw-bold text-white fs-5">StudyHub // Clean</span>
+      <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-shield-check fs-4 text-info"></i>
+        <div>
+          <span class="fw-bold text-white fs-5">StudyHub</span>
+          <span class="badge bg-secondary bg-opacity-25 text-info ms-2" id="navExamBadge">Active Prep</span>
+        </div>
       </div>
 
-      <div class="d-flex align-items-center gap-2">
-        <span class="badge bg-dark border border-secondary text-light mono px-3 py-2" id="navCountdown">Target Exam</span>
-        <button class="btn btn-outline-info btn-sm rounded-pill px-3" onclick="toggleMenuDrawer()">
-          <i class="bi bi-gear fs-6 me-1"></i> Expand Settings
+      <!-- Gamified XP Rank HUD -->
+      <div class="xp-pill-badge">
+        <i class="bi bi-trophy-fill text-warning"></i>
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="mono fw-bold text-warning small" id="hudRankTitle">Bronze Aspirant</span>
+            <span class="badge bg-dark border border-warning border-opacity-25 text-warning mono" style="font-size: 0.65rem;" id="hudLevelBadge">LVL 1</span>
+          </div>
+          <div class="meter-bar mt-1" style="width: 120px; height: 4px; background: rgba(255,255,255,0.08);">
+            <div id="hudXpFill" class="meter-fill" style="width: 0%; background: var(--accent-gold);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Tools & Expand Menu -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('vaultModal')">
+          <i class="bi bi-search me-1"></i> Vault
+        </button>
+        <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('negMarkModal')">
+          <i class="bi bi-calculator me-1"></i> Grading
+        </button>
+        <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="openModal('blurtModal')">
+          <i class="bi bi-lightning-charge me-1"></i> Blurt
+        </button>
+        <button class="btn btn-outline-light btn-sm rounded-pill" onclick="openCanvasModal()">
+          <i class="bi bi-pen me-1"></i> Canvas
+        </button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="toggleMenuDrawer()">
+          <i class="bi bi-gear me-1"></i> Tools Menu <i class="bi bi-chevron-down ms-1"></i>
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- ================= EXPANDABLE SETTINGS & TIMETABLE DRAWER ================= -->
+  <!-- ================= 2. EXPANDABLE TOOLS & SETTINGS DRAWER ================= -->
   <div class="menu-drawer" id="toolsMenuDrawer">
     <div class="container">
-      <div class="row g-3 align-items-center">
-        <div class="col-md-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
           <label class="small text-secondary mb-1">TARGET EXAM DATE</label>
           <input type="date" id="drawerTargetDate" class="form-control hub-input" onchange="updateExamTarget()">
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
           <label class="small text-secondary mb-1">ADD CUSTOM TIMETABLE SLOT</label>
           <div class="input-group">
             <input type="text" id="drawerSlotName" class="form-control hub-input" placeholder="e.g. 06:00 AM - Physics Core">
-            <button class="btn btn-outline-info btn-sm" onclick="addCustomTimetableSlot()">Add Slot</button>
+            <button class="btn btn-outline-info btn-sm" onclick="addCustomTimetableSlot()">Add</button>
           </div>
         </div>
-        <div class="col-md-3 text-md-end">
-          <button class="btn btn-outline-danger btn-sm rounded-pill mt-4" onclick="if(confirm('Reset all local data?')){localStorage.clear(); location.reload();}">
-            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Data
+        <div class="col-md-5 text-md-end d-flex justify-content-md-end gap-2">
+          <button class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="openModal('soundMixerModal')">
+            <i class="bi bi-soundwave me-1"></i> Binaural Audio
+          </button>
+          <button class="btn btn-outline-info btn-sm rounded-pill px-3" onclick="exportOfficialAuditCertificate()">
+            <i class="bi bi-file-earmark-person me-1"></i> Audit Sheet
+          </button>
+          <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="if(confirm('Reset all data?')){localStorage.clear(); location.reload();}">
+            <i class="bi bi-arrow-counterclockwise"></i> Reset
           </button>
         </div>
       </div>
@@ -153,88 +364,152 @@
 
   <div class="container">
 
-    <!-- ================= TOP STATS ================= -->
+    <!-- ================= 3. TOP STATS ================= -->
     <div class="row g-3 mb-4">
-      <div class="col-6 col-md-4">
+      <div class="col-6 col-lg-3">
         <div class="card-panel py-3 mb-0">
-          <small class="text-secondary fw-bold text-uppercase" style="font-size: 0.7rem;">Syllabus Progress</small>
-          <div class="fs-3 fw-bold text-info mono mt-1" id="statSyllabus">0%</div>
+          <div class="stat-title">Syllabus Progress</div>
+          <div class="stat-number text-info mono" id="statSyllabus">0%</div>
+          <div class="meter-bar"><div id="statSyllabusFill" class="meter-fill bg-info" style="width: 0%;"></div></div>
         </div>
       </div>
-      <div class="col-6 col-md-4">
+      <div class="col-6 col-lg-3">
         <div class="card-panel py-3 mb-0">
-          <small class="text-secondary fw-bold text-uppercase" style="font-size: 0.7rem;">Completed Chapters</small>
-          <div class="fs-3 fw-bold text-emerald mono mt-1" style="color: var(--accent-emerald);" id="statCompletedCount">0 / 0</div>
+          <div class="stat-title">MCQ Accuracy</div>
+          <div class="stat-number text-white mono" id="statMcqAccuracy">0%</div>
+          <div class="meter-bar"><div id="statMcqFill" class="meter-fill" style="width: 0%; background: var(--accent-emerald);"></div></div>
         </div>
       </div>
-      <div class="col-12 col-md-4">
+      <div class="col-6 col-lg-3">
         <div class="card-panel py-3 mb-0">
-          <small class="text-secondary fw-bold text-uppercase" style="font-size: 0.7rem;">Active Streak</small>
-          <div class="fs-3 fw-bold text-warning mono mt-1">1 Day Active</div>
+          <div class="stat-title">Forecast Finish</div>
+          <div class="stat-number text-warning mono" id="statFinishDate">--</div>
+          <div class="meter-bar"><div id="statPaceFill" class="meter-fill bg-warning" style="width: 50%;"></div></div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card-panel py-3 mb-0">
+          <div class="stat-title">Study XP Earned</div>
+          <div class="stat-number text-gold mono" style="color: var(--accent-gold);" id="statTotalXp">0 XP</div>
+          <div class="meter-bar"><div id="statXpFill" class="meter-fill" style="width: 0%; background: var(--accent-gold);"></div></div>
         </div>
       </div>
     </div>
 
-    <!-- ================= MAIN 2-COLUMN LAYOUT ================= -->
+    <!-- ================= 4. 7-DAY SRS FORECAST ================= -->
+    <div class="card-panel mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold text-white mb-0"><i class="bi bi-calendar3 text-info me-2"></i>Next 7-Day Spaced Repetition (SRS) Forecast</h6>
+          <small class="text-secondary">Pre-scheduled revision workload</small>
+        </div>
+        <span class="badge bg-secondary bg-opacity-25 text-info mono" id="srsWeeklyLoadBadge">0 Total Due This Week</span>
+      </div>
+      <div class="srs-forecast-grid" id="srsForecastGrid"></div>
+    </div>
+
+    <!-- ================= 5. MAIN WORKSPACE GRID ================= -->
     <div class="row g-4">
 
-      <!-- LEFT COLUMN: FOCUS TIMER & CUSTOM TIMETABLE -->
+      <!-- LEFT COLUMN: FOCUS TIMER & CUSTOM TIMETABLE & SRS QUEUE -->
       <div class="col-12 col-lg-5">
         
-        <!-- Clean Focus Timer -->
+        <!-- Clean Working Focus Timer -->
         <div class="card-panel text-center">
-          <div class="small text-secondary fw-bold text-uppercase mb-2">Focus Engine</div>
+          <div class="stat-title mb-2">WORKING FOCUS ENGINE</div>
           <div class="display-3 fw-bold text-white mono my-2" id="timerDisplay">25:00</div>
 
           <div class="d-flex justify-content-center gap-2 mb-3">
-            <button class="btn btn-action px-4" id="timerBtn" onclick="toggleTimer()">Start Timer</button>
+            <button class="btn btn-action-primary px-4" id="timerActionBtn" onclick="toggleTimer()">Start Timer</button>
             <button class="btn btn-outline-secondary px-3" onclick="resetTimer()">Reset</button>
           </div>
 
-          <div class="btn-group w-100 btn-group-sm">
-            <button class="btn btn-outline-secondary" onclick="setTimer(25)">25m</button>
-            <button class="btn btn-outline-secondary" onclick="setTimer(50)">50m</button>
-            <button class="btn btn-outline-secondary" onclick="setTimer(5)">5m Break</button>
+          <div class="btn-group w-100 btn-group-sm mb-2">
+            <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25, 5)">25m (5m Rest)</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(50, 15)">50m (15m Rest)</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(5, 2)">5m Break</button>
           </div>
+          <small class="text-secondary mono" id="timerModeLabel">Focus Session</small>
         </div>
 
-        <!-- Custom Timetable Slots Display -->
+        <!-- Custom Timetable Slots -->
         <div class="card-panel">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold text-white mb-0"><i class="bi bi-clock-history me-2 text-info"></i>Today's Timetable</h6>
             <small class="text-secondary">Custom Schedule</small>
           </div>
-          <div id="timetableList" style="max-height: 260px; overflow-y: auto;">
-            <!-- Dynamically populated -->
+          <div id="timetableList" style="max-height: 240px; overflow-y: auto;"></div>
+        </div>
+
+        <!-- Due SRS Queue -->
+        <div class="card-panel">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-warning mb-0"><i class="bi bi-alarm me-2"></i>Due for Revision Today</h6>
+            <span class="badge bg-warning bg-opacity-25 text-warning" id="srsQueueBadge">0 Pending</span>
+          </div>
+          <div id="srsQueueList" style="max-height: 220px; overflow-y: auto;">
+            <small class="text-secondary">No topics scheduled for revision today.</small>
           </div>
         </div>
 
       </div>
 
-      <!-- RIGHT COLUMN: CLEAN SYLLABUS CHECKLIST -->
+      <!-- RIGHT COLUMN: SYLLABUS CURRICULUM CHECKLIST & ANALYTICS -->
       <div class="col-12 col-lg-7">
         
+        <!-- Curriculum Checklist Matrix -->
         <div class="card-panel">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold text-white mb-0"><i class="bi bi-check2-square me-2 text-info"></i>Study Curriculum Checklist</h6>
-            <span class="badge bg-dark border border-secondary text-secondary mono" id="totalCountBadge">0 Topics</span>
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+              <h5 class="fw-bold text-white mb-0"><i class="bi bi-diagram-3 me-2 text-info"></i>Study Curriculum Matrix</h5>
+              <small class="text-secondary">Complete chapters to earn +250 XP each</small>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+              <label class="btn btn-outline-info btn-sm rounded-pill mono mb-0" style="cursor: pointer;">
+                <i class="bi bi-filetype-csv me-1"></i> Import CSV
+                <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="importSyllabusCsv(event)">
+              </label>
+            </div>
           </div>
 
           <!-- Add Topic Bar -->
           <div class="row g-2 mb-3">
-            <div class="col-4">
+            <div class="col-3">
               <input type="text" id="inSubject" class="form-control hub-input" placeholder="Subject">
             </div>
-            <div class="col-6">
+            <div class="col-5">
               <input type="text" id="inChapter" class="form-control hub-input" placeholder="Chapter Name">
             </div>
             <div class="col-2">
-              <button class="btn btn-action w-100" onclick="addTopic()">Add</button>
+              <select id="inTier" class="form-select hub-input">
+                <option value="Tier 1">Tier 1</option>
+                <option value="Tier 2" selected>Tier 2</option>
+              </select>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-action-primary w-100" onclick="addCustomTopic()">Add</button>
             </div>
           </div>
 
-          <!-- Topics List -->
           <div id="topicsContainer" style="max-height: 440px; overflow-y: auto;"></div>
+        </div>
+
+        <!-- 90-Day Heatmap & Pareto Error Chart -->
+        <div class="card-panel">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-white mb-0"><i class="bi bi-calendar-week me-2 text-info"></i>90-Day Study Heatmap</h6>
+            <small class="text-secondary" id="heatmapSummary">0 active days</small>
+          </div>
+          <div class="heatmap-scroll-container mb-3">
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+          </div>
+
+          <hr class="border-secondary my-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold text-rose mb-0 text-danger"><i class="bi bi-bar-chart-line me-2"></i>Pareto Error Analyzer</h6>
+            <span class="badge bg-danger bg-opacity-25 text-danger mono" id="topLeakBadge">No Errors</span>
+          </div>
+          <div class="row g-2" id="paretoBarsContainer"></div>
         </div>
 
       </div>
@@ -242,190 +517,329 @@
     </div>
   </div>
 
-  <!-- ================= SCRIPT ENGINE ================= -->
-  <script>
-    function toggleMenuDrawer() {
-      document.getElementById('toolsMenuDrawer').classList.toggle('open');
-    }
+  <!-- ================= 6. MODALS ================= -->
 
-    let targetDate = localStorage.getItem('sh_target_date') || "2026-10-15";
-    let topics = JSON.parse(localStorage.getItem('sh_simple_top') || JSON.stringify([
-      { subject: "Physics", chapter: "Mechanics & Kinematics", done: false },
-      { subject: "Maths", chapter: "Calculus & Derivatives", done: false },
-      { subject: "Chemistry", chapter: "Periodic Table & Bonding", done: false }
+  <!-- Formula Vault Modal -->
+  <div id="vaultModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-info mb-0"><i class="bi bi-search me-2"></i>Searchable Quick-Formula Vault</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('vaultModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="mb-3">
+        <input type="text" id="vaultSearchInput" class="form-control hub-input" placeholder="Search equations (e.g. Carnot, Optics, Calculus)..." oninput="filterVault()">
+      </div>
+      <div id="vaultFormulaList" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- Negative Marking Calculator Modal -->
+  <div id="negMarkModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-calculator me-2"></i>Negative Marking Calculator</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('negMarkModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-4"><label class="small text-secondary mb-1">CORRECT</label><input type="number" id="calcCorrect" class="form-control hub-input" value="45" oninput="runNegativeGrading()"></div>
+        <div class="col-4"><label class="small text-secondary mb-1">INCORRECT</label><input type="number" id="calcIncorrect" class="form-control hub-input" value="12" oninput="runNegativeGrading()"></div>
+        <div class="col-4"><label class="small text-secondary mb-1">SCHEME</label><select id="calcScheme" class="form-select hub-input" onchange="runNegativeGrading()"><option value="4,-1" selected>+4 / -1</option><option value="3,-1">+3 / -1</option></select></div>
+      </div>
+      <div class="p-3 rounded bg-dark border border-secondary border-opacity-25 mono">
+        <div class="d-flex justify-content-between mb-1"><span class="text-secondary">Gross Score:</span><strong class="text-success" id="calcGrossScore">+180</strong></div>
+        <div class="d-flex justify-content-between mb-1"><span class="text-secondary">Penalty Loss:</span><strong class="text-danger" id="calcPenaltyLoss">-12</strong></div>
+        <hr class="border-secondary my-2">
+        <div class="d-flex justify-content-between fs-5 fw-bold"><span class="text-white">Net Score:</span><span class="text-info" id="calcNetScore">168</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-Minute Blurt Recall Drill Modal -->
+  <div id="blurtModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-lightning-charge me-2"></i>2-Minute Active Recall Blurt</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('blurtModal'); stopBlurtDrill();"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <p class="text-secondary small mb-3">Type every formula and concept you remember without notes.</p>
+      <div class="d-flex justify-content-between align-items-center bg-dark p-2 rounded mb-2 border border-secondary border-opacity-25">
+        <span class="mono small text-secondary">TIMER:</span>
+        <span class="fs-4 fw-bold mono text-warning" id="blurtTimerDisplay">02:00</span>
+        <button class="btn btn-sm btn-action-primary" id="blurtActionBtn" onclick="toggleBlurtDrill()">Start Drill</button>
+      </div>
+      <textarea id="blurtInputArea" class="form-control hub-input" rows="6" placeholder="Start typing equations as fast as you can..." disabled></textarea>
+    </div>
+  </div>
+
+  <!-- In-App Scratch Canvas Modal -->
+  <div id="canvasModal" class="modal-backdrop-custom">
+    <div class="modal-frame" style="max-width: 740px;">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold text-white mb-0"><i class="bi bi-pen me-2 text-info"></i>Rough Work Scratch Canvas</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('canvasModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+        <div class="d-flex gap-1">
+          <button class="btn btn-sm btn-outline-info active" onclick="setCanvasColor('#38bdf8', this)">Cyan</button>
+          <button class="btn btn-sm btn-outline-light" onclick="setCanvasColor('#ffffff', this)">White</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="setCanvasColor('#f43f5e', this)">Red</button>
+        </div>
+        <button class="btn btn-sm btn-outline-danger" onclick="clearCanvas()">Clear</button>
+      </div>
+      <canvas id="sketchCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Binaural Soundscape Modal -->
+  <div id="soundMixerModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-warning mb-0"><i class="bi bi-soundwave me-2"></i>Binaural Synthesizer</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('soundMixerModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="mb-3">
+        <div class="row g-2">
+          <div class="col-6"><button class="btn btn-outline-info btn-sm w-100 active" id="btnWaveTheta" onclick="setBinauralWave(6, 'btnWaveTheta')">Theta (6Hz)</button></div>
+          <div class="col-6"><button class="btn btn-outline-success btn-sm w-100" id="btnWaveAlpha" onclick="setBinauralWave(10, 'btnWaveAlpha')">Alpha (10Hz)</button></div>
+        </div>
+      </div>
+      <button class="btn btn-action-primary w-100 py-2 mb-3" id="masterAudioBtn" onclick="toggleAudioEngine()">Start Ambient Audio</button>
+      <div class="mb-2"><small class="text-secondary">Brown Noise</small><input type="range" class="sound-slider" id="sliderBrown" min="0" max="100" value="50" oninput="updateAudioGains()"></div>
+      <div class="mb-2"><small class="text-secondary">Rainfall Stream</small><input type="range" class="sound-slider" id="sliderRain" min="0" max="100" value="40" oninput="updateAudioGains()"></div>
+      <div><small class="text-secondary" id="binauralLabelText">Binaural Beat (6Hz)</small><input type="range" class="sound-slider" id="sliderBinaural" min="0" max="100" value="30" oninput="updateAudioGains()"></div>
+    </div>
+  </div>
+
+  <!-- ================= 9. JAVASCRIPT ENGINE ================= -->
+  <script>
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function toggleMenuDrawer() { document.getElementById('toolsMenuDrawer').classList.toggle('open'); }
+
+    // State
+    let config = JSON.parse(localStorage.getItem('sh_cfg') || JSON.stringify({ username: "student", name: "Raghav", exam: "JEE Advanced 2026", hours: 6, cutoff: 75, date: "2026-10-15" }));
+    let topics = JSON.parse(localStorage.getItem('sh_top') || JSON.stringify([
+      { subject: "Physics", chapter: "Modern Physics & Dual Nature", tier: "Tier 1", hours: 3.0, done: false, doneDate: null, r1: false, r2: false, r3: false },
+      { subject: "Maths", chapter: "Definite Integration & Area", tier: "Tier 1", hours: 3.5, done: false, doneDate: null, r1: false, r2: false, r3: false },
+      { subject: "Chemistry", chapter: "Coordination Compounds", tier: "Tier 2", hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false }
     ]));
-    let timetable = JSON.parse(localStorage.getItem('sh_simple_slots') || JSON.stringify([
+    let formulaVault = [
+      { subject: "Physics", name: "De Broglie Wavelength", formula: "λ = h / p = h / √(2mE)" },
+      { subject: "Physics", name: "Carnot Efficiency", formula: "η = 1 - (T_cold / T_hot)" },
+      { subject: "Maths", name: "Integration by Parts", formula: "∫ u v dx = u ∫ v dx - ∫ (u' ∫ v dx) dx" },
+      { subject: "Chemistry", name: "Nernst Equation", formula: "E_cell = E°_cell - (0.0591 / n) log(Q)" }
+    ];
+    let mcqState = JSON.parse(localStorage.getItem('sh_mcq') || JSON.stringify({ correct: 0, wrong: 0, skip: 0, target: 50 }));
+    let timetable = JSON.parse(localStorage.getItem('sh_slots') || JSON.stringify([
       { name: "06:00 AM - Morning Theory Revision", done: false },
       { name: "01:00 PM - Afternoon MCQ Practice", done: false },
       { name: "07:00 PM - Evening Formula Review", done: false }
     ]));
+    let mistakes = JSON.parse(localStorage.getItem('sh_mis') || '[]');
+    let heatmapData = JSON.parse(localStorage.getItem('sh_heatmap') || '{}');
+    let totalXp = parseInt(localStorage.getItem('sh_xp') || '350');
 
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('drawerTargetDate').value = targetDate;
-      renderCountdown();
-      renderTopics();
+      document.getElementById('drawerTargetDate').value = config.date;
+      renderHUD();
+      renderXpEngine();
+      renderFormulaVault(formulaVault);
+      renderMcqCounter();
       renderTimetable();
-      updateStats();
+      renderTopics();
+      renderSrsQueue();
+      renderSrsForecast();
+      renderParetoMistakes();
+      calculateBurndownForecast();
+      renderHeatmap();
+      runNegativeGrading();
+      recalculateRealMetrics();
     });
 
-    function updateExamTarget() {
-      targetDate = document.getElementById('drawerTargetDate').value;
-      localStorage.setItem('sh_target_date', targetDate);
-      renderCountdown();
-    }
-
-    function renderCountdown() {
-      const diff = Math.ceil((new Date(targetDate) - new Date()) / (1000 * 60 * 60 * 24));
-      document.getElementById('navCountdown').innerText = diff > 0 ? `${diff} Days Left` : `Exam Day`;
-    }
-
-    // Topics Logic
-    function renderTopics() {
-      const container = document.getElementById('topicsContainer');
-      container.innerHTML = '';
-      document.getElementById('totalCountBadge').innerText = `${topics.length} Topics`;
-
-      if (topics.length === 0) {
-        container.innerHTML = `<small class="text-secondary">No topics added yet.</small>`;
-        return;
+    async function triggerCloudSync() {
+      const badge = document.getElementById('cloudSyncStatus');
+      badge.innerHTML = `<i class="bi bi-arrow-repeat text-warning me-1"></i> Syncing...`;
+      try {
+        await fetch('/api/sync/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: config.username, config, topics, mistakes, heatmapData, timetable, mcqState, totalXp })
+        });
+        badge.innerHTML = `<i class="bi bi-cloud-check text-success me-1"></i> Synced`;
+      } catch (e) {
+        badge.innerHTML = `<i class="bi bi-cloud-slash text-secondary me-1"></i> Offline`;
       }
-
-      topics.forEach((t, i) => {
-        const div = document.createElement('div');
-        div.className = `list-item-row ${t.done ? 'done' : ''}`;
-        div.innerHTML = `
-          <div class="d-flex align-items-center gap-3">
-            <input type="checkbox" class="form-check-input mt-0" ${t.done ? 'checked' : ''} onchange="toggleTopic(${i})">
-            <div>
-              <span class="fw-semibold text-white">${t.chapter}</span>
-              <span class="badge bg-dark border border-secondary text-info ms-2" style="font-size: 0.65rem;">${t.subject}</span>
-            </div>
-          </div>
-          <button class="btn btn-sm text-secondary p-0" onclick="deleteTopic(${i})"><i class="bi bi-x fs-5"></i></button>
-        `;
-        container.appendChild(div);
-      });
-      updateStats();
     }
 
-    function addTopic() {
-      const sub = document.getElementById('inSubject').value.trim();
-      const chap = document.getElementById('inChapter').value.trim();
-      if (!chap) return;
-      topics.unshift({ subject: sub || "General", chapter: chap, done: false });
-      localStorage.setItem('sh_simple_top', JSON.stringify(topics));
-      document.getElementById('inChapter').value = '';
-      renderTopics();
+    // Gamified XP
+    function addXp(amt) { totalXp += amt; localStorage.setItem('sh_xp', totalXp); renderXpEngine(); triggerCloudSync(); }
+    function renderXpEngine() {
+      const lvl = Math.floor(totalXp / 400) + 1;
+      const pct = Math.round(((totalXp % 400) / 400) * 100);
+      document.getElementById('hudRankTitle').innerText = lvl >= 10 ? "Gold Scholar" : "Bronze Aspirant";
+      document.getElementById('hudLevelBadge').innerText = `LVL ${lvl}`;
+      document.getElementById('hudXpFill').style.width = `${pct}%`;
+      document.getElementById('statTotalXp').innerText = `${totalXp} XP`;
+      document.getElementById('statXpFill').style.width = `${pct}%`;
     }
 
-    function toggleTopic(i) {
-      topics[i].done = !topics[i].done;
-      localStorage.setItem('sh_simple_top', JSON.stringify(topics));
-      renderTopics();
-    }
-
-    function deleteTopic(i) {
-      topics.splice(i, 1);
-      localStorage.setItem('sh_simple_top', JSON.stringify(topics));
-      renderTopics();
-    }
-
-    function updateStats() {
-      const total = topics.length;
-      const done = topics.filter(t => t.done).length;
-      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-      document.getElementById('statSyllabus').innerText = `${pct}%`;
-      document.getElementById('statCompletedCount').innerText = `${done} / ${total}`;
-    }
-
-    // Timetable Logic
-    function renderTimetable() {
-      const list = document.getElementById('timetableList');
-      list.innerHTML = '';
-      if (timetable.length === 0) {
-        list.innerHTML = `<small class="text-secondary">No timetable slots added.</small>`;
-        return;
-      }
-      timetable.forEach((slot, i) => {
-        list.innerHTML += `
-          <div class="list-item-row ${slot.done ? 'done' : ''}">
-            <div class="d-flex align-items-center gap-2">
-              <input type="checkbox" class="form-check-input mt-0" ${slot.done ? 'checked' : ''} onchange="toggleSlot(${i})">
-              <span class="text-light small">${slot.name}</span>
-            </div>
-            <button class="btn btn-sm text-secondary p-0" onclick="deleteSlot(${i})"><i class="bi bi-x fs-5"></i></button>
-          </div>
-        `;
-      });
-    }
-
-    function addCustomTimetableSlot() {
-      const name = document.getElementById('drawerSlotName').value.trim();
-      if (!name) return;
-      timetable.push({ name, done: false });
-      localStorage.setItem('sh_simple_slots', JSON.stringify(timetable));
-      document.getElementById('drawerSlotName').value = '';
-      renderTimetable();
-    }
-
-    function toggleSlot(i) {
-      timetable[i].done = !timetable[i].done;
-      localStorage.setItem('sh_simple_slots', JSON.stringify(timetable));
-      renderTimetable();
-    }
-
-    function deleteSlot(i) {
-      timetable.splice(i, 1);
-      localStorage.setItem('sh_simple_slots', JSON.stringify(timetable));
-      renderTimetable();
-    }
-
-    // Timer Logic
-    let timerRef = null, leftSec = 25 * 60, isRunning = false;
-    function updateDisplay() {
-      const m = Math.floor(leftSec / 60).toString().padStart(2, '0');
-      const s = (leftSec % 60).toString().padStart(2, '0');
+    // Working Focus Timer & Adaptive Break
+    let timerRef = null, secondsLeft = 25 * 60, breakSeconds = 5 * 60, timerActive = false, isBreak = false;
+    function updateTimerDisplay() {
+      const cur = isBreak ? breakSeconds : secondsLeft;
+      const m = Math.floor(cur / 60).toString().padStart(2, '0');
+      const s = (cur % 60).toString().padStart(2, '0');
       document.getElementById('timerDisplay').innerText = `${m}:${s}`;
     }
-
     function toggleTimer() {
-      const btn = document.getElementById('timerBtn');
-      if (isRunning) {
-        clearInterval(timerRef);
-        isRunning = false;
-        btn.innerText = "Start Timer";
+      const btn = document.getElementById('timerActionBtn');
+      if (timerActive) {
+        clearInterval(timerRef); timerActive = false; btn.innerText = "Start Timer";
       } else {
-        isRunning = true;
-        btn.innerText = "Pause";
+        timerActive = true; btn.innerText = "Pause";
         timerRef = setInterval(() => {
-          if (leftSec > 0) {
-            leftSec--;
-            updateDisplay();
-          } else {
-            clearInterval(timerRef);
-            isRunning = false;
-            alert("Timer complete!");
-            btn.innerText = "Start Timer";
+          if (!isBreak && secondsLeft > 0) { secondsLeft--; updateTimerDisplay(); }
+          else if (isBreak && breakSeconds > 0) { breakSeconds--; updateTimerDisplay(); }
+          else {
+            clearInterval(timerRef); timerActive = false;
+            if (!isBreak) { alert("Sprint complete! Taking adaptive break."); isBreak = true; btn.innerText = "Start Break"; }
+            else { alert("Break complete!"); isBreak = false; secondsLeft = 25 * 60; btn.innerText = "Start Timer"; }
           }
         }, 1000);
       }
     }
+    function resetTimer() { clearInterval(timerRef); timerActive = false; isBreak = false; secondsLeft = 25 * 60; updateTimerDisplay(); document.getElementById('timerActionBtn').innerText = "Start Timer"; }
+    function setTimerDuration(w, r) { clearInterval(timerRef); timerActive = false; isBreak = false; secondsLeft = w * 60; breakSeconds = r * 60; updateTimerDisplay(); document.getElementById('timerActionBtn').innerText = "Start Timer"; }
 
-    function resetTimer() {
-      clearInterval(timerRef);
-      isRunning = false;
-      leftSec = 25 * 60;
-      updateDisplay();
-      document.getElementById('timerBtn').innerText = "Start Timer";
+    // Timetable Slots
+    function renderTimetable() {
+      const list = document.getElementById('timetableList'); list.innerHTML = '';
+      timetable.forEach((slot, i) => {
+        list.innerHTML += `<div class="timetable-item"><div class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input mt-0" ${slot.done?'checked':''} onchange="toggleSlot(${i})"><span class="${slot.done?'text-decoration-line-through text-secondary':'text-light'} small">${slot.name}</span></div><button class="btn btn-sm text-secondary p-0" onclick="deleteSlot(${i})"><i class="bi bi-x"></i></button></div>`;
+      });
     }
+    function addCustomTimetableSlot() {
+      const name = document.getElementById('drawerSlotName').value.trim(); if(!name)return;
+      timetable.push({ name, done: false }); localStorage.setItem('sh_slots', JSON.stringify(timetable)); document.getElementById('drawerSlotName').value = ''; renderTimetable(); triggerCloudSync();
+    }
+    function toggleSlot(i) { timetable[i].done = !timetable[i].done; if(timetable[i].done)addXp(25); localStorage.setItem('sh_slots', JSON.stringify(timetable)); renderTimetable(); triggerCloudSync(); }
+    function deleteSlot(i) { timetable.splice(i,1); localStorage.setItem('sh_slots', JSON.stringify(timetable)); renderTimetable(); triggerCloudSync(); }
 
-    function setTimer(m) {
-      clearInterval(timerRef);
-      isRunning = false;
-      leftSec = m * 60;
-      updateDisplay();
-      document.getElementById('timerBtn').innerText = "Start Timer";
+    // Syllabus Checklist
+    function renderTopics() {
+      const c = document.getElementById('topicsContainer'); c.innerHTML = '';
+      topics.forEach((t, i) => {
+        c.innerHTML += `<div class="topic-row ${t.done?'done':''}"><div class="d-flex align-items-center gap-3"><input type="checkbox" class="form-check-input mt-0" ${t.done?'checked':''} onchange="toggleDone(${i})"><div><span class="fw-semibold text-white t-name">${t.chapter}</span><span class="badge bg-dark border border-secondary text-info ms-2" style="font-size:0.65rem;">${t.subject}</span><span class="tier-badge tier-1 ms-1">${t.tier}</span></div></div><div class="d-flex align-items-center gap-2"><span class="rev-pill ${t.r1?'active':''}" onclick="toggleRev(${i},'r1')">R1</span><span class="rev-pill ${t.r2?'active':''}" onclick="toggleRev(${i},'r2')">R2</span><button class="btn btn-sm text-secondary ms-2" onclick="deleteTopic(${i})"><i class="bi bi-trash3"></i></button></div></div>`;
+      });
+      recalculateRealMetrics();
     }
+    function addCustomTopic() {
+      const sub = document.getElementById('inSubject').value.trim(); const chap = document.getElementById('inChapter').value.trim(); const tier = document.getElementById('inTier').value;
+      if (!chap) return;
+      topics.unshift({ subject: sub || "General", chapter: chap, tier, hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false });
+      localStorage.setItem('sh_top', JSON.stringify(topics)); document.getElementById('inChapter').value = ''; renderTopics(); renderSrsForecast(); calculateBurndownForecast(); triggerCloudSync();
+    }
+    function toggleDone(i) {
+      topics[i].done = !topics[i].done;
+      if (topics[i].done && !topics[i].doneDate) { topics[i].doneDate = new Date().toISOString().slice(0, 10); logStudyHoursToToday(2.5); addXp(250); }
+      localStorage.setItem('sh_top', JSON.stringify(topics)); renderTopics(); renderSrsQueue(); renderSrsForecast(); calculateBurndownForecast(); triggerCloudSync();
+    }
+    function toggleRev(i, key) { topics[i][key] = !topics[i][key]; localStorage.setItem('sh_top', JSON.stringify(topics)); renderTopics(); renderSrsQueue(); triggerCloudSync(); }
+    function deleteTopic(i) { topics.splice(i,1); localStorage.setItem('sh_top', JSON.stringify(topics)); renderTopics(); renderSrsForecast(); calculateBurndownForecast(); triggerCloudSync(); }
+
+    // Standard support functions
+    function renderHUD() {
+      document.getElementById('navExamBadge').innerText = config.exam;
+      const diff = Math.ceil((new Date(config.date) - new Date()) / (1000 * 60 * 60 * 24));
+      document.getElementById('statFinishDate').innerText = diff > 0 ? `${diff} Days` : "Today";
+    }
+    function updateExamTarget() { config.date = document.getElementById('drawerTargetDate').value; localStorage.setItem('sh_cfg', JSON.stringify(config)); renderHUD(); calculateBurndownForecast(); triggerCloudSync(); }
+    function recalculateRealMetrics() {
+      const done = topics.filter(t => t.done).length;
+      const pct = topics.length ? Math.round((done / topics.length) * 100) : 0;
+      document.getElementById('statSyllabus').innerText = `${pct}%`;
+      document.getElementById('statSyllabusFill').style.width = `${pct}%`;
+    }
+    function renderMcqCounter() {
+      const total = mcqState.correct + mcqState.wrong;
+      const acc = total > 0 ? ((mcqState.correct / total) * 100).toFixed(1) : "0.0";
+      document.getElementById('statMcqAccuracy').innerText = `${acc}%`;
+      document.getElementById('statMcqFill').style.width = `${Math.min(100, Math.round(((total + mcqState.skip)/mcqState.target)*100))}%`;
+    }
+    function recordMcq(t) { if(t==='correct'){mcqState.correct++;addXp(15);}if(t==='wrong')mcqState.wrong++;if(t==='skip')mcqState.skip++;localStorage.setItem('sh_mcq',JSON.stringify(mcqState));renderMcqCounter();triggerCloudSync(); }
+    function resetMcqCounter() { mcqState={correct:0,wrong:0,skip:0,target:50};localStorage.setItem('sh_mcq',JSON.stringify(mcqState));renderMcqCounter();triggerCloudSync(); }
+    function calculateBurndownForecast() {
+      const rem = topics.filter(t=>!t.done).length; const comp = topics.filter(t=>t.done).length;
+      const vel = Math.max(0.6, comp > 0 ? comp/7 : 1.0); const finish = new Date(); finish.setDate(new Date().getDate() + Math.ceil(rem / vel));
+      document.getElementById('statFinishDate').innerText = rem === 0 ? "DONE" : finish.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    }
+    function renderSrsForecast() {
+      const grid = document.getElementById('srsForecastGrid'); grid.innerHTML = ''; let total = 0;
+      for(let i=1; i<=7; i++) {
+        const target = new Date(); target.setDate(new Date().getDate() + i); let due = 0;
+        topics.forEach(t => { if(!t.done||!t.doneDate)return; const diff = Math.floor((target - new Date(t.doneDate))/(1000*60*60*24)); if(!t.r1&&diff===3)due++; else if(t.r1&&!t.r2&&diff===7)due++; else if(t.r2&&!t.r3&&diff===21)due++; });
+        total += due;
+        grid.innerHTML += `<div class="srs-forecast-col ${due>0?'has-due':''}"><div class="text-secondary mono" style="font-size:0.65rem;">${target.toLocaleDateString(undefined,{weekday:'short'})}</div><div class="fw-bold fs-5 my-1 mono ${due>0?'text-warning':'text-secondary'}">${due}</div></div>`;
+      }
+      document.getElementById('srsWeeklyLoadBadge').innerText = `${total} Due This Week`;
+    }
+    function renderSrsQueue() {
+      const c = document.getElementById('srsQueueList'); const today = new Date(); const due = [];
+      topics.forEach((t, idx) => {
+        if(!t.done||!t.doneDate)return; const diff = Math.floor((today - new Date(t.doneDate))/(1000*60*60*24));
+        if(!t.r1&&diff>=3)due.push({topic:t,idx,stage:'R1',key:'r1'}); else if(t.r1&&!t.r2&&diff>=7)due.push({topic:t,idx,stage:'R2',key:'r2'});
+      });
+      document.getElementById('srsQueueBadge').innerText = `${due.length} Pending`;
+      c.innerHTML = due.length === 0 ? `<small class="text-secondary">No topics scheduled for revision today.</small>` : due.map(d=>`<div class="srs-item"><div><div class="fw-bold text-white small">${d.topic.chapter}</div><small class="text-warning mono">${d.topic.subject} &bull; ${d.stage}</small></div><button class="btn btn-outline-warning btn-sm py-1 px-2 mono" onclick="completeSrs(${d.idx},'${d.key}')">Revised</button></div>`).join('');
+    }
+    function completeSrs(idx, key) { topics[idx][key] = true; localStorage.setItem('sh_top', JSON.stringify(topics)); addXp(75); renderTopics(); renderSrsQueue(); triggerCloudSync(); }
+    function renderHeatmap() {
+      const grid = document.getElementById('heatmapGrid'); grid.innerHTML = ''; let active = 0;
+      for(let i=89; i>=0; i--) {
+        const d = new Date(); d.setDate(new Date().getDate() - i); const k = d.toISOString().slice(0,10); const hrs = heatmapData[k] || 0;
+        if(hrs>0)active++;
+        grid.innerHTML += `<div class="heatmap-cell ${hrs>0?'l-3':''}" title="${k}: ${hrs}h"></div>`;
+      }
+      document.getElementById('heatmapSummary').innerText = `${active} active days`;
+    }
+    function logStudyHoursToToday(h) { const k = new Date().toISOString().slice(0,10); heatmapData[k] = (heatmapData[k]||0)+h; localStorage.setItem('sh_heatmap', JSON.stringify(heatmapData)); renderHeatmap(); }
+    function renderParetoMistakes() {
+      const c = document.getElementById('paretoBarsContainer'); c.innerHTML = '';
+      const counts = {"Calculation Slip":0, "Formula Memory Gap":0, "Conceptual Error":0};
+      mistakes.forEach(m => counts[m.type||"Conceptual Error"]++);
+      const total = mistakes.length;
+      if(total===0){ c.innerHTML=`<small class="text-secondary">No errors logged yet.</small>`; return; }
+      Object.entries(counts).forEach(([t, count]) => {
+        const pct = Math.round((count/total)*100);
+        c.innerHTML += `<div class="col-12"><div class="d-flex justify-content-between small mono mb-1"><span class="text-light">${t}</span><span class="text-secondary">${count} (${pct}%)</span></div><div class="pareto-bar-track"><div class="pareto-bar-fill" style="width:${pct}%;background:var(--accent-rose);"></div></div></div>`;
+      });
+    }
+    function addMistakeEntry() { const desc = document.getElementById('mistakeDescInput').value.trim(); const type = document.getElementById('mistakeTypeInput').value; if(!desc)return; mistakes.unshift({desc,type}); localStorage.setItem('sh_mis',JSON.stringify(mistakes)); document.getElementById('mistakeDescInput').value=''; renderParetoMistakes(); triggerCloudSync(); }
+    function runNegativeGrading() {
+      const c = parseInt(document.getElementById('calcCorrect').value)||0; const inc = parseInt(document.getElementById('calcIncorrect').value)||0;
+      const s = document.getElementById('calcScheme').value.split(',').map(Number);
+      document.getElementById('calcGrossScore').innerText = `+${c*s[0]}`; document.getElementById('calcPenaltyLoss').innerText = `-${inc*Math.abs(s[1])}`; document.getElementById('calcNetScore').innerText = `${(c*s[0]) - (inc*Math.abs(s[1]))}`;
+    }
+    function renderFormulaVault(list) {
+      document.getElementById('vaultFormulaList').innerHTML = list.map(item => `<div class="p-2 rounded mb-2 bg-dark border border-secondary border-opacity-25 d-flex justify-content-between align-items-center"><div><div class="fw-bold text-white small">${item.name}</div><div class="mono text-warning small">${item.formula}</div></div><button class="btn btn-sm btn-outline-info mono" onclick="navigator.clipboard.writeText('${item.formula}')">Copy</button></div>`).join('');
+    }
+    function filterVault() { const q = document.getElementById('vaultSearchInput').value.toLowerCase(); renderFormulaVault(formulaVault.filter(f=>f.name.toLowerCase().includes(q)||f.formula.toLowerCase().includes(q))); }
+
+    // Canvas
+    let canvas, ctx, drawing=false;
+    function openCanvasModal() { openModal('canvasModal'); setTimeout(()=>{ canvas=document.getElementById('sketchCanvas'); ctx=canvas.getContext('2d'); canvas.width=canvas.parentElement.clientWidth-52; canvas.height=360; ctx.fillStyle="#090d16"; ctx.fillRect(0,0,canvas.width,canvas.height); canvas.onmousedown=(e)=>{drawing=true;const r=canvas.getBoundingClientRect();ctx.beginPath();ctx.moveTo(e.clientX-r.left,e.clientY-r.top);};canvas.onmousemove=(e)=>{if(!drawing)return;const r=canvas.getBoundingClientRect();ctx.strokeStyle="#38bdf8";ctx.lineWidth=2;ctx.lineTo(e.clientX-r.left,e.clientY-r.top);ctx.stroke();};canvas.onmouseup=()=>drawing=false; },100); }
+    function setCanvasColor(c, b) { document.querySelectorAll('#canvasModal .btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }
+    function clearCanvas() { ctx.fillStyle="#090d16"; ctx.fillRect(0,0,canvas.width,canvas.height); }
+
+    // Blurt
+    let blurtTimer=null, blurtSec=120, blurtActive=false;
+    function toggleBlurtDrill() {
+      const btn = document.getElementById('blurtActionBtn'); const area = document.getElementById('blurtInputArea');
+      if(blurtActive) { clearInterval(blurtTimer); blurtActive=false; area.disabled=true; btn.innerText="Start Drill"; }
+      else { blurtActive=true; blurtSec=120; area.disabled=false; area.value=''; area.focus(); btn.innerText="Stop"; blurtTimer=setInterval(()=>{ if(blurtSec>0){blurtSec--;document.getElementById('blurtTimerDisplay').innerText=`0${Math.floor(blurtSec/60)}:${(blurtSec%60).toString().padStart(2,'0')}`;}else{clearInterval(blurtTimer);blurtActive=false;area.disabled=true;alert("Blurt complete! +75 XP earned.");addXp(75);} },1000); }
+    }
+    function stopBlurtDrill() { if(blurtActive){clearInterval(blurtTimer);blurtActive=false;} }
+    function exportOfficialAuditCertificate() { window.print(); }
   </script>
 </body>
 </html>
