@@ -30,6 +30,30 @@
       --accent-gold: #fbbf24;
     }
 
+    [data-theme="emerald"] {
+      --bg-canvas: #040906;
+      --bg-surface: #09140f;
+      --bg-card: #0d1f18;
+      --border-active: #10b981;
+      --accent-cyan: #10b981;
+    }
+
+    [data-theme="amber"] {
+      --bg-canvas: #0a0705;
+      --bg-surface: #140e0a;
+      --bg-card: #1f150f;
+      --border-active: #f59e0b;
+      --accent-cyan: #f59e0b;
+    }
+
+    [data-theme="oled"] {
+      --bg-canvas: #000000;
+      --bg-surface: #050505;
+      --bg-card: #0a0a0a;
+      --border-subtle: #171717;
+      --border-active: #38bdf8;
+    }
+
     * { box-sizing: border-box; }
 
     body {
@@ -44,7 +68,7 @@
 
     /* Navigation */
     .top-nav {
-      background: rgba(14, 19, 31, 0.92);
+      background: var(--bg-surface);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
@@ -221,7 +245,7 @@
 
     /* SRS Queue */
     .srs-item {
-      background: #111a2e;
+      background: var(--bg-surface);
       border: 1px solid rgba(245, 158, 11, 0.3);
       border-radius: 8px;
       padding: 10px 14px;
@@ -233,7 +257,7 @@
 
     /* Canvas Drawing Area */
     #sketchCanvas {
-      background: #090d16;
+      background: var(--bg-canvas);
       border: 1px solid var(--border-subtle);
       border-radius: 8px;
       cursor: crosshair;
@@ -245,7 +269,7 @@
 
     /* Inputs & Buttons */
     .hub-input {
-      background: #07090e;
+      background: var(--bg-canvas);
       border: 1px solid var(--border-subtle);
       color: #fff;
       border-radius: 8px;
@@ -253,7 +277,7 @@
       font-size: 0.9rem;
     }
     .hub-input:focus {
-      background: #07090e;
+      background: var(--bg-canvas);
       border-color: var(--accent-cyan);
       color: #fff;
       box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
@@ -284,7 +308,7 @@
       padding: 16px;
     }
     .modal-frame {
-      background: #111827;
+      background: var(--bg-card);
       border: 1px solid #334155;
       border-radius: 16px;
       max-width: 680px;
@@ -351,13 +375,16 @@
       <!-- Quick Action Buttons -->
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <button class="btn btn-outline-info btn-sm rounded-pill" onclick="openModal('vaultModal')">
-          <i class="bi bi-search me-1"></i> Formula Vault
+          <i class="bi bi-search me-1"></i> Vault
         </button>
         <button class="btn btn-outline-warning btn-sm rounded-pill" onclick="openModal('negMarkModal')">
-          <i class="bi bi-calculator me-1"></i> Negative Grading
+          <i class="bi bi-calculator me-1"></i> Grading
         </button>
-        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="openModal('migratorModal')">
-          <i class="bi bi-arrow-left-right me-1"></i> Cloud Migrator
+        <button class="btn btn-outline-success btn-sm rounded-pill" onclick="openModal('checklistModal')">
+          <i class="bi bi-check2-circle me-1"></i> Exam Checklist
+        </button>
+        <button class="btn btn-outline-light btn-sm rounded-pill" onclick="openModal('themeModal')">
+          <i class="bi bi-palette me-1"></i> Theme
         </button>
         <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="openModal('soundMixerModal')">
           <i class="bi bi-soundwave me-1"></i> Audio
@@ -688,7 +715,7 @@
       <!-- RIGHT: FOCUS ENGINE + LEITNER FLASHCARDS + NOTES -->
       <div class="col-12 col-xl-4">
         
-        <!-- Focus Engine & Tab Auditor -->
+        <!-- Focus Engine & Adaptive Break Optimizer -->
         <div class="card-panel text-center mb-4">
           <div class="stat-title mb-2">POMODORO FOCUS ENGINE</div>
           <div id="timerDisplay" class="display-3 fw-bold my-2 text-white mono" style="letter-spacing: -2px;">25:00</div>
@@ -705,13 +732,13 @@
           </div>
 
           <div class="btn-group w-100 btn-group-sm mb-2">
-            <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25)">25m</button>
-            <button class="btn btn-outline-secondary" onclick="setTimerDuration(50)">50m</button>
-            <button class="btn btn-outline-secondary" onclick="setTimerDuration(5)">5m Break</button>
+            <button class="btn btn-outline-secondary active" onclick="setTimerDuration(25, 5)">25m (5m Rest)</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(50, 15)">50m (15m Rest)</button>
+            <button class="btn btn-outline-secondary" onclick="setTimerDuration(5, 2)">5m Break</button>
           </div>
         </div>
 
-        <!-- Leitner Flashcard Deck (Boxes 1-5 Spaced Memory) -->
+        <!-- Leitner Flashcard Deck & Mastery Stats -->
         <div class="card-panel mb-4">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
@@ -721,21 +748,24 @@
             <button class="btn btn-outline-secondary btn-sm" onclick="openModal('cardModal')"><i class="bi bi-plus-lg"></i></button>
           </div>
           
-          <div id="flashcardBox" class="p-3 rounded text-center border border-secondary border-opacity-25 mb-2" style="background: #07090e; min-height: 120px; cursor: pointer;" onclick="flipCurrentCard()">
+          <div id="flashcardBox" class="p-3 rounded text-center border border-secondary border-opacity-25 mb-2" style="background: var(--bg-canvas); min-height: 120px; cursor: pointer;" onclick="flipCurrentCard()">
             <small class="text-secondary d-block mono mb-1" id="cardTopicLabel">CARD 1/1 (TAP TO FLIP)</small>
             <div class="fw-bold text-white fs-6 mt-2" id="cardContent">Click to flip card</div>
           </div>
 
           <div class="d-flex gap-1 mb-2">
-            <button class="btn btn-sm btn-outline-danger w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner(1)">Again (Box 1)</button>
+            <button class="btn btn-sm btn-outline-danger w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner(1)">Again</button>
             <button class="btn btn-sm btn-outline-warning w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner('hard')">Hard</button>
-            <button class="btn btn-sm btn-outline-info w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner('good')">Good (+1)</button>
-            <button class="btn btn-sm btn-outline-success w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner('easy')">Easy (+2)</button>
+            <button class="btn btn-sm btn-outline-info w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner('good')">Good</button>
+            <button class="btn btn-sm btn-outline-success w-100 py-1" style="font-size: 0.75rem;" onclick="gradeLeitner('easy')">Easy</button>
           </div>
 
-          <div class="d-flex justify-content-between">
-            <button class="btn btn-sm btn-outline-secondary" onclick="prevCard()">&larr; Prev</button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="nextCard()">Next &rarr;</button>
+          <div class="d-flex justify-content-between align-items-center text-secondary small mono">
+            <span id="masteryStatsText">Mastered: 0% (Box 5)</span>
+            <div>
+              <button class="btn btn-sm text-secondary p-0 me-2" onclick="prevCard()">&larr;</button>
+              <button class="btn btn-sm text-secondary p-0" onclick="nextCard()">&rarr;</button>
+            </div>
           </div>
         </div>
 
@@ -776,8 +806,6 @@
         <h5 class="fw-bold text-warning mb-0"><i class="bi bi-calculator me-2"></i>Exam Negative Marking Deduction Calculator</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('negMarkModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small mb-3">Separate your gross score from negative penalty loss to see the true impact of guesswork.</p>
-
       <div class="row g-2 mb-3">
         <div class="col-4">
           <label class="small text-secondary mb-1">CORRECT</label>
@@ -793,117 +821,76 @@
             <option value="4,-1" selected>+4 / -1 (JEE / NEET)</option>
             <option value="3,-1">+3 / -1 (Standard)</option>
             <option value="2,-0.66">+2 / -0.66 (Civil)</option>
-            <option value="1,-0.25">+1 / -0.25 (Banking)</option>
           </select>
         </div>
       </div>
-
       <div class="p-3 rounded bg-dark border border-secondary border-opacity-25 mono">
-        <div class="d-flex justify-content-between mb-1">
-          <span class="text-secondary">Gross Score Earned:</span>
-          <strong class="text-success" id="calcGrossScore">+180 Marks</strong>
-        </div>
-        <div class="d-flex justify-content-between mb-1">
-          <span class="text-secondary">Negative Penalty Loss:</span>
-          <strong class="text-danger" id="calcPenaltyLoss">-12 Marks</strong>
-        </div>
+        <div class="d-flex justify-content-between mb-1"><span class="text-secondary">Gross Score:</span><strong class="text-success" id="calcGrossScore">+180</strong></div>
+        <div class="d-flex justify-content-between mb-1"><span class="text-secondary">Penalty Loss:</span><strong class="text-danger" id="calcPenaltyLoss">-12</strong></div>
         <hr class="border-secondary my-2">
-        <div class="d-flex justify-content-between fs-5 fw-bold">
-          <span class="text-white">Net Official Score:</span>
-          <span class="text-info" id="calcNetScore">168 Marks</span>
-        </div>
+        <div class="d-flex justify-content-between fs-5 fw-bold"><span class="text-white">Net Score:</span><span class="text-info" id="calcNetScore">168</span></div>
       </div>
     </div>
   </div>
 
-  <!-- 3. One-Click Full-State JSON Cloud Migrator Modal -->
-  <div id="migratorModal" class="modal-backdrop-custom">
+  <!-- 3. One-Click Exam Day Checklist Generator Modal -->
+  <div id="checklistModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-success mb-0"><i class="bi bi-arrow-left-right me-2"></i>Full-State JSON Cloud Migrator</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('migratorModal')"><i class="bi bi-x-lg"></i></button>
+        <h5 class="fw-bold text-success mb-0"><i class="bi bi-check2-circle me-2"></i>Exam Day Logistics Checklist</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('checklistModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small mb-3">Seamlessly transfer your entire profile, syllabus matrix, Leitner flashcards, mistake logs, and XP data between browsers or devices.</p>
+      <p class="text-secondary small mb-3">Printable pre-exam readiness checklist.</p>
+      <div class="d-grid gap-2 mb-3 mono small">
+        <label class="p-2 rounded bg-dark border border-secondary border-opacity-25"><input type="checkbox" class="form-check-input me-2"> Admit Card / Hall Ticket (Printed)</label>
+        <label class="p-2 rounded bg-dark border border-secondary border-opacity-25"><input type="checkbox" class="form-check-input me-2"> Government Photo ID (Aadhar / Passport)</label>
+        <label class="p-2 rounded bg-dark border border-secondary border-opacity-25"><input type="checkbox" class="form-check-input me-2"> Blue/Black Ballpoint Pens & Transparent Pouch</label>
+        <label class="p-2 rounded bg-dark border border-secondary border-opacity-25"><input type="checkbox" class="form-check-input me-2"> Formula Revision Cheat-Sheet</label>
+        <label class="p-2 rounded bg-dark border border-secondary border-opacity-25"><input type="checkbox" class="form-check-input me-2"> 8 Hours Sleep prior to exam night</label>
+      </div>
+      <button class="btn btn-outline-success w-100 py-2" onclick="window.print()">Print Checklist</button>
+    </div>
+  </div>
 
-      <div class="mb-3">
-        <button class="btn btn-action-primary w-100 py-2 mb-2" onclick="exportFullJsonState()">
-          <i class="bi bi-download me-1"></i> Download Complete Backup (.json)
-        </button>
-        <label class="btn btn-outline-light w-100 py-2 mono" style="cursor: pointer;">
-          <i class="bi bi-upload me-1"></i> Restore from JSON File
-          <input type="file" id="stateFileInput" accept=".json" style="display: none;" onchange="importFullJsonState(event)">
-        </label>
+  <!-- 4. Theme & OLED Accent Switcher Modal -->
+  <div id="themeModal" class="modal-backdrop-custom">
+    <div class="modal-frame">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0"><i class="bi bi-palette me-2"></i>Workspace Theme Switcher</h5>
+        <button class="btn btn-sm text-secondary" onclick="closeModal('themeModal')"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="d-grid gap-2">
+        <button class="btn btn-outline-info p-3 text-start" onclick="setWorkspaceTheme('default')"><strong>Default Cyber Blue</strong> // Standard High-Contrast Canvas</button>
+        <button class="btn btn-outline-success p-3 text-start" onclick="setWorkspaceTheme('emerald')"><strong>Emerald Matrix</strong> // Deep Forest Green Tint</button>
+        <button class="btn btn-outline-warning p-3 text-start" onclick="setWorkspaceTheme('amber')"><strong>Amber Dusk</strong> // Warm Low-Blue Late Night Mode</button>
+        <button class="btn btn-outline-light p-3 text-start" onclick="setWorkspaceTheme('oled')"><strong>Ultra-Dark OLED</strong> // Pure Black Pure Contrast</button>
       </div>
     </div>
   </div>
 
-  <!-- 4. Multi-Track Ambient Soundscape & Binaural Modal -->
+  <!-- Multi-Track Ambient Soundscape & Binaural Modal -->
   <div id="soundMixerModal" class="modal-backdrop-custom">
     <div class="modal-frame">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold text-warning mb-0"><i class="bi bi-sliders2-vertical me-2"></i>Ambient & Binaural Synthesizer</h5>
         <button class="btn btn-sm text-secondary" onclick="closeModal('soundMixerModal')"><i class="bi bi-x-lg"></i></button>
       </div>
-      <p class="text-secondary small mb-3">Synthesized live via the Web Audio API. Match your immediate study task to neural frequency presets.</p>
-
       <div class="mb-4">
         <label class="small text-secondary fw-bold mono mb-2 d-block">SELECT TARGET NEURAL FREQUENCY</label>
         <div class="row g-2">
-          <div class="col-6 col-md-3">
-            <button class="btn btn-outline-info btn-sm w-100 py-2 mono active" id="btnWaveTheta" onclick="setBinauralWave(6, 'btnWaveTheta')">
-              <div class="fw-bold">Theta (6Hz)</div>
-              <small style="font-size: 0.65rem;">Deep Insight</small>
-            </button>
-          </div>
-          <div class="col-6 col-md-3">
-            <button class="btn btn-outline-success btn-sm w-100 py-2 mono" id="btnWaveAlpha" onclick="setBinauralWave(10, 'btnWaveAlpha')">
-              <div class="fw-bold">Alpha (10Hz)</div>
-              <small style="font-size: 0.65rem;">Flow Reading</small>
-            </button>
-          </div>
-          <div class="col-6 col-md-3">
-            <button class="btn btn-outline-warning btn-sm w-100 py-2 mono" id="btnWaveBeta" onclick="setBinauralWave(20, 'btnWaveBeta')">
-              <div class="fw-bold">Beta (20Hz)</div>
-              <small style="font-size: 0.65rem;">Rapid MCQs</small>
-            </button>
-          </div>
-          <div class="col-6 col-md-3">
-            <button class="btn btn-outline-danger btn-sm w-100 py-2 mono" id="btnWaveGamma" onclick="setBinauralWave(40, 'btnWaveGamma')">
-              <div class="fw-bold">Gamma (40Hz)</div>
-              <small style="font-size: 0.65rem;">Peak Recall</small>
-            </button>
-          </div>
+          <div class="col-6 col-md-3"><button class="btn btn-outline-info btn-sm w-100 py-2 mono active" id="btnWaveTheta" onclick="setBinauralWave(6, 'btnWaveTheta')">Theta (6Hz)</button></div>
+          <div class="col-6 col-md-3"><button class="btn btn-outline-success btn-sm w-100 py-2 mono" id="btnWaveAlpha" onclick="setBinauralWave(10, 'btnWaveAlpha')">Alpha (10Hz)</button></div>
+          <div class="col-6 col-md-3"><button class="btn btn-outline-warning btn-sm w-100 py-2 mono" id="btnWaveBeta" onclick="setBinauralWave(20, 'btnWaveBeta')">Beta (20Hz)</button></div>
+          <div class="col-6 col-md-3"><button class="btn btn-outline-danger btn-sm w-100 py-2 mono" id="btnWaveGamma" onclick="setBinauralWave(40, 'btnWaveGamma')">Gamma (40Hz)</button></div>
         </div>
       </div>
-
       <div class="d-flex justify-content-between align-items-center mb-3">
         <span class="fw-bold text-white">Master Ambient Engine</span>
         <button class="btn btn-action-primary btn-sm px-3" id="masterAudioBtn" onclick="toggleAudioEngine()">Start Ambient Audio</button>
       </div>
-
-      <div class="mb-3">
-        <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light">Deep Brown Noise (40Hz Baseline)</span>
-          <span class="mono text-secondary" id="volValBrown">50%</span>
-        </div>
-        <input type="range" class="sound-slider" id="sliderBrown" min="0" max="100" value="50" oninput="updateAudioGains()">
-      </div>
-
-      <div class="mb-3">
-        <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light">Rainfall Stream (Bandpass Pink)</span>
-          <span class="mono text-secondary" id="volValRain">40%</span>
-        </div>
-        <input type="range" class="sound-slider" id="sliderRain" min="0" max="100" value="40" oninput="updateAudioGains()">
-      </div>
-
-      <div class="mb-3">
-        <div class="d-flex justify-content-between small mb-1">
-          <span class="text-light" id="binauralLabelText">Active Binaural Beat (Theta 6Hz)</span>
-          <span class="mono text-secondary" id="volValBinaural">30%</span>
-        </div>
-        <input type="range" class="sound-slider" id="sliderBinaural" min="0" max="100" value="30" oninput="updateAudioGains()">
-      </div>
+      <div class="mb-3"><div class="d-flex justify-content-between small mb-1"><span class="text-light">Brown Noise</span><span class="mono text-secondary" id="volValBrown">50%</span></div><input type="range" class="sound-slider" id="sliderBrown" min="0" max="100" value="50" oninput="updateAudioGains()"></div>
+      <div class="mb-3"><div class="d-flex justify-content-between small mb-1"><span class="text-light">Rainfall Stream</span><span class="mono text-secondary" id="volValRain">40%</span></div><input type="range" class="sound-slider" id="sliderRain" min="0" max="100" value="40" oninput="updateAudioGains()"></div>
+      <div class="mb-3"><div class="d-flex justify-content-between small mb-1"><span class="text-light" id="binauralLabelText">Binaural Beat (Theta 6Hz)</span><span class="mono text-secondary" id="volValBinaural">30%</span></div><input type="range" class="sound-slider" id="sliderBinaural" min="0" max="100" value="30" oninput="updateAudioGains()"></div>
     </div>
   </div>
 
@@ -920,13 +907,9 @@
           <button class="btn btn-sm btn-outline-light" onclick="setCanvasColor('#ffffff', this)">White</button>
           <button class="btn btn-sm btn-outline-warning" onclick="setCanvasColor('#f59e0b', this)">Yellow</button>
           <button class="btn btn-sm btn-outline-danger" onclick="setCanvasColor('#f43f5e', this)">Red</button>
-          <button class="btn btn-sm btn-outline-secondary" onclick="setCanvasColor('#090d16', this)">Eraser</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="setCanvasColor('#07090e', this)">Eraser</button>
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <label class="text-secondary small mono">Size</label>
-          <input type="range" min="1" max="10" value="2" id="canvasBrushSize" style="width: 80px;" oninput="brushSize = this.value">
-          <button class="btn btn-sm btn-outline-danger" onclick="clearCanvas()">Clear Canvas</button>
-        </div>
+        <button class="btn btn-sm btn-outline-danger" onclick="clearCanvas()">Clear Canvas</button>
       </div>
       <canvas id="sketchCanvas"></canvas>
     </div>
@@ -935,42 +918,12 @@
   <!-- Profile & Cutoff Target Modal -->
   <div id="profileModal" class="modal-backdrop-custom">
     <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-white mb-0">Study Targets & Cutoff Goals</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('profileModal')"><i class="bi bi-x-lg"></i></button>
-      </div>
-
-      <div class="mb-3">
-        <label class="small text-secondary mb-1">STUDENT ID / SYNC USERNAME</label>
-        <input type="text" id="cfgUsername" class="form-control hub-input" placeholder="e.g. raghav2026">
-      </div>
-
-      <div class="mb-3">
-        <label class="small text-secondary mb-1">YOUR NAME</label>
-        <input type="text" id="cfgName" class="form-control hub-input" placeholder="e.g. Raghav">
-      </div>
-
-      <div class="mb-3">
-        <label class="small text-secondary mb-1">TARGET EXAM</label>
-        <input type="text" id="cfgExam" class="form-control hub-input" placeholder="e.g. JEE Advanced 2026">
-      </div>
-
-      <div class="row g-2 mb-3">
-        <div class="col-6">
-          <label class="small text-secondary mb-1">DAILY TARGET (HOURS)</label>
-          <input type="number" id="cfgHours" class="form-control hub-input" value="6" min="1" max="16">
-        </div>
-        <div class="col-6">
-          <label class="small text-secondary mb-1">TARGET CUTOFF (%)</label>
-          <input type="number" id="cfgCutoff" class="form-control hub-input" value="75" min="1" max="100">
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label class="small text-secondary mb-1">EXAM TARGET DATE</label>
-        <input type="date" id="cfgDate" class="form-control hub-input">
-      </div>
-
+      <div class="d-flex justify-content-between align-items-center mb-3"><h5 class="fw-bold text-white mb-0">Study Targets</h5><button class="btn btn-sm text-secondary" onclick="closeModal('profileModal')"><i class="bi bi-x-lg"></i></button></div>
+      <div class="mb-3"><label class="small text-secondary mb-1">USERNAME</label><input type="text" id="cfgUsername" class="form-control hub-input"></div>
+      <div class="mb-3"><label class="small text-secondary mb-1">NAME</label><input type="text" id="cfgName" class="form-control hub-input"></div>
+      <div class="mb-3"><label class="small text-secondary mb-1">TARGET EXAM</label><input type="text" id="cfgExam" class="form-control hub-input"></div>
+      <div class="row g-2 mb-3"><div class="col-6"><label class="small text-secondary mb-1">HOURS</label><input type="number" id="cfgHours" class="form-control hub-input"></div><div class="col-6"><label class="small text-secondary mb-1">CUTOFF %</label><input type="number" id="cfgCutoff" class="form-control hub-input"></div></div>
+      <div class="mb-4"><label class="small text-secondary mb-1">DATE</label><input type="date" id="cfgDate" class="form-control hub-input"></div>
       <button class="btn btn-action-primary w-100 py-2" onclick="saveConfiguration()">Save Targets</button>
     </div>
   </div>
@@ -978,18 +931,9 @@
   <!-- Flashcard Modal -->
   <div id="cardModal" class="modal-backdrop-custom">
     <div class="modal-frame">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-white mb-0">New Flashcard</h5>
-        <button class="btn btn-sm text-secondary" onclick="closeModal('cardModal')"><i class="bi bi-x-lg"></i></button>
-      </div>
-      <div class="mb-3">
-        <label class="small text-secondary mb-1">CONCEPT / QUESTION (FRONT)</label>
-        <input type="text" id="cardFrontInput" class="form-control hub-input" placeholder="e.g., Carnot Efficiency">
-      </div>
-      <div class="mb-4">
-        <label class="small text-secondary mb-1">ANSWER / FORMULA (BACK)</label>
-        <input type="text" id="cardBackInput" class="form-control hub-input" placeholder="e.g., η = 1 - (T2/T1)">
-      </div>
+      <div class="d-flex justify-content-between align-items-center mb-3"><h5 class="fw-bold text-white mb-0">New Flashcard</h5><button class="btn btn-sm text-secondary" onclick="closeModal('cardModal')"><i class="bi bi-x-lg"></i></button></div>
+      <div class="mb-3"><label class="small text-secondary mb-1">FRONT</label><input type="text" id="cardFrontInput" class="form-control hub-input"></div>
+      <div class="mb-4"><label class="small text-secondary mb-1">BACK</label><input type="text" id="cardBackInput" class="form-control hub-input"></div>
       <button class="btn btn-action-primary w-100 py-2" onclick="saveNewCard()">Add Card</button>
     </div>
   </div>
@@ -999,14 +943,8 @@
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // Core Data State
     let config = JSON.parse(localStorage.getItem('sh_cfg') || JSON.stringify({
-      username: "student_default",
-      name: "Raghav",
-      exam: "Target Exam 2026",
-      hours: 6,
-      cutoff: 75,
-      date: "2026-10-15"
+      username: "student_default", name: "Raghav", exam: "Target Exam 2026", hours: 6, cutoff: 75, date: "2026-10-15"
     }));
 
     let topics = JSON.parse(localStorage.getItem('sh_top') || JSON.stringify([
@@ -1019,20 +957,13 @@
       { subject: "Physics", name: "De Broglie Wavelength", formula: "λ = h / p = h / √(2mE)" },
       { subject: "Physics", name: "Carnot Engine Efficiency", formula: "η = 1 - (T_cold / T_hot) = W / Q_in" },
       { subject: "Physics", name: "Lens Maker's Equation", formula: "1/f = (μ - 1)(1/R1 - 1/R2)" },
-      { subject: "Physics", name: "Biot-Savart Law", formula: "dB = (μ₀/4π) · (I dl × r̂) / r²" },
       { subject: "Maths", name: "Integration by Parts", formula: "∫ u v dx = u ∫ v dx - ∫ (u' ∫ v dx) dx" },
       { subject: "Maths", name: "Euler's Identity", formula: "e^(iθ) = cos(θ) + i sin(θ)" },
-      { subject: "Maths", name: "Distance from Point to Plane", formula: "d = |Ax₁ + By₁ + Cz₁ + D| / √(A² + B² + C²)" },
       { subject: "Chemistry", name: "Arrhenius Rate Equation", formula: "k = A · e^(-Ea / RT)" },
-      { subject: "Chemistry", name: "Nernst Equation", formula: "E_cell = E°_cell - (0.0591 / n) log(Q)" },
-      { subject: "Chemistry", name: "Ideal Gas Law", formula: "PV = nRT  (R = 8.314 J/mol·K)" },
-      { subject: "CS", name: "Master Theorem for Recursion", formula: "T(n) = aT(n/b) + Θ(n^k log^p n)" }
+      { subject: "Chemistry", name: "Nernst Equation", formula: "E_cell = E°_cell - (0.0591 / n) log(Q)" }
     ];
 
-    let mcqState = JSON.parse(localStorage.getItem('sh_mcq') || JSON.stringify({
-      correct: 0, wrong: 0, skip: 0, target: 50
-    }));
-
+    let mcqState = JSON.parse(localStorage.getItem('sh_mcq') || JSON.stringify({ correct: 0, wrong: 0, skip: 0, target: 50 }));
     let timeblocks = JSON.parse(localStorage.getItem('sh_blocks') || JSON.stringify([
       { id: 1, label: "Slot 1: Deep Theory Block", startHour: 6, endHour: 9, completed: false },
       { id: 2, label: "Slot 2: Practice & Numericals", startHour: 10, endHour: 13, completed: false },
@@ -1042,38 +973,22 @@
 
     let flashcards = JSON.parse(localStorage.getItem('sh_cards') || JSON.stringify([
       { q: "Work-Energy Theorem", a: "Work Done by all forces = Change in Kinetic Energy (ΔK)", box: 1 },
-      { q: "De Broglie Wavelength", a: "λ = h / p = h / √(2mE)", box: 1 }
+      { q: "De Broglie Wavelength", a: "λ = h / p = h / √(2mE)", box: 5 }
     ]));
 
     let mistakes = JSON.parse(localStorage.getItem('sh_mis') || '[]');
     let mockTests = JSON.parse(localStorage.getItem('sh_mocks') || '[]');
     let heatmapData = JSON.parse(localStorage.getItem('sh_heatmap') || '{}');
     let tabBreachesCount = parseInt(localStorage.getItem('sh_breaches') || '0');
-    let studyMinutesToday = parseInt(localStorage.getItem('sh_study_mins') || '45');
     let totalXp = parseInt(localStorage.getItem('sh_xp') || '350');
+    let activeTheme = localStorage.getItem('sh_theme') || 'default';
 
     let activeSubjectFilter = "ALL";
     let currentCardIdx = 0;
     let isFlipped = false;
 
-    // Lifecycle
     window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const res = await fetch(`/api/sync/load?username=${encodeURIComponent(config.username)}`);
-        const result = await res.json();
-        if (result.found && result.data) {
-          if (result.data.topics) topics = result.data.topics;
-          if (result.data.config) config = result.data.config;
-          if (result.data.mistakes) mistakes = result.data.mistakes;
-          if (result.data.flashcards) flashcards = result.data.flashcards;
-          if (result.data.mockTests) mockTests = result.data.mockTests;
-          if (result.data.heatmapData) heatmapData = result.data.heatmapData;
-          if (result.data.timeblocks) timeblocks = result.data.timeblocks;
-          if (result.data.mcqState) mcqState = result.data.mcqState;
-          if (result.data.totalXp) totalXp = result.data.totalXp;
-        }
-      } catch (err) {}
-
+      setWorkspaceTheme(activeTheme, false);
       renderHUD();
       renderXpEngine();
       renderFormulaVault(formulaVault);
@@ -1098,31 +1013,14 @@
       if (savedNotes) document.getElementById('scratchArea').value = savedNotes;
     });
 
-    // Cloud Auto-Sync
     async function triggerCloudSync() {
       const syncBadge = document.getElementById('cloudSyncStatus');
       syncBadge.innerHTML = `<i class="bi bi-arrow-repeat text-warning me-1"></i> Syncing...`;
-
-      const payload = {
-        username: config.username,
-        config,
-        topics,
-        mistakes,
-        flashcards,
-        mockTests,
-        heatmapData,
-        timeblocks,
-        tabBreachesCount,
-        mcqState,
-        totalXp,
-        notes: document.getElementById('scratchArea').value
-      };
-
       try {
         await fetch('/api/sync/save', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ username: config.username, config, topics, mistakes, flashcards, mockTests, heatmapData, timeblocks, tabBreachesCount, mcqState, totalXp, notes: document.getElementById('scratchArea').value })
         });
         syncBadge.innerHTML = `<i class="bi bi-cloud-check text-success me-1"></i> Synced`;
       } catch (e) {
@@ -1130,604 +1028,24 @@
       }
     }
 
-    // 1. Searchable Quick-Formula Vault
-    function renderFormulaVault(list) {
-      const container = document.getElementById('vaultFormulaList');
-      container.innerHTML = '';
-      if (list.length === 0) {
-        container.innerHTML = `<div class="text-secondary small py-3 text-center">No matching equations found.</div>`;
-        return;
-      }
-      list.forEach(item => {
-        const div = document.createElement('div');
-        div.className = "p-3 rounded mb-2 bg-dark border border-secondary border-opacity-25 d-flex justify-content-between align-items-center";
-        div.innerHTML = `
-          <div>
-            <div class="fw-bold text-white small">${item.name}</div>
-            <span class="badge bg-secondary bg-opacity-25 text-info mb-1" style="font-size: 0.65rem;">${item.subject}</span>
-            <div class="mono text-warning small mt-1">${item.formula}</div>
-          </div>
-          <button class="btn btn-sm btn-outline-info mono" style="font-size: 0.75rem;" onclick="copyFormula('${item.formula.replace(/'/g, "\\'")}', this)">
-            Copy
-          </button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function filterVault() {
-      const q = document.getElementById('vaultSearchInput').value.toLowerCase().trim();
-      const filtered = formulaVault.filter(f => f.name.toLowerCase().includes(q) || f.subject.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q));
-      renderFormulaVault(filtered);
-    }
-
-    function copyFormula(text, btn) {
-      navigator.clipboard.writeText(text);
-      const prev = btn.innerText;
-      btn.innerText = "Copied!";
-      setTimeout(() => { btn.innerText = prev; }, 1200);
-    }
-
-    // 2. Rolling Momentum & Drift Guard
-    function checkRollingMomentumDrift() {
-      const doneList = topics.filter(t => t.done && t.doneDate);
-      const statusEl = document.getElementById('statMomentumStatus');
-      const fillEl = document.getElementById('statMomentumFill');
-
-      if (doneList.length < 4) {
-        statusEl.innerText = "Balanced";
-        fillEl.style.width = "100%";
-        return;
-      }
-
-      const recent4 = doneList.slice(-4).map(t => t.subject.toUpperCase());
-      const allSame = recent4.every(s => s === recent4[0]);
-
-      if (allSame) {
-        statusEl.innerText = `Drift: ${recent4[0]}`;
-        statusEl.style.color = "var(--accent-rose)";
-        fillEl.style.width = "30%";
-        fillEl.style.background = "var(--accent-rose)";
-      } else {
-        statusEl.innerText = "Balanced";
-        statusEl.style.color = "var(--accent-violet)";
-        fillEl.style.width = "100%";
-        fillEl.style.background = "var(--accent-violet)";
+    // Themes
+    function setWorkspaceTheme(themeName, save = true) {
+      activeTheme = themeName;
+      if (themeName === 'default') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', themeName);
+      if (save) {
+        localStorage.setItem('sh_theme', themeName);
+        closeModal('themeModal');
       }
     }
 
-    // 3. Negative Marking Grading Calculator
-    function runNegativeGrading() {
-      const correct = parseInt(document.getElementById('calcCorrect').value) || 0;
-      const incorrect = parseInt(document.getElementById('calcIncorrect').value) || 0;
-      const scheme = document.getElementById('calcScheme').value.split(',').map(Number);
-      const plusMark = scheme[0];
-      const minusMark = Math.abs(scheme[1]);
-
-      const gross = correct * plusMark;
-      const penalty = incorrect * minusMark;
-      const net = (gross - penalty).toFixed(1);
-
-      document.getElementById('calcGrossScore').innerText = `+${gross} Marks`;
-      document.getElementById('calcPenaltyLoss').innerText = `-${penalty} Marks`;
-      document.getElementById('calcNetScore').innerText = `${net} Marks`;
-    }
-
-    // 4. One-Click Full-State JSON Migrator
-    function exportFullJsonState() {
-      const fullState = {
-        config,
-        topics,
-        mistakes,
-        flashcards,
-        mockTests,
-        heatmapData,
-        timeblocks,
-        tabBreachesCount,
-        mcqState,
-        totalXp,
-        notes: document.getElementById('scratchArea').value,
-        exportedAt: new Date().toISOString()
-      };
-      const blob = new Blob([JSON.stringify(fullState, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `StudyHub_FullState_${config.username}_${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-    }
-
-    function importFullJsonState(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = JSON.parse(e.target.result);
-          if (data.topics) topics = data.topics;
-          if (data.config) config = data.config;
-          if (data.mistakes) mistakes = data.mistakes;
-          if (data.flashcards) flashcards = data.flashcards;
-          if (data.mockTests) mockTests = data.mockTests;
-          if (data.heatmapData) heatmapData = data.heatmapData;
-          if (data.timeblocks) timeblocks = data.timeblocks;
-          if (data.mcqState) mcqState = data.mcqState;
-          if (data.totalXp) totalXp = data.totalXp;
-
-          localStorage.setItem('sh_cfg', JSON.stringify(config));
-          localStorage.setItem('sh_top', JSON.stringify(topics));
-          localStorage.setItem('sh_mis', JSON.stringify(mistakes));
-          localStorage.setItem('sh_cards', JSON.stringify(flashcards));
-          localStorage.setItem('sh_mocks', JSON.stringify(mockTests));
-          localStorage.setItem('sh_heatmap', JSON.stringify(heatmapData));
-          localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
-          localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
-          localStorage.setItem('sh_xp', totalXp);
-
-          triggerCloudSync();
-          location.reload();
-        } catch (err) {
-          alert("Invalid JSON state backup file.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // 5. Syllabus Burn-Down & Exam Deadline Forecaster
-    function calculateBurndownForecast() {
-      const remainingTopics = topics.filter(t => !t.done).length;
-      const targetDate = new Date(config.date);
-      const today = new Date();
-      const daysUntilExam = Math.max(1, Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24)));
-
-      const completedCount = topics.filter(t => t.done).length;
-      const velocity = Math.max(0.6, completedCount > 0 ? (completedCount / 7) : 1.0);
-
-      const daysNeeded = Math.ceil(remainingTopics / velocity);
-      const estFinishDate = new Date();
-      estFinishDate.setDate(today.getDate() + daysNeeded);
-
-      const finishStr = remainingTopics === 0 ? "DONE" : estFinishDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      document.getElementById('statFinishDate').innerText = finishStr;
-
-      const paceRatio = Math.min(100, Math.round((daysUntilExam / Math.max(1, daysNeeded)) * 100));
-      document.getElementById('statPaceFill').style.width = `${paceRatio}%`;
-    }
-
-    // 6. Next 7-Day Spaced Repetition (SRS) Forecast
-    function renderSrsForecast() {
-      const grid = document.getElementById('srsForecastGrid');
-      grid.innerHTML = '';
-      const today = new Date();
-      let totalDueWeek = 0;
-
-      for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
-        const targetDay = new Date();
-        targetDay.setDate(today.getDate() + dayOffset);
-        let dueOnDay = 0;
-
-        topics.forEach(t => {
-          if (!t.done || !t.doneDate) return;
-          const compDate = new Date(t.doneDate);
-          const diffDays = Math.floor((targetDay - compDate) / (1000 * 60 * 60 * 24));
-
-          if (!t.r1 && diffDays === 3) dueOnDay++;
-          else if (t.r1 && !t.r2 && diffDays === 7) dueOnDay++;
-          else if (t.r2 && !t.r3 && diffDays === 21) dueOnDay++;
-        });
-
-        totalDueWeek += dueOnDay;
-        const dayLabel = targetDay.toLocaleDateString(undefined, { weekday: 'short' });
-        const dateNum = targetDay.getDate();
-
-        const col = document.createElement('div');
-        col.className = `srs-forecast-col ${dueOnDay > 0 ? 'has-due' : ''}`;
-        col.innerHTML = `
-          <div class="text-secondary mono" style="font-size: 0.65rem;">${dayLabel} ${dateNum}</div>
-          <div class="fw-bold fs-5 my-1 mono ${dueOnDay > 0 ? 'text-warning' : 'text-secondary'}">${dueOnDay}</div>
-          <small style="font-size: 0.65rem;" class="text-secondary">Due</small>
-        `;
-        grid.appendChild(col);
-      }
-
-      document.getElementById('srsWeeklyLoadBadge').innerText = `${totalDueWeek} Due Over Next 7 Days`;
-    }
-
-    // 7. Mock Test Error Root-Cause Pareto Analyzer
-    function renderParetoMistakes() {
-      const container = document.getElementById('paretoBarsContainer');
-      const badge = document.getElementById('topLeakBadge');
-      container.innerHTML = '';
-
-      const counts = {
-        "Calculation Slip": 0,
-        "Formula Memory Gap": 0,
-        "Misread Question": 0,
-        "Conceptual Error": 0,
-        "Time Pressure": 0
-      };
-
-      mistakes.forEach(m => {
-        const type = m.type || "Conceptual Error";
-        counts[type] = (counts[type] || 0) + 1;
-      });
-
-      const total = mistakes.length;
-      if (total === 0) {
-        container.innerHTML = `<div class="col-12 text-secondary small">No errors recorded yet. Log your mistakes to see your Pareto breakdown.</div>`;
-        badge.innerText = "No Errors Logged";
-        return;
-      }
-
-      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-      badge.innerText = `Top Leak: ${sorted[0][0]} (${Math.round((sorted[0][1]/total)*100)}%)`;
-
-      const colors = ["#f43f5e", "#f59e0b", "#38bdf8", "#818cf8", "#10b981"];
-
-      sorted.forEach(([type, count], i) => {
-        const pct = Math.round((count / total) * 100);
-        const col = document.createElement('div');
-        col.className = "col-12 col-md-6";
-        col.innerHTML = `
-          <div class="d-flex justify-content-between small mono mb-1">
-            <span class="text-light">${type}</span>
-            <span class="text-secondary">${count} (${pct}%)</span>
-          </div>
-          <div class="pareto-bar-track">
-            <div class="pareto-bar-fill" style="width: ${pct}%; background: ${colors[i % colors.length]};"></div>
-          </div>
-        `;
-        container.appendChild(col);
-      });
-    }
-
-    // 8. 4-Stage Binaural Web Audio Synthesizer
-    let audioCtx = null;
-    let brownNode = null, brownGain = null;
-    let rainNode = null, rainGain = null, rainFilter = null;
-    let oscLeft = null, oscRight = null, binauralGain = null;
-    let isMixerRunning = false;
-    let activeBeatFreq = 6;
-
-    function setBinauralWave(freq, btnId) {
-      activeBeatFreq = freq;
-      document.querySelectorAll('#soundMixerModal .row .btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(btnId).classList.add('active');
-
-      const labels = { 6: "Theta 6Hz (Deep Insight)", 10: "Alpha 10Hz (Flow Reading)", 20: "Beta 20Hz (Rapid MCQs)", 40: "Gamma 40Hz (Peak Recall)" };
-      document.getElementById('binauralLabelText').innerText = `Active Binaural Beat (${labels[freq]})`;
-
-      if (oscRight && audioCtx) {
-        oscRight.frequency.setValueAtTime(200 + freq, audioCtx.currentTime);
-      }
-    }
-
-    function initAudioMixer() {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Track 1: Deep Brown Noise
-      const bufSize = audioCtx.sampleRate * 2;
-      const bBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-      const bData = bBuf.getChannelData(0);
-      let lastB = 0.0;
-      for (let i = 0; i < bufSize; i++) {
-        let white = Math.random() * 2 - 1;
-        bData[i] = (lastB + (0.02 * white)) / 1.02;
-        lastB = bData[i];
-        bData[i] *= 3.5;
-      }
-      brownNode = audioCtx.createBufferSource();
-      brownNode.buffer = bBuf;
-      brownNode.loop = true;
-      brownGain = audioCtx.createGain();
-      brownNode.connect(brownGain);
-      brownGain.connect(audioCtx.destination);
-
-      // Track 2: Filtered Rainfall Pink Noise
-      const rBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-      const rData = rBuf.getChannelData(0);
-      let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
-      for (let i = 0; i < bufSize; i++) {
-        let white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        rData[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
-        b6 = white * 0.115926;
-      }
-      rainNode = audioCtx.createBufferSource();
-      rainNode.buffer = rBuf;
-      rainNode.loop = true;
-      rainFilter = audioCtx.createBiquadFilter();
-      rainFilter.type = "bandpass";
-      rainFilter.frequency.value = 1000;
-      rainGain = audioCtx.createGain();
-      rainNode.connect(rainFilter);
-      rainFilter.connect(rainGain);
-      rainGain.connect(audioCtx.destination);
-
-      // Track 3: Binaural Beat (Left = 200Hz, Right = 200 + activeBeatFreq)
-      oscLeft = audioCtx.createOscillator();
-      oscRight = audioCtx.createOscillator();
-      oscLeft.frequency.value = 200;
-      oscRight.frequency.value = 200 + activeBeatFreq;
-      binauralGain = audioCtx.createGain();
-      oscLeft.connect(binauralGain);
-      oscRight.connect(binauralGain);
-      binauralGain.connect(audioCtx.destination);
-
-      updateAudioGains();
-    }
-
-    function toggleAudioEngine() {
-      const btn = document.getElementById('masterAudioBtn');
-      if (!isMixerRunning) {
-        if (!audioCtx) initAudioMixer();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        brownNode.start();
-        rainNode.start();
-        oscLeft.start();
-        oscRight.start();
-        isMixerRunning = true;
-        btn.innerText = "Stop Ambient Audio";
-        btn.classList.replace("btn-action-primary", "btn-outline-danger");
-      } else {
-        audioCtx.close();
-        audioCtx = null;
-        isMixerRunning = false;
-        btn.innerText = "Start Ambient Audio";
-        btn.classList.replace("btn-outline-danger", "btn-action-primary");
-      }
-    }
-
-    function updateAudioGains() {
-      const bVal = document.getElementById('sliderBrown').value / 100;
-      const rVal = document.getElementById('sliderRain').value / 100;
-      const binVal = (document.getElementById('sliderBinaural').value / 100) * 0.08;
-
-      document.getElementById('volValBrown').innerText = `${Math.round(bVal * 100)}%`;
-      document.getElementById('volValRain').innerText = `${Math.round(rVal * 100)}%`;
-      document.getElementById('volValBinaural').innerText = `${document.getElementById('sliderBinaural').value}%`;
-
-      if (brownGain && audioCtx) brownGain.gain.setValueAtTime(bVal * 0.4, audioCtx.currentTime);
-      if (rainGain && audioCtx) rainGain.gain.setValueAtTime(rVal * 0.35, audioCtx.currentTime);
-      if (binauralGain && audioCtx) binauralGain.gain.setValueAtTime(binVal, audioCtx.currentTime);
-    }
-
-    // 9. Gamified XP & Rank Engine
-    function addXp(amount) {
-      const oldLevel = Math.floor(totalXp / 400) + 1;
-      totalXp += amount;
-      localStorage.setItem('sh_xp', totalXp);
-      const newLevel = Math.floor(totalXp / 400) + 1;
-
-      renderXpEngine();
-      triggerCloudSync();
-
-      if (newLevel > oldLevel) {
-        alert(`LEVEL UP! You reached Level ${newLevel}! Keep pushing your limits.`);
-      }
-    }
-
-    function renderXpEngine() {
-      const level = Math.floor(totalXp / 400) + 1;
-      const xpInCurrentLevel = totalXp % 400;
-      const pct = Math.round((xpInCurrentLevel / 400) * 100);
-
-      let rankTitle = "Bronze Aspirant";
-      if (level >= 5 && level < 10) rankTitle = "Silver Contender";
-      else if (level >= 10 && level < 20) rankTitle = "Gold Scholar";
-      else if (level >= 20 && level < 35) rankTitle = "Diamond Ranker";
-      else if (level >= 35) rankTitle = "Top 0.1% Contender";
-
-      document.getElementById('hudRankTitle').innerText = rankTitle;
-      document.getElementById('hudLevelBadge').innerText = `LVL ${level}`;
-      document.getElementById('hudXpFill').style.width = `${pct}%`;
-    }
-
-    // 10. Daily PYQ & MCQ Accuracy Counter
-    function renderMcqCounter() {
-      document.getElementById('mcqCorrectCount').innerText = mcqState.correct;
-      document.getElementById('mcqWrongCount').innerText = mcqState.wrong;
-      document.getElementById('mcqSkipCount').innerText = mcqState.skip;
-
-      const totalAttempted = mcqState.correct + mcqState.wrong;
-      const totalAll = totalAttempted + mcqState.skip;
-      const acc = totalAttempted > 0 ? ((mcqState.correct / totalAttempted) * 100).toFixed(1) : "0.0";
-
-      document.getElementById('mcqAccuracyPct').innerText = `${acc}%`;
-      document.getElementById('statMcqAccuracy').innerHTML = `${acc}% <span class="fs-6 text-secondary">${totalAll}/${mcqState.target}</span>`;
-      document.getElementById('statMcqFill').style.width = `${Math.min(100, Math.round((totalAll / mcqState.target) * 100))}%`;
-    }
-
-    function recordMcq(type) {
-      if (type === 'correct') {
-        mcqState.correct++;
-        addXp(15);
-      }
-      if (type === 'wrong') mcqState.wrong++;
-      if (type === 'skip') mcqState.skip++;
-
-      localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
-      renderMcqCounter();
-      triggerCloudSync();
-    }
-
-    function resetMcqCounter() {
-      if (confirm("Reset today's MCQ counts?")) {
-        mcqState.correct = 0;
-        mcqState.wrong = 0;
-        mcqState.skip = 0;
-        localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
-        renderMcqCounter();
-        triggerCloudSync();
-      }
-    }
-
-    // 11. Pure SVG Subject Balance Wheel
-    function renderSubjectBalanceWheel() {
-      const svg = document.getElementById('balanceSvgWheel');
-      const legend = document.getElementById('balanceLegendContainer');
-      const warningBadge = document.getElementById('subjectWarningBadge');
-
-      const subjectMap = {};
-      topics.forEach(t => {
-        const sub = t.subject.toUpperCase();
-        subjectMap[sub] = (subjectMap[sub] || 0) + (parseFloat(t.hours) || 2.5);
-      });
-
-      const totalHours = Object.values(subjectMap).reduce((a, b) => a + b, 0);
-      document.getElementById('balanceTotalHours').innerText = `${totalHours.toFixed(1)}h`;
-
-      const palette = ["#38bdf8", "#10b981", "#f59e0b", "#818cf8", "#f43f5e", "#06b6d4"];
-      let accumulatedPercent = 0;
-      svg.innerHTML = `<circle cx="18" cy="18" r="15.915" fill="none" stroke="#161b26" stroke-width="3.5"></circle>`;
-      legend.innerHTML = '';
-      let hasImbalance = false;
-
-      Object.entries(subjectMap).forEach(([sub, hrs], i) => {
-        const pct = (hrs / (totalHours || 1)) * 100;
-        const strokeColor = palette[i % palette.length];
-
-        if (pct < 20 && totalHours > 5) hasImbalance = true;
-
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", "18");
-        circle.setAttribute("cy", "18");
-        circle.setAttribute("r", "15.915");
-        circle.setAttribute("fill", "none");
-        circle.setAttribute("stroke", strokeColor);
-        circle.setAttribute("stroke-width", "3.5");
-        circle.setAttribute("stroke-dasharray", `${pct} ${100 - pct}`);
-        circle.setAttribute("stroke-dashoffset", `-${accumulatedPercent}`);
-        svg.appendChild(circle);
-
-        accumulatedPercent += pct;
-
-        const legItem = document.createElement('div');
-        legItem.className = "d-flex justify-content-between align-items-center mb-1";
-        legItem.innerHTML = `
-          <div class="d-flex align-items-center gap-1">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: ${strokeColor}; display: inline-block;"></span>
-            <span class="text-white">${sub}</span>
-          </div>
-          <span class="text-secondary">${hrs.toFixed(1)}h (${Math.round(pct)}%)</span>
-        `;
-        legend.appendChild(legItem);
-      });
-
-      warningBadge.style.display = hasImbalance ? 'inline-block' : 'none';
-    }
-
-    // 12. Rough Work Scratch Canvas
-    let canvas, ctx, drawing = false, brushColor = '#38bdf8', brushSize = 2;
-
-    function openCanvasModal() {
-      openModal('canvasModal');
-      setTimeout(initCanvas, 100);
-    }
-
-    function initCanvas() {
-      canvas = document.getElementById('sketchCanvas');
-      ctx = canvas.getContext('2d');
-      canvas.width = canvas.parentElement.clientWidth - 52;
-      canvas.height = 380;
-      ctx.fillStyle = "#090d16";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      canvas.onmousedown = startDraw;
-      canvas.onmousemove = draw;
-      canvas.onmouseup = stopDraw;
-
-      canvas.ontouchstart = (e) => { e.preventDefault(); startDraw(e.touches[0]); };
-      canvas.ontouchmove = (e) => { e.preventDefault(); draw(e.touches[0]); };
-      canvas.ontouchend = stopDraw;
-    }
-
-    function startDraw(e) {
-      drawing = true;
-      const rect = canvas.getBoundingClientRect();
-      ctx.beginPath();
-      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-    }
-
-    function draw(e) {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      ctx.strokeStyle = brushColor;
-      ctx.lineWidth = brushSize;
-      ctx.lineCap = 'round';
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-      ctx.stroke();
-    }
-
-    function stopDraw() { drawing = false; }
-
-    function setCanvasColor(col, btn) {
-      brushColor = col;
-      document.querySelectorAll('#canvasModal .btn-sm').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    function clearCanvas() {
-      if (!ctx || !canvas) return;
-      ctx.fillStyle = "#090d16";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
-    // 13. CSV Syllabus File Importer
-    function importSyllabusCsv(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const rows = e.target.result.split("\n").map(r => r.trim()).filter(r => r);
-        let importedCount = 0;
-
-        rows.forEach((row, i) => {
-          if (i === 0 && row.toLowerCase().includes("subject")) return;
-          const cols = row.split(",").map(c => c.trim().replace(/^["']|["']$/g, ''));
-          if (cols.length >= 2) {
-            topics.push({
-              subject: cols[0] || "General",
-              chapter: cols[1] || "Chapter",
-              tier: cols[2] || "Tier 2",
-              hours: parseFloat(cols[3]) || 2.5,
-              done: false,
-              doneDate: null,
-              r1: false,
-              r2: false,
-              r3: false
-            });
-            importedCount++;
-          }
-        });
-
-        localStorage.setItem('sh_top', JSON.stringify(topics));
-        renderSubjectsFilter();
-        renderTopics();
-        renderSubjectBalanceWheel();
-        checkRollingMomentumDrift();
-        renderSrsQueue();
-        renderSrsForecast();
-        calculateBurndownForecast();
-        recalculateRealMetrics();
-        triggerCloudSync();
-        alert(`Successfully imported ${importedCount} topics from CSV!`);
-      };
-      reader.readAsText(file);
-    }
-
-    // 14. Leitner Box System
+    // Flashcard Mastery
     function renderFlashcard() {
       if (flashcards.length === 0) {
         document.getElementById('cardTopicLabel').innerText = "DECK EMPTY";
-        document.getElementById('cardContent').innerText = "Click '+' to add your first formula card.";
+        document.getElementById('cardContent').innerText = "Click '+' to add cards.";
         document.getElementById('cardBoxLevel').innerText = "Box 1 / 5";
+        document.getElementById('masteryStatsText').innerText = "Mastered: 0% (Box 5)";
         return;
       }
       isFlipped = false;
@@ -1736,6 +1054,10 @@
       document.getElementById('cardTopicLabel').innerText = `CARD ${currentCardIdx + 1}/${flashcards.length} (TAP TO FLIP)`;
       document.getElementById('cardContent').innerText = c.q;
       document.getElementById('cardBoxLevel').innerText = `Leitner Box ${c.box} / 5`;
+
+      const masteredCount = flashcards.filter(f => (f.box || 1) === 5).length;
+      const masteryPct = Math.round((masteredCount / flashcards.length) * 100);
+      document.getElementById('masteryStatsText').innerText = `Mastered: ${masteryPct}% (Box 5)`;
     }
 
     function flipCurrentCard() {
@@ -1749,12 +1071,10 @@
       if (flashcards.length === 0) return;
       const c = flashcards[currentCardIdx];
       c.box = c.box || 1;
-
       if (grade === 1) c.box = 1;
       else if (grade === 'hard') c.box = Math.max(1, c.box);
       else if (grade === 'good') { c.box = Math.min(5, c.box + 1); addXp(20); }
       else if (grade === 'easy') { c.box = Math.min(5, c.box + 2); addXp(40); }
-
       localStorage.setItem('sh_cards', JSON.stringify(flashcards));
       nextCard();
       triggerCloudSync();
@@ -1776,7 +1096,6 @@
       const q = document.getElementById('cardFrontInput').value.trim();
       const a = document.getElementById('cardBackInput').value.trim();
       if (!q || !a) return;
-
       flashcards.push({ q, a, box: 1 });
       localStorage.setItem('sh_cards', JSON.stringify(flashcards));
       document.getElementById('cardFrontInput').value = '';
@@ -1787,388 +1106,14 @@
       triggerCloudSync();
     }
 
-    // 15. Time-Blocking HUD
-    function renderTimeblocks() {
-      const container = document.getElementById('timeblocksContainer');
-      container.innerHTML = '';
-      const curHour = new Date().getHours();
-
-      timeblocks.forEach((b, idx) => {
-        const isCurrent = curHour >= b.startHour && curHour < b.endHour;
-
-        const div = document.createElement('div');
-        div.className = `timeblock-card ${isCurrent ? 'active-slot' : ''} ${b.completed ? 'completed-slot' : ''}`;
-        div.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="mono fw-bold small ${isCurrent ? 'text-info' : 'text-secondary'}">
-              ${b.startHour.toString().padStart(2, '0')}:00 - ${b.endHour.toString().padStart(2, '0')}:00
-            </span>
-            ${isCurrent ? '<span class="badge bg-info text-dark" style="font-size: 0.65rem;">LIVE NOW</span>' : ''}
-          </div>
-          <div class="fw-semibold text-white small mb-2">${b.label}</div>
-          <button class="btn btn-sm w-100 ${b.completed ? 'btn-outline-success' : 'btn-outline-secondary'}" style="font-size: 0.75rem;" onclick="toggleBlockDone(${idx})">
-            ${b.completed ? '<i class="bi bi-check-circle-fill me-1"></i> Adhered' : 'Mark Completed'}
-          </button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function toggleBlockDone(idx) {
-      timeblocks[idx].completed = !timeblocks[idx].completed;
-      if (timeblocks[idx].completed) addXp(50);
-      localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
-      renderTimeblocks();
-      triggerCloudSync();
-    }
-
-    function resetTodayBlocks() {
-      timeblocks.forEach(b => b.completed = false);
-      localStorage.setItem('sh_blocks', JSON.stringify(timeblocks));
-      renderTimeblocks();
-      triggerCloudSync();
-    }
-
-    // 16. 90-Day Activity Heatmap
-    function renderHeatmap() {
-      const grid = document.getElementById('heatmapGrid');
-      grid.innerHTML = '';
-      const today = new Date();
-      let activeDays = 0;
-
-      for (let i = 89; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(today.getDate() - i);
-        const key = d.toISOString().slice(0, 10);
-        const hrs = heatmapData[key] || 0;
-
-        let levelClass = '';
-        if (hrs > 0 && hrs < 2) levelClass = 'l-1';
-        else if (hrs >= 2 && hrs < 4) levelClass = 'l-2';
-        else if (hrs >= 4 && hrs < 6) levelClass = 'l-3';
-        else if (hrs >= 6) levelClass = 'l-4';
-
-        if (hrs > 0) activeDays++;
-
-        const cell = document.createElement('div');
-        cell.className = `heatmap-cell ${levelClass}`;
-        cell.title = `${key}: ${hrs.toFixed(1)} hrs logged`;
-        grid.appendChild(cell);
-      }
-
-      document.getElementById('heatmapSummary').innerText = `${activeDays} active study days logged in past 90 days`;
-    }
-
-    function logStudyHoursToToday(addedHours) {
-      const todayKey = new Date().toISOString().slice(0, 10);
-      heatmapData[todayKey] = (heatmapData[todayKey] || 0) + addedHours;
-      localStorage.setItem('sh_heatmap', JSON.stringify(heatmapData));
-      renderHeatmap();
-    }
-
-    // 17. Spaced Repetition (SRS)
-    function renderSrsQueue() {
-      const container = document.getElementById('srsQueueList');
-      const badge = document.getElementById('srsQueueBadge');
-      const today = new Date();
-      container.innerHTML = '';
-      const dueTopics = [];
-
-      topics.forEach((t, idx) => {
-        if (!t.done || !t.doneDate) return;
-        const compDate = new Date(t.doneDate);
-        const diffDays = Math.floor((today - compDate) / (1000 * 60 * 60 * 24));
-
-        if (!t.r1 && diffDays >= 3) dueTopics.push({ topic: t, index: idx, stage: 'R1 (Day 3)', key: 'r1' });
-        else if (t.r1 && !t.r2 && diffDays >= 7) dueTopics.push({ topic: t, index: idx, stage: 'R2 (Day 7)', key: 'r2' });
-        else if (t.r2 && !t.r3 && diffDays >= 21) dueTopics.push({ topic: t, index: idx, stage: 'R3 (Day 21)', key: 'r3' });
-      });
-
-      badge.innerText = `${dueTopics.length} Pending`;
-
-      if (dueTopics.length === 0) {
-        container.innerHTML = `<small class="text-secondary">No topics scheduled for revision today.</small>`;
-        return;
-      }
-
-      dueTopics.forEach(item => {
-        const div = document.createElement('div');
-        div.className = "srs-item";
-        div.innerHTML = `
-          <div>
-            <div class="fw-bold text-white small">${item.topic.chapter}</div>
-            <small class="text-warning mono" style="font-size: 0.72rem;">${item.topic.subject} &bull; ${item.stage}</small>
-          </div>
-          <button class="btn btn-outline-warning btn-sm py-1 px-2 mono" style="font-size: 0.75rem;" onclick="completeSrsRevision(${item.index}, '${item.key}')">
-            Mark Revised &check;
-          </button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function completeSrsRevision(idx, key) {
-      topics[idx][key] = true;
-      localStorage.setItem('sh_top', JSON.stringify(topics));
-      addXp(75);
-      renderTopics();
-      renderSrsQueue();
-      renderSrsForecast();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    // 18. Topics Matrix
-    function renderSubjectsFilter() {
-      const container = document.getElementById('subjectFilterContainer');
-      const uniqueSubjects = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))];
-      container.innerHTML = uniqueSubjects.map(sub => `
-        <span class="pill-filter ${activeSubjectFilter === sub ? 'active' : ''}" onclick="filterBySubject('${sub}', this)">${sub}</span>
-      `).join('');
-    }
-
-    function filterBySubject(sub, el) {
-      activeSubjectFilter = sub;
-      document.querySelectorAll('.pill-filter').forEach(p => p.classList.remove('active'));
-      el.classList.add('active');
-      renderTopics();
-    }
-
-    function renderTopics() {
-      const container = document.getElementById('topicsContainer');
-      container.innerHTML = '';
-      const filtered = activeSubjectFilter === 'ALL' ? topics : topics.filter(t => t.subject.toUpperCase() === activeSubjectFilter);
-
-      filtered.forEach((t) => {
-        const idx = topics.indexOf(t);
-        const tierClass = t.tier === 'Tier 1' ? 'tier-1' : (t.tier === 'Tier 2' ? 'tier-2' : 'tier-3');
-
-        const div = document.createElement('div');
-        div.className = `topic-row ${t.done ? 'done' : ''}`;
-        div.innerHTML = `
-          <div class="d-flex align-items-center gap-3">
-            <input type="checkbox" class="form-check-input mt-0" ${t.done ? 'checked' : ''} onchange="toggleDone(${idx})">
-            <div>
-              <div class="fw-bold text-white t-name">${t.chapter}</div>
-              <div class="d-flex align-items-center gap-2 mt-1">
-                <span class="badge bg-secondary bg-opacity-25 text-info" style="font-size: 0.68rem;">${t.subject}</span>
-                <span class="tier-badge ${tierClass}">${t.tier}</span>
-                <small class="text-secondary mono">${t.hours}h</small>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <span class="rev-pill ${t.r1 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r1')">R1</span>
-            <span class="rev-pill ${t.r2 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r2')">R2</span>
-            <span class="rev-pill ${t.r3 ? 'active' : ''}" onclick="toggleRev(${idx}, 'r3')">R3</span>
-            <button class="btn btn-sm text-secondary ms-2" onclick="deleteTopic(${idx})"><i class="bi bi-trash3"></i></button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function addCustomTopic() {
-      const subj = document.getElementById('inSubject').value.trim();
-      const chap = document.getElementById('inChapter').value.trim();
-      const tier = document.getElementById('inTier').value;
-      if (!chap) return;
-
-      topics.unshift({ subject: subj || "General", chapter: chap, tier, hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false });
-      localStorage.setItem('sh_top', JSON.stringify(topics));
-      document.getElementById('inChapter').value = '';
-      renderSubjectsFilter();
-      renderTopics();
-      renderSubjectBalanceWheel();
-      checkRollingMomentumDrift();
-      renderSrsQueue();
-      renderSrsForecast();
-      calculateBurndownForecast();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    function toggleDone(idx) {
-      topics[idx].done = !topics[idx].done;
-      if (topics[idx].done && !topics[idx].doneDate) {
-        topics[idx].doneDate = new Date().toISOString().slice(0, 10);
-        logStudyHoursToToday(parseFloat(topics[idx].hours) || 2.0);
-        studyMinutesToday += (parseFloat(topics[idx].hours) || 2.0) * 60;
-        localStorage.setItem('sh_study_mins', studyMinutesToday);
-        addXp(250);
-      }
-      localStorage.setItem('sh_top', JSON.stringify(topics));
-      renderTopics();
-      renderSubjectBalanceWheel();
-      checkRollingMomentumDrift();
-      renderSrsQueue();
-      renderSrsForecast();
-      calculateBurndownForecast();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    function toggleRev(idx, key) {
-      topics[idx][key] = !topics[idx][key];
-      localStorage.setItem('sh_top', JSON.stringify(topics));
-      renderTopics();
-      renderSrsQueue();
-      renderSrsForecast();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    function deleteTopic(idx) {
-      topics.splice(idx, 1);
-      localStorage.setItem('sh_top', JSON.stringify(topics));
-      renderSubjectsFilter();
-      renderTopics();
-      renderSubjectBalanceWheel();
-      checkRollingMomentumDrift();
-      renderSrsQueue();
-      renderSrsForecast();
-      calculateBurndownForecast();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    // 19. Mock Tests
-    function addMockTest() {
-      const name = document.getElementById('mockNameInput').value.trim();
-      const scored = parseFloat(document.getElementById('mockScoredInput').value);
-      const total = parseFloat(document.getElementById('mockTotalInput').value);
-      if (!name || isNaN(scored) || isNaN(total) || total <= 0) return;
-
-      const pct = ((scored / total) * 100).toFixed(1);
-      mockTests.unshift({ name, scored, total, pct, date: new Date().toLocaleDateString() });
-      localStorage.setItem('sh_mocks', JSON.stringify(mockTests));
-
-      addXp(150);
-      document.getElementById('mockNameInput').value = '';
-      document.getElementById('mockScoredInput').value = '';
-      renderMocks();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    function renderMocks() {
-      const list = document.getElementById('mockHistoryList');
-      list.innerHTML = '';
-      const targetCutoff = parseFloat(config.cutoff) || 75;
-      document.getElementById('dispTargetCutoff').innerText = `${targetCutoff.toFixed(1)}%`;
-
-      if (mockTests.length === 0) {
-        list.innerHTML = `<small class="text-secondary">No mock tests logged yet.</small>`;
-        document.getElementById('dispAvgScore').innerText = "0.0%";
-        document.getElementById('dispEstPercentile').innerText = "--";
-        return;
-      }
-
-      const pcts = mockTests.map(m => parseFloat(m.pct));
-      const avg = (pcts.reduce((a, b) => a + b, 0) / pcts.length).toFixed(1);
-      document.getElementById('dispAvgScore').innerText = `${avg}%`;
-
-      const estPercentile = Math.min(99.9, Math.max(10, (parseFloat(avg) * 1.15) - 5)).toFixed(1);
-      document.getElementById('dispEstPercentile').innerText = `${estPercentile}%ile`;
-
-      mockTests.slice(0, 4).forEach((m, idx) => {
-        const item = document.createElement('div');
-        item.className = "d-flex justify-content-between align-items-center p-2 rounded mb-1 bg-dark border border-secondary border-opacity-25 small";
-        item.innerHTML = `
-          <div>
-            <span class="text-white fw-semibold">${m.name}</span>
-            <small class="text-secondary mono ms-2">(${m.scored}/${m.total})</small>
-          </div>
-          <div class="d-flex align-items-center gap-3">
-            <span class="fw-bold mono ${parseFloat(m.pct) >= targetCutoff ? 'text-success' : 'text-warning'}">${m.pct}%</span>
-            <button class="btn btn-sm text-secondary" onclick="deleteMock(${idx})"><i class="bi bi-x"></i></button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function deleteMock(idx) {
-      mockTests.splice(idx, 1);
-      localStorage.setItem('sh_mocks', JSON.stringify(mockTests));
-      renderMocks();
-      recalculateRealMetrics();
-      triggerCloudSync();
-    }
-
-    // 20. Metrics
-    function recalculateRealMetrics() {
-      const total = topics.length;
-      const completed = topics.filter(t => t.done).length;
-      const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
-
-      document.getElementById('statSyllabus').innerText = `${pct}%`;
-      document.getElementById('statSyllabusFill').style.width = `${pct}%`;
-    }
-
-    // 21. Mistakes
-    function addMistakeEntry() {
-      const desc = document.getElementById('mistakeDescInput').value.trim();
-      const type = document.getElementById('mistakeTypeInput').value;
-      if (!desc) return;
-
-      mistakes.unshift({ desc, type, date: new Date().toLocaleDateString() });
-      localStorage.setItem('sh_mis', JSON.stringify(mistakes));
-      document.getElementById('mistakeDescInput').value = '';
-      renderMistakes();
-      renderParetoMistakes();
-      triggerCloudSync();
-    }
-
-    function renderMistakes() {
-      const list = document.getElementById('mistakeList');
-      const badge = document.getElementById('mistakeBadge');
-      list.innerHTML = '';
-      badge.innerText = `${mistakes.length} Logged`;
-
-      if (mistakes.length === 0) {
-        list.innerHTML = `<small class="text-secondary">No errors recorded yet.</small>`;
-        return;
-      }
-
-      mistakes.slice(0, 5).forEach((m, i) => {
-        const item = document.createElement('div');
-        item.className = "d-flex justify-content-between align-items-center p-2 rounded mb-1 bg-dark border border-secondary border-opacity-25 small";
-        item.innerHTML = `
-          <div>
-            <span class="text-light">${m.desc}</span>
-            <small class="text-danger d-block">${m.type}</small>
-          </div>
-          <button class="btn btn-sm text-secondary" onclick="deleteMistake(${i})"><i class="bi bi-x"></i></button>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function deleteMistake(i) {
-      mistakes.splice(i, 1);
-      localStorage.setItem('sh_mis', JSON.stringify(mistakes));
-      renderMistakes();
-      renderParetoMistakes();
-      triggerCloudSync();
-    }
-
-    // 22. Scratchpad
-    function saveNotes() {
-      const val = document.getElementById('scratchArea').value;
-      localStorage.setItem('sh_notes_text', val);
-      const s = document.getElementById('noteSavedStatus');
-      s.style.display = 'inline';
-      setTimeout(() => { s.style.display = 'none'; }, 1000);
-      triggerCloudSync();
-    }
-
-    // 23. Focus Timer
-    let timerRef = null, secondsLeft = 25 * 60, timerActive = false;
+    // Adaptive Break Timer
+    let timerRef = null, secondsLeft = 25 * 60, breakSeconds = 5 * 60, timerActive = false;
+    let isBreakMode = false;
 
     function updateTimerDisplay() {
-      const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
-      const s = (secondsLeft % 60).toString().padStart(2, '0');
+      const cur = isBreakMode ? breakSeconds : secondsLeft;
+      const m = Math.floor(cur / 60).toString().padStart(2, '0');
+      const s = (cur % 60).toString().padStart(2, '0');
       document.getElementById('timerDisplay').innerText = `${m}:${s}`;
     }
 
@@ -2182,18 +1127,25 @@
         timerActive = true;
         btn.innerText = "Pause";
         timerRef = setInterval(() => {
-          if (secondsLeft > 0) {
+          if (!isBreakMode && secondsLeft > 0) {
             secondsLeft--;
+            updateTimerDisplay();
+          } else if (isBreakMode && breakSeconds > 0) {
+            breakSeconds--;
             updateTimerDisplay();
           } else {
             clearInterval(timerRef);
             timerActive = false;
-            logStudyHoursToToday(0.4);
-            studyMinutesToday += 25;
-            localStorage.setItem('sh_study_mins', studyMinutesToday);
-            addXp(100);
-            alert("Pomodoro complete! +100 XP gained.");
-            btn.innerText = "Start";
+            if (!isBreakMode) {
+              alert(`Focus session complete! Taking an adaptive ${breakSeconds/60}-minute break.`);
+              isBreakMode = true;
+              btn.innerText = "Start Break";
+            } else {
+              alert("Break complete! Ready for next sprint.");
+              isBreakMode = false;
+              secondsLeft = 25 * 60;
+              btn.innerText = "Start";
+            }
           }
         }, 1000);
       }
@@ -2202,46 +1154,313 @@
     function resetTimer() {
       clearInterval(timerRef);
       timerActive = false;
+      isBreakMode = false;
       secondsLeft = 25 * 60;
       updateTimerDisplay();
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    function setTimerDuration(mins) {
+    function setTimerDuration(workMins, restMins) {
       clearInterval(timerRef);
       timerActive = false;
-      secondsLeft = mins * 60;
+      isBreakMode = false;
+      secondsLeft = workMins * 60;
+      breakSeconds = restMins * 60;
       updateTimerDisplay();
       document.getElementById('timerActionBtn').innerText = "Start";
     }
 
-    // 24. Tab Auditor
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden && timerActive) {
-        tabBreachesCount++;
-        localStorage.setItem('sh_breaches', tabBreachesCount);
-        document.getElementById('auditorBadge').innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1 text-danger"></i> ${tabBreachesCount} Tab Switches Caught!`;
-      }
-    });
-
-    // 25. Profile Settings
-    function renderHUD() {
-      document.getElementById('navExamBadge').innerText = config.exam;
-      document.getElementById('cfgUsername').value = config.username;
-      document.getElementById('cfgName').value = config.name;
-      document.getElementById('cfgExam').value = config.exam;
-      document.getElementById('cfgHours').value = config.hours;
-      document.getElementById('cfgCutoff').value = config.cutoff || 75;
-      document.getElementById('cfgDate').value = config.date;
-
-      const target = new Date(config.date);
-      const now = new Date();
-      const diffDays = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
-      
-      document.getElementById('examCountdownText').innerText = 
-        diffDays > 0 ? `${diffDays} DAYS UNTIL ${config.exam.toUpperCase()}` : `${config.exam.toUpperCase()} DAY`;
+    // Formula Vault
+    function renderFormulaVault(list) {
+      const container = document.getElementById('vaultFormulaList');
+      container.innerHTML = '';
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "p-3 rounded mb-2 bg-dark border border-secondary border-opacity-25 d-flex justify-content-between align-items-center";
+        div.innerHTML = `<div><div class="fw-bold text-white small">${item.name}</div><span class="badge bg-secondary bg-opacity-25 text-info mb-1" style="font-size: 0.65rem;">${item.subject}</span><div class="mono text-warning small mt-1">${item.formula}</div></div><button class="btn btn-sm btn-outline-info mono" style="font-size: 0.75rem;" onclick="copyFormula('${item.formula.replace(/'/g, "\\'")}', this)">Copy</button>`;
+        container.appendChild(div);
+      });
     }
 
+    function filterVault() {
+      const q = document.getElementById('vaultSearchInput').value.toLowerCase().trim();
+      renderFormulaVault(formulaVault.filter(f => f.name.toLowerCase().includes(q) || f.subject.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q)));
+    }
+
+    function copyFormula(text, btn) {
+      navigator.clipboard.writeText(text);
+      const prev = btn.innerText;
+      btn.innerText = "Copied!";
+      setTimeout(() => { btn.innerText = prev; }, 1200);
+    }
+
+    // Momentum Drift
+    function checkRollingMomentumDrift() {
+      const doneList = topics.filter(t => t.done && t.doneDate);
+      const statusEl = document.getElementById('statMomentumStatus');
+      const fillEl = document.getElementById('statMomentumFill');
+      if (doneList.length < 4) { statusEl.innerText = "Balanced"; fillEl.style.width = "100%"; return; }
+      const recent4 = doneList.slice(-4).map(t => t.subject.toUpperCase());
+      if (recent4.every(s => s === recent4[0])) {
+        statusEl.innerText = `Drift: ${recent4[0]}`;
+        statusEl.style.color = "var(--accent-rose)";
+        fillEl.style.width = "30%";
+        fillEl.style.background = "var(--accent-rose)";
+      } else {
+        statusEl.innerText = "Balanced";
+        statusEl.style.color = "var(--accent-violet)";
+        fillEl.style.width = "100%";
+        fillEl.style.background = "var(--accent-violet)";
+      }
+    }
+
+    // Negative Grading
+    function runNegativeGrading() {
+      const correct = parseInt(document.getElementById('calcCorrect').value) || 0;
+      const incorrect = parseInt(document.getElementById('calcIncorrect').value) || 0;
+      const scheme = document.getElementById('calcScheme').value.split(',').map(Number);
+      const gross = correct * scheme[0];
+      const penalty = incorrect * Math.abs(scheme[1]);
+      document.getElementById('calcGrossScore').innerText = `+${gross}`;
+      document.getElementById('calcPenaltyLoss').innerText = `-${penalty}`;
+      document.getElementById('calcNetScore').innerText = `${gross - penalty}`;
+    }
+
+    // Burndown & SRS Forecast & Pareto & Audio
+    function calculateBurndownForecast() {
+      const remaining = topics.filter(t => !t.done).length;
+      const days = Math.max(1, Math.ceil((new Date(config.date) - new Date()) / (1000 * 60 * 60 * 24)));
+      const completed = topics.filter(t => t.done).length;
+      const vel = Math.max(0.6, completed > 0 ? (completed / 7) : 1.0);
+      const finish = new Date(); finish.setDate(new Date().getDate() + Math.ceil(remaining / vel));
+      document.getElementById('statFinishDate').innerText = remaining === 0 ? "DONE" : finish.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function renderSrsForecast() {
+      const grid = document.getElementById('srsForecastGrid');
+      grid.innerHTML = '';
+      let total = 0;
+      for (let i = 1; i <= 7; i++) {
+        const target = new Date(); target.setDate(new Date().getDate() + i);
+        let due = 0;
+        topics.forEach(t => {
+          if (!t.done || !t.doneDate) return;
+          const diff = Math.floor((target - new Date(t.doneDate)) / (1000 * 60 * 60 * 24));
+          if (!t.r1 && diff === 3) due++;
+          else if (t.r1 && !t.r2 && diff === 7) due++;
+          else if (t.r2 && !t.r3 && diff === 21) due++;
+        });
+        total += due;
+        const col = document.createElement('div');
+        col.className = `srs-forecast-col ${due > 0 ? 'has-due' : ''}`;
+        col.innerHTML = `<div class="text-secondary mono" style="font-size: 0.65rem;">${target.toLocaleDateString(undefined, { weekday: 'short' })}</div><div class="fw-bold fs-5 my-1 mono ${due > 0 ? 'text-warning' : 'text-secondary'}">${due}</div>`;
+        grid.appendChild(col);
+      }
+      document.getElementById('srsWeeklyLoadBadge').innerText = `${total} Due This Week`;
+    }
+
+    function renderParetoMistakes() {
+      const container = document.getElementById('paretoBarsContainer');
+      container.innerHTML = '';
+      const counts = { "Calculation Slip": 0, "Formula Memory Gap": 0, "Misread Question": 0, "Conceptual Error": 0, "Time Pressure": 0 };
+      mistakes.forEach(m => counts[m.type || "Conceptual Error"]++);
+      const total = mistakes.length;
+      if (total === 0) { container.innerHTML = `<div class="col-12 text-secondary small">No errors logged yet.</div>`; return; }
+      Object.entries(counts).sort((a,b) => b[1]-a[1]).forEach(([type, count]) => {
+        const pct = Math.round((count/total)*100);
+        const col = document.createElement('div');
+        col.className = "col-12 col-md-6";
+        col.innerHTML = `<div class="d-flex justify-content-between small mono mb-1"><span class="text-light">${type}</span><span class="text-secondary">${count} (${pct}%)</span></div><div class="pareto-bar-track"><div class="pareto-bar-fill" style="width: ${pct}%; background: var(--accent-rose);"></div></div>`;
+        container.appendChild(col);
+      });
+    }
+
+    // Audio Engine
+    let audioCtx = null, brownNode = null, brownGain = null, rainNode = null, rainGain = null, rainFilter = null, oscLeft = null, oscRight = null, binauralGain = null, isMixerRunning = false, activeBeatFreq = 6;
+    function setBinauralWave(freq, btnId) {
+      activeBeatFreq = freq;
+      document.querySelectorAll('#soundMixerModal .row .btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(btnId).classList.add('active');
+      document.getElementById('binauralLabelText').innerText = `Binaural Beat (${freq}Hz)`;
+      if (oscRight && audioCtx) oscRight.frequency.setValueAtTime(200 + freq, audioCtx.currentTime);
+    }
+    function initAudioMixer() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const bufSize = audioCtx.sampleRate * 2;
+      const bBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const bData = bBuf.getChannelData(0);
+      let lastB = 0.0;
+      for (let i = 0; i < bufSize; i++) { let white = Math.random() * 2 - 1; bData[i] = (lastB + (0.02 * white)) / 1.02; lastB = bData[i]; bData[i] *= 3.5; }
+      brownNode = audioCtx.createBufferSource(); brownNode.buffer = bBuf; brownNode.loop = true; brownGain = audioCtx.createGain(); brownNode.connect(brownGain); brownGain.connect(audioCtx.destination);
+      
+      const rBuf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+      const rData = rBuf.getChannelData(0);
+      let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+      for (let i = 0; i < bufSize; i++) { let white = Math.random() * 2 - 1; b0 = 0.99886*b0 + white*0.055; rData[i] = b0 * 0.04; }
+      rainNode = audioCtx.createBufferSource(); rainNode.buffer = rBuf; rainNode.loop = true; rainFilter = audioCtx.createBiquadFilter(); rainFilter.type = "bandpass"; rainFilter.frequency.value = 1000; rainGain = audioCtx.createGain();
+      rainNode.connect(rainFilter); rainFilter.connect(rainGain); rainGain.connect(audioCtx.destination);
+
+      oscLeft = audioCtx.createOscillator(); oscRight = audioCtx.createOscillator();
+      oscLeft.frequency.value = 200; oscRight.frequency.value = 200 + activeBeatFreq;
+      binauralGain = audioCtx.createGain(); oscLeft.connect(binauralGain); oscRight.connect(binauralGain); binauralGain.connect(audioCtx.destination);
+      updateAudioGains();
+    }
+    function toggleAudioEngine() {
+      const btn = document.getElementById('masterAudioBtn');
+      if (!isMixerRunning) {
+        if (!audioCtx) initAudioMixer();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        brownNode.start(); rainNode.start(); oscLeft.start(); oscRight.start();
+        isMixerRunning = true; btn.innerText = "Stop Ambient Audio"; btn.classList.replace("btn-action-primary", "btn-outline-danger");
+      } else {
+        audioCtx.close(); audioCtx = null; isMixerRunning = false; btn.innerText = "Start Ambient Audio"; btn.classList.replace("btn-outline-danger", "btn-action-primary");
+      }
+    }
+    function updateAudioGains() {
+      const bVal = document.getElementById('sliderBrown').value / 100;
+      const rVal = document.getElementById('sliderRain').value / 100;
+      const binVal = (document.getElementById('sliderBinaural').value / 100) * 0.08;
+      document.getElementById('volValBrown').innerText = `${Math.round(bVal * 100)}%`;
+      document.getElementById('volValRain').innerText = `${Math.round(rVal * 100)}%`;
+      document.getElementById('volValBinaural').innerText = `${document.getElementById('sliderBinaural').value}%`;
+      if (brownGain && audioCtx) brownGain.gain.setValueAtTime(bVal * 0.4, audioCtx.currentTime);
+      if (rainGain && audioCtx) rainGain.gain.setValueAtTime(rVal * 0.35, audioCtx.currentTime);
+      if (binauralGain && audioCtx) binauralGain.gain.setValueAtTime(binVal, audioCtx.currentTime);
+    }
+
+    // Standard support functions
+    function addXp(amount) { totalXp += amount; localStorage.setItem('sh_xp', totalXp); renderXpEngine(); triggerCloudSync(); }
+    function renderXpEngine() {
+      const level = Math.floor(totalXp / 400) + 1;
+      const pct = Math.round(((totalXp % 400) / 400) * 100);
+      document.getElementById('hudRankTitle').innerText = level >= 10 ? "Gold Scholar" : "Bronze Aspirant";
+      document.getElementById('hudLevelBadge').innerText = `LVL ${level}`;
+      document.getElementById('hudXpFill').style.width = `${pct}%`;
+    }
+    function renderMcqCounter() {
+      document.getElementById('mcqCorrectCount').innerText = mcqState.correct;
+      document.getElementById('mcqWrongCount').innerText = mcqState.wrong;
+      document.getElementById('mcqSkipCount').innerText = mcqState.skip;
+      const total = mcqState.correct + mcqState.wrong;
+      const acc = total > 0 ? ((mcqState.correct / total) * 100).toFixed(1) : "0.0";
+      document.getElementById('mcqAccuracyPct').innerText = `${acc}%`;
+      document.getElementById('statMcqAccuracy').innerHTML = `${acc}% <span class="fs-6 text-secondary">${total + mcqState.skip}/${mcqState.target}</span>`;
+      document.getElementById('statMcqFill').style.width = `${Math.min(100, Math.round(((total + mcqState.skip)/mcqState.target)*100))}%`;
+    }
+    function recordMcq(type) {
+      if (type === 'correct') { mcqState.correct++; addXp(15); }
+      if (type === 'wrong') mcqState.wrong++;
+      if (type === 'skip') mcqState.skip++;
+      localStorage.setItem('sh_mcq', JSON.stringify(mcqState));
+      renderMcqCounter();
+      triggerCloudSync();
+    }
+    function resetMcqCounter() { mcqState = { correct: 0, wrong: 0, skip: 0, target: 50 }; localStorage.setItem('sh_mcq', JSON.stringify(mcqState)); renderMcqCounter(); triggerCloudSync(); }
+    function renderSubjectBalanceWheel() {
+      const svg = document.getElementById('balanceSvgWheel');
+      const legend = document.getElementById('balanceLegendContainer');
+      const map = {}; topics.forEach(t => map[t.subject.toUpperCase()] = (map[t.subject.toUpperCase()] || 0) + (parseFloat(t.hours)||2.5));
+      const total = Object.values(map).reduce((a,b)=>a+b,0);
+      document.getElementById('balanceTotalHours').innerText = `${total.toFixed(1)}h`;
+      svg.innerHTML = `<circle cx="18" cy="18" r="15.915" fill="none" stroke="#161b26" stroke-width="3.5"></circle>`;
+      legend.innerHTML = '';
+      let offset = 0;
+      Object.entries(map).forEach(([sub, hrs], i) => {
+        const pct = (hrs / (total || 1)) * 100;
+        const color = ["#38bdf8", "#10b981", "#f59e0b", "#818cf8"][i % 4];
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", "18"); circle.setAttribute("cy", "18"); circle.setAttribute("r", "15.915"); circle.setAttribute("fill", "none"); circle.setAttribute("stroke", color); circle.setAttribute("stroke-width", "3.5");
+        circle.setAttribute("stroke-dasharray", `${pct} ${100-pct}`); circle.setAttribute("stroke-dashoffset", `-${offset}`);
+        svg.appendChild(circle);
+        offset += pct;
+        legend.innerHTML += `<div class="d-flex justify-content-between mb-1"><span class="text-white"><span style="background:${color};width:8px;height:8px;display:inline-block;border-radius:50%;margin-right:4px;"></span>${sub}</span><span class="text-secondary">${hrs.toFixed(1)}h</span></div>`;
+      });
+    }
+
+    // Canvas
+    let canvas, ctx, drawing = false, brushColor = '#38bdf8', brushSize = 2;
+    function openCanvasModal() { openModal('canvasModal'); setTimeout(() => {
+      canvas = document.getElementById('sketchCanvas'); ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth - 52; canvas.height = 380;
+      ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg-canvas').trim(); ctx.fillRect(0, 0, canvas.width, canvas.height);
+      canvas.onmousedown = (e) => { drawing = true; const r = canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(e.clientX - r.left, e.clientY - r.top); };
+      canvas.onmousemove = (e) => { if(!drawing)return; const r = canvas.getBoundingClientRect(); ctx.strokeStyle = brushColor; ctx.lineWidth = brushSize; ctx.lineCap = 'round'; ctx.lineTo(e.clientX - r.left, e.clientY - r.top); ctx.stroke(); };
+      canvas.onmouseup = () => drawing = false;
+    }, 100); }
+    function setCanvasColor(col, btn) { brushColor = col; document.querySelectorAll('#canvasModal .btn-sm').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+    function clearCanvas() { ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg-canvas').trim(); ctx.fillRect(0, 0, canvas.width, canvas.height); }
+
+    // Standard CRUD
+    function renderSubjectsFilter() {
+      const c = document.getElementById('subjectFilterContainer');
+      c.innerHTML = ["ALL", ...new Set(topics.map(t => t.subject.toUpperCase()))].map(sub => `<span class="pill-filter ${activeSubjectFilter===sub?'active':''}" onclick="filterBySubject('${sub}', this)">${sub}</span>`).join('');
+    }
+    function filterBySubject(sub, el) { activeSubjectFilter = sub; document.querySelectorAll('.pill-filter').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderTopics(); }
+    function renderTopics() {
+      const c = document.getElementById('topicsContainer'); c.innerHTML = '';
+      (activeSubjectFilter==='ALL'?topics:topics.filter(t=>t.subject.toUpperCase()===activeSubjectFilter)).forEach((t, i) => {
+        const idx = topics.indexOf(t);
+        c.innerHTML += `<div class="topic-row ${t.done?'done':''}"><div class="d-flex align-items-center gap-3"><input type="checkbox" class="form-check-input mt-0" ${t.done?'checked':''} onchange="toggleDone(${idx})"><div><div class="fw-bold text-white t-name">${t.chapter}</div><div class="d-flex align-items-center gap-2 mt-1"><span class="badge bg-secondary bg-opacity-25 text-info" style="font-size:0.68rem;">${t.subject}</span><span class="tier-badge tier-${t.tier.slice(-1)}">${t.tier}</span><small class="text-secondary mono">${t.hours}h</small></div></div></div><div class="d-flex align-items-center gap-2"><span class="rev-pill ${t.r1?'active':''}" onclick="toggleRev(${idx},'r1')">R1</span><span class="rev-pill ${t.r2?'active':''}" onclick="toggleRev(${idx},'r2')">R2</span><span class="rev-pill ${t.r3?'active':''}" onclick="toggleRev(${idx},'r3')">R3</span><button class="btn btn-sm text-secondary ms-2" onclick="deleteTopic(${idx})"><i class="bi bi-trash3"></i></button></div></div>`;
+      });
+    }
+    function addCustomTopic() {
+      const subj = document.getElementById('inSubject').value.trim(); const chap = document.getElementById('inChapter').value.trim(); const tier = document.getElementById('inTier').value;
+      if (!chap) return;
+      topics.unshift({ subject: subj || "General", chapter: chap, tier, hours: 2.5, done: false, doneDate: null, r1: false, r2: false, r3: false });
+      localStorage.setItem('sh_top', JSON.stringify(topics)); document.getElementById('inChapter').value = '';
+      renderSubjectsFilter(); renderTopics(); renderSubjectBalanceWheel(); triggerCloudSync();
+    }
+    function toggleDone(idx) {
+      topics[idx].done = !topics[idx].done;
+      if (topics[idx].done && !topics[idx].doneDate) { topics[idx].doneDate = new Date().toISOString().slice(0, 10); addXp(250); }
+      localStorage.setItem('sh_top', JSON.stringify(topics)); renderTopics(); renderSubjectBalanceWheel(); checkRollingMomentumDrift(); triggerCloudSync();
+    }
+    function toggleRev(idx, key) { topics[idx][key] = !topics[idx][key]; localStorage.setItem('sh_top', JSON.stringify(topics)); renderTopics(); triggerCloudSync(); }
+    function deleteTopic(idx) { topics.splice(idx, 1); localStorage.setItem('sh_top', JSON.stringify(topics)); renderSubjectsFilter(); renderTopics(); renderSubjectBalanceWheel(); triggerCloudSync(); }
+    function renderSrsQueue() {
+      const c = document.getElementById('srsQueueList'); const today = new Date(); const due = [];
+      topics.forEach((t, idx) => {
+        if (!t.done || !t.doneDate) return;
+        const diff = Math.floor((today - new Date(t.doneDate)) / (1000 * 60 * 60 * 24));
+        if (!t.r1 && diff >= 3) due.push({ topic: t, idx, stage: 'R1', key: 'r1' });
+        else if (t.r1 && !t.r2 && diff >= 7) due.push({ topic: t, idx, stage: 'R2', key: 'r2' });
+        else if (t.r2 && !t.r3 && diff >= 21) due.push({ topic: t, idx, stage: 'R3', key: 'r3' });
+      });
+      document.getElementById('srsQueueBadge').innerText = `${due.length} Pending`;
+      c.innerHTML = due.length === 0 ? `<small class="text-secondary">No topics scheduled for revision today.</small>` : due.map(d => `<div class="srs-item"><div><div class="fw-bold text-white small">${d.topic.chapter}</div><small class="text-warning mono">${d.topic.subject} &bull; ${d.stage}</small></div><button class="btn btn-outline-warning btn-sm py-1 px-2 mono" onclick="completeSrs(${d.idx}, '${d.key}')">Revised &check;</button></div>`).join('');
+    }
+    function completeSrs(idx, key) { topics[idx][key] = true; localStorage.setItem('sh_top', JSON.stringify(topics)); addXp(75); renderTopics(); renderSrsQueue(); triggerCloudSync(); }
+    function renderMocks() {
+      const list = document.getElementById('mockHistoryList');
+      list.innerHTML = mockTests.length === 0 ? `<small class="text-secondary">No mock tests logged yet.</small>` : mockTests.map((m, i) => `<div class="d-flex justify-content-between align-items-center p-2 rounded mb-1 bg-dark border border-secondary border-opacity-25 small"><div><span class="text-white fw-semibold">${m.name}</span><small class="text-secondary mono ms-2">(${m.scored}/${m.total})</small></div><span class="fw-bold mono text-success">${m.pct}%</span></div>`).join('');
+      const pcts = mockTests.map(m => parseFloat(m.pct));
+      document.getElementById('dispAvgScore').innerText = pcts.length ? `${(pcts.reduce((a,b)=>a+b,0)/pcts.length).toFixed(1)}%` : "0.0%";
+    }
+    function addMockTest() {
+      const name = document.getElementById('mockNameInput').value.trim(); const scored = parseFloat(document.getElementById('mockScoredInput').value); const total = parseFloat(document.getElementById('mockTotalInput').value);
+      if (!name || isNaN(scored) || isNaN(total)) return;
+      mockTests.unshift({ name, scored, total, pct: ((scored/total)*100).toFixed(1) });
+      localStorage.setItem('sh_mocks', JSON.stringify(mockTests)); addXp(150); document.getElementById('mockNameInput').value = ''; document.getElementById('mockScoredInput').value = ''; renderMocks(); triggerCloudSync();
+    }
+    function renderMistakes() {
+      const list = document.getElementById('mistakeList');
+      list.innerHTML = mistakes.length === 0 ? `<small class="text-secondary">No errors recorded yet.</small>` : mistakes.slice(0, 5).map(m => `<div class="d-flex justify-content-between align-items-center p-2 rounded mb-1 bg-dark border border-secondary border-opacity-25 small"><div><span class="text-light">${m.desc}</span><small class="text-danger d-block">${m.type}</small></div></div>`).join('');
+      document.getElementById('mistakeBadge').innerText = `${mistakes.length} Logged`;
+    }
+    function addMistakeEntry() {
+      const desc = document.getElementById('mistakeDescInput').value.trim(); const type = document.getElementById('mistakeTypeInput').value;
+      if (!desc) return;
+      mistakes.unshift({ desc, type }); localStorage.setItem('sh_mis', JSON.stringify(mistakes)); document.getElementById('mistakeDescInput').value = ''; renderMistakes(); renderParetoMistakes(); triggerCloudSync();
+    }
+    function saveNotes() { localStorage.setItem('sh_notes_text', document.getElementById('scratchArea').value); triggerCloudSync(); }
+    function renderHUD() {
+      document.getElementById('navExamBadge').innerText = config.exam;
+      document.getElementById('cfgUsername').value = config.username; document.getElementById('cfgName').value = config.name; document.getElementById('cfgExam').value = config.exam; document.getElementById('cfgHours').value = config.hours; document.getElementById('cfgCutoff').value = config.cutoff; document.getElementById('cfgDate').value = config.date;
+      const diff = Math.ceil((new Date(config.date) - new Date()) / (1000 * 60 * 60 * 24));
+      document.getElementById('examCountdownText').innerText = diff > 0 ? `${diff} DAYS UNTIL ${config.exam.toUpperCase()}` : `${config.exam.toUpperCase()} DAY`;
+      document.getElementById('statSyllabus').innerText = `${topics.length ? Math.round((topics.filter(t=>t.done).length/topics.length)*100):0}%`;
+      document.getElementById('statSyllabusFill').style.width = `${topics.length ? Math.round((topics.filter(t=>t.done).length/topics.length)*100):0}%`;
+    }
     function saveConfiguration() {
       config.username = document.getElementById('cfgUsername').value.trim() || "student";
       config.name = document.getElementById('cfgName').value.trim() || "Student";
@@ -2249,15 +1468,7 @@
       config.hours = parseFloat(document.getElementById('cfgHours').value) || 6;
       config.cutoff = parseFloat(document.getElementById('cfgCutoff').value) || 75;
       config.date = document.getElementById('cfgDate').value || "2026-10-15";
-
-      localStorage.setItem('sh_cfg', JSON.stringify(config));
-      renderHUD();
-      calculateBurndownForecast();
-      checkRollingMomentumDrift();
-      recalculateRealMetrics();
-      renderMocks();
-      triggerCloudSync();
-      closeModal('profileModal');
+      localStorage.setItem('sh_cfg', JSON.stringify(config)); renderHUD(); triggerCloudSync(); closeModal('profileModal');
     }
   </script>
 </body>
