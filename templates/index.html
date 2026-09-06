@@ -93,8 +93,8 @@
     }
     .btn-action:hover { background: #0284c7; color: #fff; }
 
-    /* Topic rows */
-    .topic-item {
+    /* List Rows */
+    .list-item-row {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 8px;
@@ -104,7 +104,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    .topic-item.done { opacity: 0.6; text-decoration: line-through; }
+    .list-item-row.done { opacity: 0.6; text-decoration: line-through; }
   </style>
 </head>
 
@@ -115,19 +115,19 @@
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
         <i class="bi bi-compass text-info fs-4"></i>
-        <span class="fw-bold text-white fs-5">StudyHub // Core</span>
+        <span class="fw-bold text-white fs-5">StudyHub // Clean</span>
       </div>
 
       <div class="d-flex align-items-center gap-2">
         <span class="badge bg-dark border border-secondary text-light mono px-3 py-2" id="navCountdown">Target Exam</span>
         <button class="btn btn-outline-info btn-sm rounded-pill px-3" onclick="toggleMenuDrawer()">
-          <i class="bi bi-list fs-6 me-1"></i> Menu & Tools
+          <i class="bi bi-gear fs-6 me-1"></i> Expand Settings
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- ================= EXPANDABLE TOOLS MENU DRAWER ================= -->
+  <!-- ================= EXPANDABLE SETTINGS & TIMETABLE DRAWER ================= -->
   <div class="menu-drawer" id="toolsMenuDrawer">
     <div class="container">
       <div class="row g-3 align-items-center">
@@ -135,16 +135,16 @@
           <label class="small text-secondary mb-1">TARGET EXAM DATE</label>
           <input type="date" id="drawerTargetDate" class="form-control hub-input" onchange="updateExamTarget()">
         </div>
-        <div class="col-md-4">
-          <label class="small text-secondary mb-1">SET TIMETABLE / SCHEDULE SLOT</label>
+        <div class="col-md-5">
+          <label class="small text-secondary mb-1">ADD CUSTOM TIMETABLE SLOT</label>
           <div class="input-group">
-            <input type="text" id="drawerSlotName" class="form-control hub-input" placeholder="e.g. Physics Problem Solving">
-            <button class="btn btn-outline-info btn-sm" onclick="addCustomTimetableSlot()">Add</button>
+            <input type="text" id="drawerSlotName" class="form-control hub-input" placeholder="e.g. 06:00 AM - Physics Core">
+            <button class="btn btn-outline-info btn-sm" onclick="addCustomTimetableSlot()">Add Slot</button>
           </div>
         </div>
-        <div class="col-md-4 text-md-end">
-          <button class="btn btn-outline-danger btn-sm rounded-pill mt-4" onclick="localStorage.clear(); location.reload();">
-            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Local Data
+        <div class="col-md-3 text-md-end">
+          <button class="btn btn-outline-danger btn-sm rounded-pill mt-4" onclick="if(confirm('Reset all local data?')){localStorage.clear(); location.reload();}">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Data
           </button>
         </div>
       </div>
@@ -198,13 +198,13 @@
           </div>
         </div>
 
-        <!-- Custom Timetable Slots -->
+        <!-- Custom Timetable Slots Display -->
         <div class="card-panel">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold text-white mb-0"><i class="bi bi-clock-history me-2 text-info"></i>Today's Timetable</h6>
             <small class="text-secondary">Custom Schedule</small>
           </div>
-          <div id="timetableList">
+          <div id="timetableList" style="max-height: 260px; overflow-y: auto;">
             <!-- Dynamically populated -->
           </div>
         </div>
@@ -244,23 +244,20 @@
 
   <!-- ================= SCRIPT ENGINE ================= -->
   <script>
-    // Menu Drawer Toggle
     function toggleMenuDrawer() {
-      const drawer = document.getElementById('toolsMenuDrawer');
-      drawer.classList.toggle('open');
+      document.getElementById('toolsMenuDrawer').classList.toggle('open');
     }
 
-    // State
     let targetDate = localStorage.getItem('sh_target_date') || "2026-10-15";
-    let topics = JSON.parse(localStorage.getItem('sh_clean_top') || JSON.stringify([
+    let topics = JSON.parse(localStorage.getItem('sh_simple_top') || JSON.stringify([
       { subject: "Physics", chapter: "Mechanics & Kinematics", done: false },
       { subject: "Maths", chapter: "Calculus & Derivatives", done: false },
       { subject: "Chemistry", chapter: "Periodic Table & Bonding", done: false }
     ]));
-    let timetable = JSON.parse(localStorage.getItem('sh_clean_slots') || JSON.stringify([
-      { name: "Morning Theory Revision", done: false },
-      { name: "Afternoon MCQ Practice", done: false },
-      { name: "Evening Formula Review", done: false }
+    let timetable = JSON.parse(localStorage.getItem('sh_simple_slots') || JSON.stringify([
+      { name: "06:00 AM - Morning Theory Revision", done: false },
+      { name: "01:00 PM - Afternoon MCQ Practice", done: false },
+      { name: "07:00 PM - Evening Formula Review", done: false }
     ]));
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -271,7 +268,6 @@
       updateStats();
     });
 
-    // Countdown
     function updateExamTarget() {
       targetDate = document.getElementById('drawerTargetDate').value;
       localStorage.setItem('sh_target_date', targetDate);
@@ -283,7 +279,7 @@
       document.getElementById('navCountdown').innerText = diff > 0 ? `${diff} Days Left` : `Exam Day`;
     }
 
-    // Topics
+    // Topics Logic
     function renderTopics() {
       const container = document.getElementById('topicsContainer');
       container.innerHTML = '';
@@ -296,7 +292,7 @@
 
       topics.forEach((t, i) => {
         const div = document.createElement('div');
-        div.className = `topic-item ${t.done ? 'done' : ''}`;
+        div.className = `list-item-row ${t.done ? 'done' : ''}`;
         div.innerHTML = `
           <div class="d-flex align-items-center gap-3">
             <input type="checkbox" class="form-check-input mt-0" ${t.done ? 'checked' : ''} onchange="toggleTopic(${i})">
@@ -317,20 +313,20 @@
       const chap = document.getElementById('inChapter').value.trim();
       if (!chap) return;
       topics.unshift({ subject: sub || "General", chapter: chap, done: false });
-      localStorage.setItem('sh_clean_top', JSON.stringify(topics));
+      localStorage.setItem('sh_simple_top', JSON.stringify(topics));
       document.getElementById('inChapter').value = '';
       renderTopics();
     }
 
     function toggleTopic(i) {
       topics[i].done = !topics[i].done;
-      localStorage.setItem('sh_clean_top', JSON.stringify(topics));
+      localStorage.setItem('sh_simple_top', JSON.stringify(topics));
       renderTopics();
     }
 
     function deleteTopic(i) {
       topics.splice(i, 1);
-      localStorage.setItem('sh_clean_top', JSON.stringify(topics));
+      localStorage.setItem('sh_simple_top', JSON.stringify(topics));
       renderTopics();
     }
 
@@ -342,22 +338,22 @@
       document.getElementById('statCompletedCount').innerText = `${done} / ${total}`;
     }
 
-    // Timetable Slots
+    // Timetable Logic
     function renderTimetable() {
       const list = document.getElementById('timetableList');
       list.innerHTML = '';
       if (timetable.length === 0) {
-        list.innerHTML = `<small class="text-secondary">No custom slots added.</small>`;
+        list.innerHTML = `<small class="text-secondary">No timetable slots added.</small>`;
         return;
       }
       timetable.forEach((slot, i) => {
         list.innerHTML += `
-          <div class="d-flex justify-content-between align-items-center p-2 rounded mb-1 bg-dark border border-secondary border-opacity-25 small">
+          <div class="list-item-row ${slot.done ? 'done' : ''}">
             <div class="d-flex align-items-center gap-2">
-              <input type="checkbox" class="form-check-input" ${slot.done ? 'checked' : ''} onchange="toggleSlot(${i})">
-              <span class="${slot.done ? 'text-decoration-line-through text-secondary' : 'text-light'}">${slot.name}</span>
+              <input type="checkbox" class="form-check-input mt-0" ${slot.done ? 'checked' : ''} onchange="toggleSlot(${i})">
+              <span class="text-light small">${slot.name}</span>
             </div>
-            <button class="btn btn-sm text-secondary p-0" onclick="deleteSlot(${i})"><i class="bi bi-x"></i></button>
+            <button class="btn btn-sm text-secondary p-0" onclick="deleteSlot(${i})"><i class="bi bi-x fs-5"></i></button>
           </div>
         `;
       });
@@ -367,24 +363,24 @@
       const name = document.getElementById('drawerSlotName').value.trim();
       if (!name) return;
       timetable.push({ name, done: false });
-      localStorage.setItem('sh_clean_slots', JSON.stringify(timetable));
+      localStorage.setItem('sh_simple_slots', JSON.stringify(timetable));
       document.getElementById('drawerSlotName').value = '';
       renderTimetable();
     }
 
     function toggleSlot(i) {
       timetable[i].done = !timetable[i].done;
-      localStorage.setItem('sh_clean_slots', JSON.stringify(timetable));
+      localStorage.setItem('sh_simple_slots', JSON.stringify(timetable));
       renderTimetable();
     }
 
     function deleteSlot(i) {
       timetable.splice(i, 1);
-      localStorage.setItem('sh_clean_slots', JSON.stringify(timetable));
+      localStorage.setItem('sh_simple_slots', JSON.stringify(timetable));
       renderTimetable();
     }
 
-    // Clean Focus Timer
+    // Timer Logic
     let timerRef = null, leftSec = 25 * 60, isRunning = false;
     function updateDisplay() {
       const m = Math.floor(leftSec / 60).toString().padStart(2, '0');
